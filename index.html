@@ -1,129 +1,50 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DS FOREVER</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DS FOREVER | Cricket Hub</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#090d16;color:white;font-family:Arial,sans-serif}
-header{background:#151c2b;padding:22px;text-align:center;border-bottom:2px solid #d9a441}
-.logo{font-size:30px;font-weight:bold;color:#eab84f}
-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:15px}
-button{background:#202c40;color:white;border:1px solid #d9a441;padding:12px 17px;border-radius:8px;cursor:pointer}
-button:hover{background:#a77a25}
-.hero{text-align:center;padding:40px 15px}
-.hero h1{font-size:35px;color:#eab84f}
-.hero p{color:#b7c0d0}
-.container{max-width:900px;margin:auto;padding:15px}
-.card{background:#151e2e;padding:20px;margin:15px 0;border-radius:12px;border:1px solid #303d52}
-h2{color:#eab84f}
-input{width:100%;padding:13px;margin:8px 0;background:#0c1422;color:white;border:1px solid #526078;border-radius:7px}
-.page{display:none}
-.page.active{display:block}
-footer{text-align:center;padding:25px;color:#9ca9bc}
-</style>
-</head>
+:root{--bg:#080b12;--panel:#141c2a;--panel2:#1b2638;--line:#2c3a50;--gold:#efbd55;--muted:#aab5c7;--green:#57d49b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f6f7fb;font:15px Arial,sans-serif}
+header{background:#121a28;border-bottom:2px solid var(--gold);padding:20px 16px;text-align:center}
+.logo{font-size:30px;font-weight:800;color:var(--gold);letter-spacing:1px}.sub{color:var(--muted);margin-top:7px}
+nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:14px;background:#0d131e;position:sticky;top:0;z-index:2}
+button{cursor:pointer;border-radius:9px;padding:11px 15px;border:1px solid var(--gold);background:#202d42;color:#fff}
+button.primary{background:var(--gold);color:#17130b;font-weight:bold}
+button:hover{filter:brightness(1.12)}
+main{max-width:1050px;margin:auto;padding:20px 14px}.page{display:none}.page.active{display:block}
+.hero{text-align:center;padding:45px 12px 35px}.hero h1{font-size:clamp(30px,7vw,54px);color:var(--gold);margin:0 0 12px}.hero p{color:var(--muted);font-size:18px;line-height:1.5}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:19px;margin:12px 0}
+.card h2,.card h3{color:var(--gold);margin-top:0}.muted{color:var(--muted)}.notice{background:#2b2415;border:1px solid #6c5424;color:#f1d58f;padding:13px;border-radius:10px;line-height:1.5}
+input,select,textarea{display:block;width:100%;margin:7px 0 14px;padding:12px;border-radius:8px;background:#0b111c;border:1px solid var(--line);color:white}
+label{font-size:13px;color:var(--muted)}.form{max-width:480px}.status{color:var(--green);font-size:12px}
+footer{text-align:center;color:#78859a;padding:25px;border-top:1px solid var(--line);margin-top:25px}
+a{color:var(--gold)}.match{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+@media(max-width:520px){nav button{padding:9px 11px;font-size:13px}.hero{padding:28px 8px}}
+</style></head>
 <body>
-<header>
-<div class="logo">🏏 DS FOREVER</div>
-<p>CRICKET • LIVE SCORES • MATCH CENTER</p>
-</header>
-
+<header><div class="logo">🏏 DS FOREVER</div><div class="sub">CRICKET INFORMATION • MATCH CENTER • SCORECARDS</div></header>
 <nav>
-<button onclick="showPage('home')">Home</button>
-<button onclick="showPage('matches')">Matches</button>
-<button onclick="showPage('score')">Scoreboard</button>
-<button onclick="showPage('register')">Register</button>
-<button onclick="showPage('login')">Login</button>
-<button onclick="showPage('admin')">Admin Demo</button>
+<button onclick="page('home')">Home</button><button onclick="page('matches')">Matches</button><button onclick="page('scores')">Scoreboard</button><button onclick="page('register')">Register</button><button onclick="page('login')">Login</button><button onclick="page('profile')">My Profile</button>
 </nav>
-
-<main class="container">
+<main>
 <section id="home" class="page active">
-<div class="hero">
-<h1>WELCOME TO DS FOREVER</h1>
-<p>Your Cricket Entertainment Destination</p>
-<button onclick="showPage('matches')">Explore Matches</button>
+<div class="hero"><h1>WELCOME TO DS FOREVER</h1><p>Your cricket information destination.<br>Explore fixtures, match details and scorecards.</p><button class="primary" onclick="page('matches')">Explore Matches</button></div>
+<div class="cards">
+<div class="card"><h2>🏏 Match Center</h2><p class="muted">Browse scheduled cricket fixtures and match details.</p></div>
+<div class="card"><h2>📊 Scorecards</h2><p class="muted">View verified score information when published by the site administrator.</p></div>
+<div class="card"><h2>👤 User Account</h2><p class="muted">Create a demo profile and explore the account interface.</p></div>
 </div>
-<div class="card">
-<h2>🏏 Cricket Center</h2>
-<p>Follow cricket matches and explore scorecards.</p>
-</div>
-<div class="card">
-<h2>⭐ Our Features</h2>
-<p>Match Schedule • Scoreboard • User Account • Support</p>
-</div>
+<div class="notice">This is a front-end preview. Live score feeds, secure account authentication and a server database are not connected yet. Do not enter real passwords or sensitive personal information.</div>
 </section>
-
-<section id="matches" class="page">
-<h2>Match Center</h2>
-<div class="card">
-<h3>India vs Australia</h3>
-<p>Match status: Demo Schedule</p>
-</div>
-<div class="card">
-<h3>India vs England</h3>
-<p>Match status: Demo Schedule</p>
-</div>
-<p>Demo match information only. No live data connected.</p>
-</section>
-
-<section id="score" class="page">
-<h2>Cricket Scoreboard</h2>
-<div class="card">
-<h3>Match Score</h3>
-<p>India: —</p>
-<p>Australia: —</p>
-<p>Live score service not connected yet.</p>
-</div>
-</section>
-
-<section id="register" class="page">
-<h2>Create Account</h2>
-<div class="card">
-<input placeholder="Your Name">
-<input type="email" placeholder="Email Address">
-<button onclick="alert('Demo only. Account service is not connected.')">Register Demo</button>
-<p>Registration backend is not connected.</p>
-</div>
-</section>
-
-<section id="login" class="page">
-<h2>User Login</h2>
-<div class="card">
-<input type="email" placeholder="Email Address">
-<input type="password" placeholder="Password">
-<button onclick="alert('Login service is not connected yet.')">Login Demo</button>
-</div>
-</section>
-
-<section id="admin" class="page">
-<h2>Admin Dashboard Preview</h2>
-<div class="card">
-<h3>Welcome, Admin</h3>
-<p>Users: Demo</p>
-<p>Matches: Demo</p>
-<p>Score Management: Not Connected</p>
-<p>Payment records: Not Connected</p>
-<p>Customer Support: Not Connected</p>
-</div>
-<p>This is a visual preview, not a secure admin panel.</p>
-</section>
+<section id="matches" class="page"><h2>Match Center</h2><p class="muted">Scheduled fixtures published by the site administrator will appear here.</p><div id="matchList" class="card">No fixtures published yet.</div></section>
+<section id="scores" class="page"><h2>Scoreboard</h2><div class="card"><h3>Match Scorecards</h3><p class="muted">No verified scorecards are available yet. Live data integration is not connected.</p></div></section>
+<section id="register" class="page"><h2>Create a Demo Profile</h2><div class="card form"><label>Full name</label><input id="regName" placeholder="Your name"><label>Email</label><input id="regEmail" type="email" placeholder="you@example.com"><button class="primary" onclick="registerDemo()">Create demo profile</button><p class="muted">Demo only: this does not create a secure account or send email.</p></div></section>
+<section id="login" class="page"><h2>User Login</h2><div class="card form"><label>Email</label><input type="email" placeholder="Email address"><label>Password</label><input type="password" placeholder="Do not enter a real password"><button onclick="alert('Authentication is not connected. This is a visual preview only.')">Preview login</button><p class="muted">A secure authentication service must be configured before real users can sign in.</p></div></section>
+<section id="profile" class="page"><h2>My Profile</h2><div class="card"><p id="profileText" class="muted">No demo profile created in this browser session.</p><button onclick="page('register')">Create demo profile</button></div></section>
 </main>
-
-<footer>
-DS FOREVER © 2026<br>
-Cricket Information & Entertainment
-</footer>
-
+<footer>DS FOREVER © 2026 · Cricket information and scorecard preview</footer>
 <script>
-function showPage(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-window.scrollTo(0,0);
-}
-</script>
-</body>
-</html>
+function page(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function registerDemo(){let n=document.getElementById('regName').value.trim(),e=document.getElementById('regEmail').value.trim();if(!n||!e){alert('Please enter your name and email.');return}document.getElementById('profileText').textContent='Demo profile: '+n+' ('+e+'). This profile exists only in this browser session.';alert('Demo profile created in this browser session.');page('profile')}
+</script></body></html>
