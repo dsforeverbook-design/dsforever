@@ -1,50 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#080b12">
 <title>DS FOREVER | Cricket Hub</title>
 <style>
-:root{--bg:#080b12;--panel:#141c2a;--panel2:#1b2638;--line:#2c3a50;--gold:#efbd55;--muted:#aab5c7;--green:#57d49b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f6f7fb;font:15px Arial,sans-serif}
-header{background:#121a28;border-bottom:2px solid var(--gold);padding:20px 16px;text-align:center}
-.logo{font-size:30px;font-weight:800;color:var(--gold);letter-spacing:1px}.sub{color:var(--muted);margin-top:7px}
+:root{--bg:#080b12;--panel:#141c2a;--line:#2c3a50;--gold:#efbd55;--muted:#aab5c7;--green:#57d49b;--red:#ff7373}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f6f7fb;font:16px Arial,sans-serif;line-height:1.5}
+header{background:#121a28;border-bottom:2px solid var(--gold);padding:20px 16px;text-align:center}.logo{font-size:30px;font-weight:800;color:var(--gold);letter-spacing:1px}.sub{color:var(--muted);margin-top:4px}
 nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:14px;background:#0d131e;position:sticky;top:0;z-index:2}
-button{cursor:pointer;border-radius:9px;padding:11px 15px;border:1px solid var(--gold);background:#202d42;color:#fff}
-button.primary{background:var(--gold);color:#17130b;font-weight:bold}
-button:hover{filter:brightness(1.12)}
-main{max-width:1050px;margin:auto;padding:20px 14px}.page{display:none}.page.active{display:block}
-.hero{text-align:center;padding:45px 12px 35px}.hero h1{font-size:clamp(30px,7vw,54px);color:var(--gold);margin:0 0 12px}.hero p{color:var(--muted);font-size:18px;line-height:1.5}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:19px;margin:12px 0}
-.card h2,.card h3{color:var(--gold);margin-top:0}.muted{color:var(--muted)}.notice{background:#2b2415;border:1px solid #6c5424;color:#f1d58f;padding:13px;border-radius:10px;line-height:1.5}
-input,select,textarea{display:block;width:100%;margin:7px 0 14px;padding:12px;border-radius:8px;background:#0b111c;border:1px solid var(--line);color:white}
-label{font-size:13px;color:var(--muted)}.form{max-width:480px}.status{color:var(--green);font-size:12px}
-footer{text-align:center;color:#78859a;padding:25px;border-top:1px solid var(--line);margin-top:25px}
-a{color:var(--gold)}.match{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-@media(max-width:520px){nav button{padding:9px 11px;font-size:13px}.hero{padding:28px 8px}}
+button{cursor:pointer;border-radius:10px;padding:11px 15px;border:1px solid var(--gold);background:#202d42;color:#fff;font-size:15px}button.primary{background:var(--gold);color:#17130b;font-weight:bold}button:disabled{opacity:.55;cursor:not-allowed}button:hover{filter:brightness(1.12)}
+main{max-width:900px;margin:auto;padding:20px 14px}.page{display:none}.page.active{display:block}.hero{text-align:center;padding:42px 12px 30px}.hero h1{font-size:clamp(30px,7vw,48px);color:var(--gold);margin:0 0 12px}.hero p{color:var(--muted);font-size:19px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:12px 0}.card h2,.card h3{color:var(--gold);margin-top:0}.muted{color:var(--muted)}
+.notice{background:#2b2415;border:1px solid #6c5424;color:#f6dfaa;border-radius:12px;padding:12px;margin:16px 0}.form{max-width:480px;margin:18px auto}
+label{display:block;font-size:14px;color:var(--muted);margin:12px 0 5px}input{display:block;width:100%;padding:13px;border-radius:9px;background:#0b111c;border:1px solid var(--line);color:#fff;font-size:16px}
+.form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.status{font-size:14px;margin-top:12px;min-height:22px}.status.ok{color:var(--green)}.status.err{color:var(--red)}
+.profile-row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}footer{text-align:center;color:#78859a;padding:25px;border-top:1px solid var(--line);margin-top:25px}
+@media(max-width:520px){nav button{padding:9px 10px;font-size:13px}.hero{padding:28px 8px}}
 </style></head>
 <body>
 <header><div class="logo">🏏 DS FOREVER</div><div class="sub">CRICKET INFORMATION • MATCH CENTER • SCORECARDS</div></header>
 <nav>
-<button onclick="page('home')">Home</button><button onclick="page('matches')">Matches</button><button onclick="page('scores')">Scoreboard</button><button onclick="page('register')">Register</button><button onclick="page('login')">Login</button><button onclick="page('profile')">My Profile</button>
+<button onclick="showPage('home')">Home</button><button onclick="showPage('matches')">Matches</button><button onclick="showPage('scores')">Scoreboard</button>
+<button id="registerNav" onclick="showPage('register')">Register</button><button id="loginNav" onclick="showPage('login')">Login</button><button id="profileNav" onclick="showPage('profile')" style="display:none">My Profile</button>
 </nav>
 <main>
-<section id="home" class="page active">
-<div class="hero"><h1>WELCOME TO DS FOREVER</h1><p>Your cricket information destination.<br>Explore fixtures, match details and scorecards.</p><button class="primary" onclick="page('matches')">Explore Matches</button></div>
-<div class="cards">
-<div class="card"><h2>🏏 Match Center</h2><p class="muted">Browse scheduled cricket fixtures and match details.</p></div>
-<div class="card"><h2>📊 Scorecards</h2><p class="muted">View verified score information when published by the site administrator.</p></div>
-<div class="card"><h2>👤 User Account</h2><p class="muted">Create a demo profile and explore the account interface.</p></div>
-</div>
-<div class="notice">This is a front-end preview. Live score feeds, secure account authentication and a server database are not connected yet. Do not enter real passwords or sensitive personal information.</div>
-</section>
-<section id="matches" class="page"><h2>Match Center</h2><p class="muted">Scheduled fixtures published by the site administrator will appear here.</p><div id="matchList" class="card">No fixtures published yet.</div></section>
-<section id="scores" class="page"><h2>Scoreboard</h2><div class="card"><h3>Match Scorecards</h3><p class="muted">No verified scorecards are available yet. Live data integration is not connected.</p></div></section>
-<section id="register" class="page"><h2>Create a Demo Profile</h2><div class="card form"><label>Full name</label><input id="regName" placeholder="Your name"><label>Email</label><input id="regEmail" type="email" placeholder="you@example.com"><button class="primary" onclick="registerDemo()">Create demo profile</button><p class="muted">Demo only: this does not create a secure account or send email.</p></div></section>
-<section id="login" class="page"><h2>User Login</h2><div class="card form"><label>Email</label><input type="email" placeholder="Email address"><label>Password</label><input type="password" placeholder="Do not enter a real password"><button onclick="alert('Authentication is not connected. This is a visual preview only.')">Preview login</button><p class="muted">A secure authentication service must be configured before real users can sign in.</p></div></section>
-<section id="profile" class="page"><h2>My Profile</h2><div class="card"><p id="profileText" class="muted">No demo profile created in this browser session.</p><button onclick="page('register')">Create demo profile</button></div></section>
-</main>
-<footer>DS FOREVER © 2026 · Cricket information and scorecard preview</footer>
+<section id="home" class="page active"><div class="hero"><h1>WELCOME TO DS FOREVER</h1><p>Your cricket information destination.<br>Explore fixtures, match details and scorecards.</p><button class="primary" onclick="showPage('matches')">Explore Matches</button></div>
+<div class="cards"><div class="card"><h2>🏏 Match Center</h2><p class="muted">Browse scheduled cricket fixtures and match details.</p></div><div class="card"><h2>📊 Scorecards</h2><p class="muted">View verified score information when published by the site administrator.</p></div><div class="card"><h2>👤 User Account</h2><p class="muted">Create your account and securely sign in to DS FOREVER.</p></div></div>
+<div class="notice">User accounts are connected to Supabase Authentication. Match and scorecard data can be added next.</div></section>
+<section id="matches" class="page"><h2>Match Center</h2><div class="card"><h3>Upcoming Matches</h3><p class="muted">No matches have been published yet. Fixtures will appear here when added by the site administrator.</p></div></section>
+<section id="scores" class="page"><h2>Scoreboard</h2><div class="card"><h3>Match Scorecards</h3><p class="muted">No verified scorecards are available yet. Published scorecards will appear here.</p></div></section>
+<section id="register" class="page"><h2>Create Your Account</h2><div class="card form"><form id="registerForm">
+<label for="regName">Full name</label><input id="regName" type="text" autocomplete="name" placeholder="Enter your full name" required maxlength="80">
+<label for="regEmail">Email address</label><input id="regEmail" type="email" autocomplete="email" placeholder="Enter your email" required>
+<label for="regPassword">Password (minimum 6 characters)</label><input id="regPassword" type="password" autocomplete="new-password" placeholder="Create a password" minlength="6" required>
+<div class="form-actions"><button class="primary" id="registerBtn" type="submit">Register</button><button type="button" onclick="showPage('login')">Already have an account? Login</button></div><div id="registerStatus" class="status" aria-live="polite"></div>
+</form></div></section>
+<section id="login" class="page"><h2>User Login</h2><div class="card form"><form id="loginForm">
+<label for="loginEmail">Email address</label><input id="loginEmail" type="email" autocomplete="email" placeholder="Enter your email" required>
+<label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+<div class="form-actions"><button class="primary" id="loginBtn" type="submit">Login</button><button type="button" onclick="showPage('register')">Create account</button></div><div id="loginStatus" class="status" aria-live="polite"></div>
+</form></div></section>
+<section id="profile" class="page"><h2>My Profile</h2><div class="card"><div class="profile-row"><div><h3 id="profileName">Your account</h3><p id="profileEmail" class="muted"></p></div><button id="logoutBtn">Logout</button></div><p id="profileStatus" class="status" aria-live="polite"></p></div></section>
+</main><footer>DS FOREVER © 2026 · Cricket information and scorecard preview</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function page(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
-function registerDemo(){let n=document.getElementById('regName').value.trim(),e=document.getElementById('regEmail').value.trim();if(!n||!e){alert('Please enter your name and email.');return}document.getElementById('profileText').textContent='Demo profile: '+n+' ('+e+'). This profile exists only in this browser session.';alert('Demo profile created in this browser session.');page('profile')}
+const SUPABASE_URL="https://gplftdgweysvutrfkpni.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+function showPage(id){document.querySelectorAll(".page").forEach(s=>s.classList.remove("active"));const p=document.getElementById(id);if(p)p.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});}
+function setStatus(id,msg,type){const e=document.getElementById(id);e.textContent=msg||"";e.className="status"+(type?" "+type:"");}
+function updateNavigation(user){document.getElementById("registerNav").style.display=user?"none":"";document.getElementById("loginNav").style.display=user?"none":"";document.getElementById("profileNav").style.display=user?"":"none";if(user){document.getElementById("profileName").textContent=user.user_metadata?.full_name||"DS FOREVER Member";document.getElementById("profileEmail").textContent=user.email||"";}}
+document.getElementById("registerForm").addEventListener("submit",async e=>{
+e.preventDefault();const b=document.getElementById("registerBtn"),fullName=document.getElementById("regName").value.trim(),email=document.getElementById("regEmail").value.trim(),password=document.getElementById("regPassword").value;
+b.disabled=true;b.textContent="Please wait...";setStatus("registerStatus","Creating your account...");
+const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{full_name:fullName}}});
+b.disabled=false;b.textContent="Register";if(error){setStatus("registerStatus",error.message,"err");return;}
+if(data.session){updateNavigation(data.user);setStatus("profileStatus","Registration successful. Your account is ready.","ok");showPage("profile");}
+else{setStatus("registerStatus","Registration submitted. Check your email and confirm your account, then log in.","ok");}
+});
+document.getElementById("loginForm").addEventListener("submit",async e=>{
+e.preventDefault();const b=document.getElementById("loginBtn"),email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value;
+b.disabled=true;b.textContent="Signing in...";setStatus("loginStatus","Checking your account...");
+const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});b.disabled=false;b.textContent="Login";
+if(error){setStatus("loginStatus",error.message,"err");return;}updateNavigation(data.user);setStatus("profileStatus","You are logged in successfully.","ok");showPage("profile");
+});
+document.getElementById("logoutBtn").addEventListener("click",async()=>{const {error}=await supabaseClient.auth.signOut();if(error){setStatus("profileStatus",error.message,"err");return;}updateNavigation(null);showPage("home");});
+supabaseClient.auth.onAuthStateChange((_event,session)=>updateNavigation(session?.user||null));
+(async()=>{const {data,error}=await supabaseClient.auth.getSession();if(!error)updateNavigation(data.session?.user||null);})();
 </script></body></html>
