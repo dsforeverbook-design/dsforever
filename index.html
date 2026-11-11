@@ -1,66 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080b14">
-<title>DS FOREVER | Secure Login</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#061225">
+<title>DS FOREVER | Welcome Back</title>
 <style>
-:root{--bg:#080b14;--panel:#111827;--line:#29364b;--gold:#e9bd63;--blue:#38bdf8;--muted:#a5b2c7;--white:#f7f8fc}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#080b14 56%);color:var(--white);font:15px Inter,system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:22px}
-.wrap{width:100%;max-width:460px}.brand{text-align:center;margin-bottom:22px}.emblem{width:64px;height:64px;border:1px solid #6d572e;border-radius:20px;margin:0 auto 13px;display:grid;place-items:center;background:linear-gradient(145deg,#26344b,#101725);box-shadow:0 10px 35px #0008;color:var(--gold);font-size:29px}.brand h1{font-size:27px;letter-spacing:3px;margin:0;color:var(--gold)}.brand p{color:var(--muted);margin:7px 0 0;letter-spacing:2px;font-size:11px}
-.panel{background:linear-gradient(155deg,#151f30,#0e1521);border:1px solid #34435b;border-radius:24px;padding:28px;box-shadow:0 24px 70px #0008;position:relative;overflow:hidden}.panel:before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-.tabs{display:grid;grid-template-columns:1fr 1fr;background:#080e18;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:24px}.tabs button{border:0;background:transparent;color:var(--muted);padding:11px;border-radius:9px;font-weight:700;cursor:pointer}.tabs button.active{background:linear-gradient(100deg,#d7a84e,#f2d48d);color:#17130b}
-h2{font-size:24px;margin:0 0 5px}.hint{color:var(--muted);margin:0 0 22px;font-size:13px}
-label{display:block;color:#d5dceb;font-size:13px;margin:15px 0 7px}input{width:100%;padding:14px 15px;border-radius:11px;border:1px solid #34435b;background:#080e18;color:#fff;font-size:15px;outline:none}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #38bdf822}input::placeholder{color:#748198}
-.pw{position:relative}.pw button{position:absolute;right:8px;top:7px;border:0;background:transparent;color:var(--muted);padding:7px;cursor:pointer}
-.meta{display:flex;justify-content:flex-end;margin:12px 0 18px}.textbtn{border:0;background:none;color:var(--blue);padding:0;cursor:pointer;font-size:13px}
-.submit{width:100%;border:0;border-radius:12px;padding:15px;background:linear-gradient(100deg,#d6a44b,#f4d58d);color:#15120b;font-size:16px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 8px 22px #d6a44b25}.submit:disabled{opacity:.6;cursor:wait}
-.status{min-height:22px;margin-top:13px;font-size:13px;color:var(--muted);overflow-wrap:anywhere}.status.ok{color:#63e6a6}.status.err{color:#ff8585}
-.foot{text-align:center;color:#78869d;font-size:12px;margin-top:18px}.security{text-align:center;color:#8f9db2;font-size:11px;margin-top:17px}
-.hidden{display:none!important}
-@media(max-width:420px){body{padding:15px}.panel{padding:22px}.brand h1{font-size:24px}}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="brand"><div class="emblem">🏏</div><h1>DS FOREVER</h1><p>CRICKET • COMMUNITY • MATCH CENTER</p></div>
-  <main class="panel">
-    <div class="tabs"><button id="loginTab" class="active" type="button">USER LOGIN</button><button id="registerTab" type="button">CREATE ACCOUNT</button></div>
-    <section id="loginView">
-      <h2>Welcome back</h2><p class="hint">Sign in to continue to your DS FOREVER account.</p>
-      <form id="loginForm">
-        <label for="loginEmail">Email address</label><input id="loginEmail" type="email" autocomplete="username" placeholder="name@example.com" required>
-        <label for="loginPassword">Password</label><div class="pw"><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required><button type="button" data-toggle="loginPassword">Show</button></div>
-        <div class="meta"><button class="textbtn" id="forgotBtn" type="button">Forgot password?</button></div>
-        <button class="submit" id="loginBtn" type="submit">SECURE LOGIN&nbsp; →</button><div id="loginStatus" class="status" aria-live="polite"></div>
-      </form>
-    </section>
-    <section id="registerView" class="hidden">
-      <h2>Create your account</h2><p class="hint">Register with your email to join DS FOREVER.</p>
-      <form id="registerForm">
-        <label for="regName">Full name</label><input id="regName" type="text" autocomplete="name" placeholder="Your full name" maxlength="80" required>
-        <label for="regEmail">Email address</label><input id="regEmail" type="email" autocomplete="email" placeholder="name@example.com" required>
-        <label for="regPassword">Create password</label><div class="pw"><input id="regPassword" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required><button type="button" data-toggle="regPassword">Show</button></div>
-        <button class="submit" id="registerBtn" type="submit" style="margin-top:22px">CREATE ACCOUNT&nbsp; →</button><div id="registerStatus" class="status" aria-live="polite"></div>
-      </form>
-    </section>
-    <div class="security">🔒 Secure account access · Your password is handled by Supabase Authentication</div>
-  </main>
-  <div class="foot">DS FOREVER © 2026 · Official member access</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL="https://gplftdgweysvutrfkpni.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-const $=id=>document.getElementById(id);
-function status(id,msg,type=""){const el=$(id);el.textContent=msg;el.className="status "+type}
-function tab(which){const login=which==="login";$("loginView").classList.toggle("hidden",!login);$("registerView").classList.toggle("hidden",login);$("loginTab").classList.toggle("active",login);$("registerTab").classList.toggle("active",!login)}
-$("loginTab").onclick=()=>tab("login");$("registerTab").onclick=()=>tab("register");
-document.querySelectorAll("[data-toggle]").forEach(b=>b.addEventListener("click",()=>{const f=$(b.dataset.toggle);f.type=f.type==="password"?"text":"password";b.textContent=f.type==="password"?"Show":"Hide"}));
-$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const b=$("loginBtn");b.disabled=true;b.textContent="PLEASE WAIT…";status("loginStatus","Verifying your account…");try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)throw error;status("loginStatus","Login successful. Your account is authenticated.","ok");}catch(err){status("loginStatus",err.message||"Unable to sign in. Please try again.","err")}finally{b.disabled=false;b.textContent="SECURE LOGIN  →"}});
-$("registerForm").addEventListener("submit",async e=>{e.preventDefault();const b=$("registerBtn");b.disabled=true;b.textContent="CREATING ACCOUNT…";status("registerStatus","Creating your account…");try{const {data,error}=await supabaseClient.auth.signUp({email:$("regEmail").value.trim(),password:$("regPassword").value,options:{data:{full_name:$("regName").value.trim()}}});if(error)throw error;status("registerStatus",data.session?"Account created successfully.":"Registration submitted. Please check your email to confirm your account.","ok")}catch(err){status("registerStatus",err.message||"Registration failed. Please try again.","err")}finally{b.disabled=false;b.textContent="CREATE ACCOUNT  →"}});
-$("forgotBtn").addEventListener("click",async()=>{const email=$("loginEmail").value.trim();if(!email){status("loginStatus","Enter your email address first, then tap Forgot password.","err");$("loginEmail").focus();return}status("loginStatus","Sending password reset email…");const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});status("loginStatus",error?error.message:"If this email is registered, a password reset link has been sent.","ok")});
-(async()=>{const {data}=await supabaseClient.auth.getSession();if(data.session)status("loginStatus","You are already signed in.","ok")})();
-</script>
-</body></html>
+:root{--gold:#f7c744;--gold2:#ffdf75;--blue:#22baff;--ink:#04101f;--muted:#b9c9df;--white:#f7f9ff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--white)}
+body{min-height:100vh;display:grid;place-items:center;padding:22px 14px;background:radial-gradient(ellipse at 50% 35%,#12345a 0%,#07172d 42%,#020812 100%);overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;inset:16px;border:1px solid #168de866;transform:skewY(-7deg);pointer-events:none;box-shadow:0 0 24px #168de822,inset 0 0 25px #168de811}
+body:after{inset:0;border:0;background:linear-gradient(135deg,transparent 0 12%,#f6c33a 12.1%,transparent 12.7% 87%,#f6c33a 87.1%,transparent 87.7%);opacity:.8}
+.wrap{width:min(100%,520px);position:relative;padding:26px 22px 22px;border:1px solid #258be8aa;border-radius:28px;background:linear-gradient(155deg,#061b34ee,#020a17f5 70%);box-shadow:0 0 0 3px #071a30,0 0 42px #168de855,inset 0 0 45px #0b4d7a33;overflow:hidden}
+.wrap:before{content:"";position:absolute;inset:9px;border:1px solid #f4c54455;border-radius:21px;pointer-events:none}
+.brand{text-align:center;position:relative;margin:2px 0 20px}.crown{font-size:43px;line-height:1;color:var(--gold2);filter:drop-shadow(0 0 10px #ffc93c66)}
+.monogram{font-size:clamp(58px,15vw,86px);font-weight:1000;letter-spacing:-8px;line-height:.98;background:linear-gradient(110deg,#ffcf48 10%,#fff8d8 47%,#8fcfff 75%,#e8b63c);color:transparent;background-clip:text;-webkit-background-clip:text;text-shadow:0 5px 24px #f3c34b22}
+.brand h1{font-size:clamp(27px,7vw,39px);font-style:italic;letter-spacing:1px;margin:9px 0 7px;color:var(--gold2);text-shadow:0 0 18px #f5c34255}.balls{font-size:24px;letter-spacing:14px;margin:8px 0 14px}.welcome{font-size:clamp(30px,8vw,43px);font-weight:950;letter-spacing:.5px;margin:12px 0 2px}.welcome span{color:var(--gold)}.sub{font-size:17px;color:#e2eaf6;margin:0}.rule{height:3px;margin:19px 8px 24px;background:linear-gradient(90deg,transparent,var(--gold),#fff5b4,var(--blue),transparent);box-shadow:0 0 15px #f7c74488}
+form{position:relative;padding:0 8px}.field{margin:18px 0}.field label{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:750;margin:0 0 9px}.field label .ico{font-size:22px;color:#f4f7ff}.input-wrap{position:relative}.input-wrap input{width:100%;height:62px;border:2px solid #479ee5;border-radius:23px;background:linear-gradient(100deg,#18314c,#10253d);box-shadow:0 0 15px #1e9bff30,inset 0 0 15px #06132688;color:white;padding:0 55px 0 58px;font-size:17px;outline:none}.input-wrap input:focus{border-color:#55d0ff;box-shadow:0 0 0 3px #31baff25,0 0 22px #22baff55}.input-wrap input::placeholder{color:#bdcbe0}.inside{position:absolute;left:17px;top:50%;transform:translateY(-50%);font-size:24px;color:#c8d8ed;pointer-events:none}.toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#dbeaff;font-size:22px;cursor:pointer;padding:6px}.forgot{display:flex;justify-content:flex-end;margin:8px 4px 20px}.forgot button{border:0;background:none;color:var(--gold);font-size:16px;font-weight:800;cursor:pointer}.submit{width:100%;height:72px;border:2px solid #ffe68d;border-radius:28px;background:linear-gradient(180deg,#fff1a9 0%,#ffd34d 35%,#d99109 100%);box-shadow:0 0 0 3px #b77c1b55,0 0 25px #ffc52f77;color:#090d16;font-size:26px;font-weight:950;letter-spacing:1px;cursor:pointer}.submit:disabled{opacity:.65;cursor:wait}.create{text-align:center;margin:20px 0 8px;font-size:18px;font-weight:750}.create button{border:0;background:none;color:var(--gold);font-size:18px;font-weight:900;cursor:pointer}.security{text-align:center;color:#e1e9f5;font-size:14px;margin:18px 0 0}.security b{color:var(--gold);padding:0 7px}.status{min-height:20px;text-align:center;font-size:13px;margin-top:12px;color:#d7e7ff;overflow-wrap:anywhere}.status.ok{color:#8df0ba}.status.err{color:#ff9a9a}.register-fields{display:none}.registering .register-fields{display:block}.registering .login-only{display:none}.foot{text-align:center;color:#8ea7c5;font-size:11px;margin:18px 0 0}.hidden{display:none!important}
+@media(max-width:390px){.wrap{padding:22px 15px}.input-wrap input{height:56px;border-radius:18px}.submit{height:64px}.field label{font-size:16px}.sub{font-size:15px}}
+</style></head>
+<body><main class="wrap" id="card">
+<header class="brand"><div class="crown">♛</div><div class="monogram">DS</div><h1>DS FOREVER</h1><div class="balls">🏏　⚽　🎾</div><div class="welcome" id="welcome">WELCOME <span>BACK</span></div><p class="sub" id="subtitle">Login to your DS FOREVER account</p></header>
+<div class="rule"></div>
+<form id="loginForm" novalidate>
+<div class="register-fields"><div class="field"><label for="fullName"><span class="ico">👤</span> Full Name</label><div class="input-wrap"><span class="inside">👤</span><input id="fullName" type="text" placeholder="Enter your full name" autocomplete="name" maxlength="80"></div></div></div>
+<div class="field"><label for="email"><span class="ico">👤</span> Email Address</label><div class="input-wrap"><span class="inside">✉</span><input id="email" type="email" placeholder="Enter your email" autocomplete="username" required></div></div>
+<div class="field"><label for="password"><span class="ico">🔒</span> Password</label><div class="input-wrap"><span class="inside">🔒</span><input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" minlength="8" required><button class="toggle" id="togglePassword" type="button" aria-label="Show password">◉</button></div></div>
+<div class="forgot login-only"><button id="forgot" type="button">Forgot Password?</button></div>
+<button class="submit" id="submit" type="submit">⇥ &nbsp; LOGIN</button>
+<div class="create"><span id="createText">New User?</span> <button id="switchMode" type="button">Create Account</button></div>
+<div class="status" id="status" aria-live="polite"></div>
+</form>
+<div class="security">🛡️<br>Secure Login <b>•</b> Free Sports Updates <b>•</b> Sports Center</div><footer class="foot">DS FOREVER © 2026</footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const SUPABASE_URL="https://gplftdgweysvutrfkpni.supabase.co";const SUPABASE_PUBLISHABLE_KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);const $=id=>document.getElementById(id);let registering=false;
+function msg(t,c=""){$("status").textContent=t;$('status').className="status "+c}
+$('togglePassword').onclick=()=>{const p=$('password');p.type=p.type==='password'?'text':'password';$('togglePassword').textContent=p.type==='password'?'◉':'◎'};
+$('switchMode').onclick=()=>{registering=!registering;$('card').classList.toggle('registering',registering);$('welcome').innerHTML=registering?'CREATE <span>ACCOUNT</span>':'WELCOME <span>BACK</span>';$('subtitle').textContent=registering?'Create your DS FOREVER account':'Login to your DS FOREVER account';$('createText').textContent=registering?'Already registered?':'New User?';$('switchMode').textContent=registering?'Login':'Create Account';$('submit').textContent=registering?'✦  CREATE ACCOUNT':'⇥  LOGIN';$('fullName').required=registering;msg('')};
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('submit');btn.disabled=true;msg(registering?'Creating your account…':'Checking your account…');try{let result;if(registering){result=await client.auth.signUp({email:$('email').value.trim(),password:$('password').value,options:{data:{full_name:$('fullName').value.trim()}}});}else{result=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});}if(result.error)throw result.error;msg(registering?(result.data.session?'Account created.':'Registration submitted. Check your email to confirm your account.'):'Login successful. Your account is authenticated.','ok')}catch(err){msg(err.message||'Please try again.','err')}finally{btn.disabled=false;btn.textContent=registering?'✦  CREATE ACCOUNT':'⇥  LOGIN'}});
+$('forgot').onclick=async()=>{const email=$('email').value.trim();if(!email){msg('Please enter your email address first.','err');$('email').focus();return}msg('Sending password reset email…');const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});msg(error?error.message:'If this email is registered, a reset link has been sent.','ok')};
+</script></body></html>
