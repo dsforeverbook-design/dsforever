@@ -1,70 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#080b12">
-<title>DS FOREVER | Cricket Hub</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b14">
+<title>DS FOREVER | Secure Login</title>
 <style>
-:root{--bg:#080b12;--panel:#141c2a;--line:#2c3a50;--gold:#efbd55;--muted:#aab5c7;--green:#57d49b;--red:#ff7373}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f6f7fb;font:16px Arial,sans-serif;line-height:1.5}
-header{background:#121a28;border-bottom:2px solid var(--gold);padding:20px 16px;text-align:center}.logo{font-size:30px;font-weight:800;color:var(--gold);letter-spacing:1px}.sub{color:var(--muted);margin-top:4px}
-nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:14px;background:#0d131e;position:sticky;top:0;z-index:2}
-button{cursor:pointer;border-radius:10px;padding:11px 15px;border:1px solid var(--gold);background:#202d42;color:#fff;font-size:15px}button.primary{background:var(--gold);color:#17130b;font-weight:bold}button:disabled{opacity:.55;cursor:not-allowed}button:hover{filter:brightness(1.12)}
-main{max-width:900px;margin:auto;padding:20px 14px}.page{display:none}.page.active{display:block}.hero{text-align:center;padding:42px 12px 30px}.hero h1{font-size:clamp(30px,7vw,48px);color:var(--gold);margin:0 0 12px}.hero p{color:var(--muted);font-size:19px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:12px 0}.card h2,.card h3{color:var(--gold);margin-top:0}.muted{color:var(--muted)}
-.notice{background:#2b2415;border:1px solid #6c5424;color:#f6dfaa;border-radius:12px;padding:12px;margin:16px 0}.form{max-width:480px;margin:18px auto}
-label{display:block;font-size:14px;color:var(--muted);margin:12px 0 5px}input{display:block;width:100%;padding:13px;border-radius:9px;background:#0b111c;border:1px solid var(--line);color:#fff;font-size:16px}
-.form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.status{font-size:14px;margin-top:12px;min-height:22px}.status.ok{color:var(--green)}.status.err{color:var(--red)}
-.profile-row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}footer{text-align:center;color:#78859a;padding:25px;border-top:1px solid var(--line);margin-top:25px}
-@media(max-width:520px){nav button{padding:9px 10px;font-size:13px}.hero{padding:28px 8px}}
-</style></head>
+:root{--bg:#080b14;--panel:#111827;--line:#29364b;--gold:#e9bd63;--blue:#38bdf8;--muted:#a5b2c7;--white:#f7f8fc}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#080b14 56%);color:var(--white);font:15px Inter,system-ui,Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:22px}
+.wrap{width:100%;max-width:460px}.brand{text-align:center;margin-bottom:22px}.emblem{width:64px;height:64px;border:1px solid #6d572e;border-radius:20px;margin:0 auto 13px;display:grid;place-items:center;background:linear-gradient(145deg,#26344b,#101725);box-shadow:0 10px 35px #0008;color:var(--gold);font-size:29px}.brand h1{font-size:27px;letter-spacing:3px;margin:0;color:var(--gold)}.brand p{color:var(--muted);margin:7px 0 0;letter-spacing:2px;font-size:11px}
+.panel{background:linear-gradient(155deg,#151f30,#0e1521);border:1px solid #34435b;border-radius:24px;padding:28px;box-shadow:0 24px 70px #0008;position:relative;overflow:hidden}.panel:before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#080e18;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:24px}.tabs button{border:0;background:transparent;color:var(--muted);padding:11px;border-radius:9px;font-weight:700;cursor:pointer}.tabs button.active{background:linear-gradient(100deg,#d7a84e,#f2d48d);color:#17130b}
+h2{font-size:24px;margin:0 0 5px}.hint{color:var(--muted);margin:0 0 22px;font-size:13px}
+label{display:block;color:#d5dceb;font-size:13px;margin:15px 0 7px}input{width:100%;padding:14px 15px;border-radius:11px;border:1px solid #34435b;background:#080e18;color:#fff;font-size:15px;outline:none}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #38bdf822}input::placeholder{color:#748198}
+.pw{position:relative}.pw button{position:absolute;right:8px;top:7px;border:0;background:transparent;color:var(--muted);padding:7px;cursor:pointer}
+.meta{display:flex;justify-content:flex-end;margin:12px 0 18px}.textbtn{border:0;background:none;color:var(--blue);padding:0;cursor:pointer;font-size:13px}
+.submit{width:100%;border:0;border-radius:12px;padding:15px;background:linear-gradient(100deg,#d6a44b,#f4d58d);color:#15120b;font-size:16px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 8px 22px #d6a44b25}.submit:disabled{opacity:.6;cursor:wait}
+.status{min-height:22px;margin-top:13px;font-size:13px;color:var(--muted);overflow-wrap:anywhere}.status.ok{color:#63e6a6}.status.err{color:#ff8585}
+.foot{text-align:center;color:#78869d;font-size:12px;margin-top:18px}.security{text-align:center;color:#8f9db2;font-size:11px;margin-top:17px}
+.hidden{display:none!important}
+@media(max-width:420px){body{padding:15px}.panel{padding:22px}.brand h1{font-size:24px}}
+</style>
+</head>
 <body>
-<header><div class="logo">🏏 DS FOREVER</div><div class="sub">CRICKET INFORMATION • MATCH CENTER • SCORECARDS</div></header>
-<nav>
-<button onclick="showPage('home')">Home</button><button onclick="showPage('matches')">Matches</button><button onclick="showPage('scores')">Scoreboard</button>
-<button id="registerNav" onclick="showPage('register')">Register</button><button id="loginNav" onclick="showPage('login')">Login</button><button id="profileNav" onclick="showPage('profile')" style="display:none">My Profile</button>
-</nav>
-<main>
-<section id="home" class="page active"><div class="hero"><h1>WELCOME TO DS FOREVER</h1><p>Your cricket information destination.<br>Explore fixtures, match details and scorecards.</p><button class="primary" onclick="showPage('matches')">Explore Matches</button></div>
-<div class="cards"><div class="card"><h2>🏏 Match Center</h2><p class="muted">Browse scheduled cricket fixtures and match details.</p></div><div class="card"><h2>📊 Scorecards</h2><p class="muted">View verified score information when published by the site administrator.</p></div><div class="card"><h2>👤 User Account</h2><p class="muted">Create your account and securely sign in to DS FOREVER.</p></div></div>
-<div class="notice">User accounts are connected to Supabase Authentication. Match and scorecard data can be added next.</div></section>
-<section id="matches" class="page"><h2>Match Center</h2><div class="card"><h3>Upcoming Matches</h3><p class="muted">No matches have been published yet. Fixtures will appear here when added by the site administrator.</p></div></section>
-<section id="scores" class="page"><h2>Scoreboard</h2><div class="card"><h3>Match Scorecards</h3><p class="muted">No verified scorecards are available yet. Published scorecards will appear here.</p></div></section>
-<section id="register" class="page"><h2>Create Your Account</h2><div class="card form"><form id="registerForm">
-<label for="regName">Full name</label><input id="regName" type="text" autocomplete="name" placeholder="Enter your full name" required maxlength="80">
-<label for="regEmail">Email address</label><input id="regEmail" type="email" autocomplete="email" placeholder="Enter your email" required>
-<label for="regPassword">Password (minimum 6 characters)</label><input id="regPassword" type="password" autocomplete="new-password" placeholder="Create a password" minlength="6" required>
-<div class="form-actions"><button class="primary" id="registerBtn" type="submit">Register</button><button type="button" onclick="showPage('login')">Already have an account? Login</button></div><div id="registerStatus" class="status" aria-live="polite"></div>
-</form></div></section>
-<section id="login" class="page"><h2>User Login</h2><div class="card form"><form id="loginForm">
-<label for="loginEmail">Email address</label><input id="loginEmail" type="email" autocomplete="email" placeholder="Enter your email" required>
-<label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required>
-<div class="form-actions"><button class="primary" id="loginBtn" type="submit">Login</button><button type="button" onclick="showPage('register')">Create account</button></div><div id="loginStatus" class="status" aria-live="polite"></div>
-</form></div></section>
-<section id="profile" class="page"><h2>My Profile</h2><div class="card"><div class="profile-row"><div><h3 id="profileName">Your account</h3><p id="profileEmail" class="muted"></p></div><button id="logoutBtn">Logout</button></div><p id="profileStatus" class="status" aria-live="polite"></p></div></section>
-</main><footer>DS FOREVER © 2026 · Cricket information and scorecard preview</footer>
+<div class="wrap">
+  <div class="brand"><div class="emblem">🏏</div><h1>DS FOREVER</h1><p>CRICKET • COMMUNITY • MATCH CENTER</p></div>
+  <main class="panel">
+    <div class="tabs"><button id="loginTab" class="active" type="button">USER LOGIN</button><button id="registerTab" type="button">CREATE ACCOUNT</button></div>
+    <section id="loginView">
+      <h2>Welcome back</h2><p class="hint">Sign in to continue to your DS FOREVER account.</p>
+      <form id="loginForm">
+        <label for="loginEmail">Email address</label><input id="loginEmail" type="email" autocomplete="username" placeholder="name@example.com" required>
+        <label for="loginPassword">Password</label><div class="pw"><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required><button type="button" data-toggle="loginPassword">Show</button></div>
+        <div class="meta"><button class="textbtn" id="forgotBtn" type="button">Forgot password?</button></div>
+        <button class="submit" id="loginBtn" type="submit">SECURE LOGIN&nbsp; →</button><div id="loginStatus" class="status" aria-live="polite"></div>
+      </form>
+    </section>
+    <section id="registerView" class="hidden">
+      <h2>Create your account</h2><p class="hint">Register with your email to join DS FOREVER.</p>
+      <form id="registerForm">
+        <label for="regName">Full name</label><input id="regName" type="text" autocomplete="name" placeholder="Your full name" maxlength="80" required>
+        <label for="regEmail">Email address</label><input id="regEmail" type="email" autocomplete="email" placeholder="name@example.com" required>
+        <label for="regPassword">Create password</label><div class="pw"><input id="regPassword" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required><button type="button" data-toggle="regPassword">Show</button></div>
+        <button class="submit" id="registerBtn" type="submit" style="margin-top:22px">CREATE ACCOUNT&nbsp; →</button><div id="registerStatus" class="status" aria-live="polite"></div>
+      </form>
+    </section>
+    <div class="security">🔒 Secure account access · Your password is handled by Supabase Authentication</div>
+  </main>
+  <div class="foot">DS FOREVER © 2026 · Official member access</div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL="https://gplftdgweysvutrfkpni.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-function showPage(id){document.querySelectorAll(".page").forEach(s=>s.classList.remove("active"));const p=document.getElementById(id);if(p)p.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});}
-function setStatus(id,msg,type){const e=document.getElementById(id);e.textContent=msg||"";e.className="status"+(type?" "+type:"");}
-function updateNavigation(user){document.getElementById("registerNav").style.display=user?"none":"";document.getElementById("loginNav").style.display=user?"none":"";document.getElementById("profileNav").style.display=user?"":"none";if(user){document.getElementById("profileName").textContent=user.user_metadata?.full_name||"DS FOREVER Member";document.getElementById("profileEmail").textContent=user.email||"";}}
-document.getElementById("registerForm").addEventListener("submit",async e=>{
-e.preventDefault();const b=document.getElementById("registerBtn"),fullName=document.getElementById("regName").value.trim(),email=document.getElementById("regEmail").value.trim(),password=document.getElementById("regPassword").value;
-b.disabled=true;b.textContent="Please wait...";setStatus("registerStatus","Creating your account...");
-const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{full_name:fullName}}});
-b.disabled=false;b.textContent="Register";if(error){setStatus("registerStatus",error.message,"err");return;}
-if(data.session){updateNavigation(data.user);setStatus("profileStatus","Registration successful. Your account is ready.","ok");showPage("profile");}
-else{setStatus("registerStatus","Registration submitted. Check your email and confirm your account, then log in.","ok");}
-});
-document.getElementById("loginForm").addEventListener("submit",async e=>{
-e.preventDefault();const b=document.getElementById("loginBtn"),email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value;
-b.disabled=true;b.textContent="Signing in...";setStatus("loginStatus","Checking your account...");
-const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});b.disabled=false;b.textContent="Login";
-if(error){setStatus("loginStatus",error.message,"err");return;}updateNavigation(data.user);setStatus("profileStatus","You are logged in successfully.","ok");showPage("profile");
-});
-document.getElementById("logoutBtn").addEventListener("click",async()=>{const {error}=await supabaseClient.auth.signOut();if(error){setStatus("profileStatus",error.message,"err");return;}updateNavigation(null);showPage("home");});
-supabaseClient.auth.onAuthStateChange((_event,session)=>updateNavigation(session?.user||null));
-(async()=>{const {data,error}=await supabaseClient.auth.getSession();if(!error)updateNavigation(data.session?.user||null);})();
-</script></body></html>
+const $=id=>document.getElementById(id);
+function status(id,msg,type=""){const el=$(id);el.textContent=msg;el.className="status "+type}
+function tab(which){const login=which==="login";$("loginView").classList.toggle("hidden",!login);$("registerView").classList.toggle("hidden",login);$("loginTab").classList.toggle("active",login);$("registerTab").classList.toggle("active",!login)}
+$("loginTab").onclick=()=>tab("login");$("registerTab").onclick=()=>tab("register");
+document.querySelectorAll("[data-toggle]").forEach(b=>b.addEventListener("click",()=>{const f=$(b.dataset.toggle);f.type=f.type==="password"?"text":"password";b.textContent=f.type==="password"?"Show":"Hide"}));
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const b=$("loginBtn");b.disabled=true;b.textContent="PLEASE WAIT…";status("loginStatus","Verifying your account…");try{const {data,error}=await supabaseClient.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)throw error;status("loginStatus","Login successful. Your account is authenticated.","ok");}catch(err){status("loginStatus",err.message||"Unable to sign in. Please try again.","err")}finally{b.disabled=false;b.textContent="SECURE LOGIN  →"}});
+$("registerForm").addEventListener("submit",async e=>{e.preventDefault();const b=$("registerBtn");b.disabled=true;b.textContent="CREATING ACCOUNT…";status("registerStatus","Creating your account…");try{const {data,error}=await supabaseClient.auth.signUp({email:$("regEmail").value.trim(),password:$("regPassword").value,options:{data:{full_name:$("regName").value.trim()}}});if(error)throw error;status("registerStatus",data.session?"Account created successfully.":"Registration submitted. Please check your email to confirm your account.","ok")}catch(err){status("registerStatus",err.message||"Registration failed. Please try again.","err")}finally{b.disabled=false;b.textContent="CREATE ACCOUNT  →"}});
+$("forgotBtn").addEventListener("click",async()=>{const email=$("loginEmail").value.trim();if(!email){status("loginStatus","Enter your email address first, then tap Forgot password.","err");$("loginEmail").focus();return}status("loginStatus","Sending password reset email…");const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});status("loginStatus",error?error.message:"If this email is registered, a password reset link has been sent.","ok")});
+(async()=>{const {data}=await supabaseClient.auth.getSession();if(data.session)status("loginStatus","You are already signed in.","ok")})();
+</script>
+</body></html>
