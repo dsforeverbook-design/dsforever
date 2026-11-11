@@ -1,41 +1,133 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#061225">
-<title>DS FOREVER | Welcome Back</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071426">
+<title>DS FOREVER | Sports Center</title>
 <style>
-:root{--gold:#f7c744;--gold2:#ffdf75;--blue:#22baff;--ink:#04101f;--muted:#b9c9df;--white:#f7f9ff}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--white)}
-body{min-height:100vh;display:grid;place-items:center;padding:22px 14px;background:radial-gradient(ellipse at 50% 35%,#12345a 0%,#07172d 42%,#020812 100%);overflow-x:hidden}
-body:before,body:after{content:"";position:fixed;inset:16px;border:1px solid #168de866;transform:skewY(-7deg);pointer-events:none;box-shadow:0 0 24px #168de822,inset 0 0 25px #168de811}
-body:after{inset:0;border:0;background:linear-gradient(135deg,transparent 0 12%,#f6c33a 12.1%,transparent 12.7% 87%,#f6c33a 87.1%,transparent 87.7%);opacity:.8}
-.wrap{width:min(100%,520px);position:relative;padding:26px 22px 22px;border:1px solid #258be8aa;border-radius:28px;background:linear-gradient(155deg,#061b34ee,#020a17f5 70%);box-shadow:0 0 0 3px #071a30,0 0 42px #168de855,inset 0 0 45px #0b4d7a33;overflow:hidden}
-.wrap:before{content:"";position:absolute;inset:9px;border:1px solid #f4c54455;border-radius:21px;pointer-events:none}
-.brand{text-align:center;position:relative;margin:2px 0 20px}.crown{font-size:43px;line-height:1;color:var(--gold2);filter:drop-shadow(0 0 10px #ffc93c66)}
-.monogram{font-size:clamp(58px,15vw,86px);font-weight:1000;letter-spacing:-8px;line-height:.98;background:linear-gradient(110deg,#ffcf48 10%,#fff8d8 47%,#8fcfff 75%,#e8b63c);color:transparent;background-clip:text;-webkit-background-clip:text;text-shadow:0 5px 24px #f3c34b22}
-.brand h1{font-size:clamp(27px,7vw,39px);font-style:italic;letter-spacing:1px;margin:9px 0 7px;color:var(--gold2);text-shadow:0 0 18px #f5c34255}.balls{font-size:24px;letter-spacing:14px;margin:8px 0 14px}.welcome{font-size:clamp(30px,8vw,43px);font-weight:950;letter-spacing:.5px;margin:12px 0 2px}.welcome span{color:var(--gold)}.sub{font-size:17px;color:#e2eaf6;margin:0}.rule{height:3px;margin:19px 8px 24px;background:linear-gradient(90deg,transparent,var(--gold),#fff5b4,var(--blue),transparent);box-shadow:0 0 15px #f7c74488}
-form{position:relative;padding:0 8px}.field{margin:18px 0}.field label{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:750;margin:0 0 9px}.field label .ico{font-size:22px;color:#f4f7ff}.input-wrap{position:relative}.input-wrap input{width:100%;height:62px;border:2px solid #479ee5;border-radius:23px;background:linear-gradient(100deg,#18314c,#10253d);box-shadow:0 0 15px #1e9bff30,inset 0 0 15px #06132688;color:white;padding:0 55px 0 58px;font-size:17px;outline:none}.input-wrap input:focus{border-color:#55d0ff;box-shadow:0 0 0 3px #31baff25,0 0 22px #22baff55}.input-wrap input::placeholder{color:#bdcbe0}.inside{position:absolute;left:17px;top:50%;transform:translateY(-50%);font-size:24px;color:#c8d8ed;pointer-events:none}.toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#dbeaff;font-size:22px;cursor:pointer;padding:6px}.forgot{display:flex;justify-content:flex-end;margin:8px 4px 20px}.forgot button{border:0;background:none;color:var(--gold);font-size:16px;font-weight:800;cursor:pointer}.submit{width:100%;height:72px;border:2px solid #ffe68d;border-radius:28px;background:linear-gradient(180deg,#fff1a9 0%,#ffd34d 35%,#d99109 100%);box-shadow:0 0 0 3px #b77c1b55,0 0 25px #ffc52f77;color:#090d16;font-size:26px;font-weight:950;letter-spacing:1px;cursor:pointer}.submit:disabled{opacity:.65;cursor:wait}.create{text-align:center;margin:20px 0 8px;font-size:18px;font-weight:750}.create button{border:0;background:none;color:var(--gold);font-size:18px;font-weight:900;cursor:pointer}.security{text-align:center;color:#e1e9f5;font-size:14px;margin:18px 0 0}.security b{color:var(--gold);padding:0 7px}.status{min-height:20px;text-align:center;font-size:13px;margin-top:12px;color:#d7e7ff;overflow-wrap:anywhere}.status.ok{color:#8df0ba}.status.err{color:#ff9a9a}.register-fields{display:none}.registering .register-fields{display:block}.registering .login-only{display:none}.foot{text-align:center;color:#8ea7c5;font-size:11px;margin:18px 0 0}.hidden{display:none!important}
-@media(max-width:390px){.wrap{padding:22px 15px}.input-wrap input{height:56px;border-radius:18px}.submit{height:64px}.field label{font-size:16px}.sub{font-size:15px}}
-</style></head>
-<body><main class="wrap" id="card">
-<header class="brand"><div class="crown">♛</div><div class="monogram">DS</div><h1>DS FOREVER</h1><div class="balls">🏏　⚽　🎾</div><div class="welcome" id="welcome">WELCOME <span>BACK</span></div><p class="sub" id="subtitle">Login to your DS FOREVER account</p></header>
-<div class="rule"></div>
-<form id="loginForm" novalidate>
-<div class="register-fields"><div class="field"><label for="fullName"><span class="ico">👤</span> Full Name</label><div class="input-wrap"><span class="inside">👤</span><input id="fullName" type="text" placeholder="Enter your full name" autocomplete="name" maxlength="80"></div></div></div>
-<div class="field"><label for="email"><span class="ico">🆔</span> User ID</label><div class="input-wrap"><span class="inside">🆔</span><input id="email" type="text" placeholder="Enter your User ID" autocomplete="username" required></div></div>
-<div class="field"><label for="password"><span class="ico">🔒</span> Password</label><div class="input-wrap"><span class="inside">🔒</span><input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" minlength="8" required><button class="toggle" id="togglePassword" type="button" aria-label="Show password">◉</button></div></div>
-<div class="forgot login-only"><button id="forgot" type="button">Forgot Password?</button></div>
-<button class="submit" id="submit" type="submit">⇥ &nbsp; LOGIN</button>
-<div class="create"><span id="createText">New User?</span> <button id="switchMode" type="button">Create Account</button></div>
-<div class="status" id="status" aria-live="polite"></div>
-</form>
-<div class="security">🛡️<br>Secure Login <b>•</b> Free Sports Updates <b>•</b> Sports Center</div><footer class="foot">DS FOREVER © 2026</footer>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const SUPABASE_URL="https://gplftdgweysvutrfkpni.supabase.co";const SUPABASE_PUBLISHABLE_KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);const $=id=>document.getElementById(id);let registering=false;
-function msg(t,c=""){$("status").textContent=t;$('status').className="status "+c}
-$('togglePassword').onclick=()=>{const p=$('password');p.type=p.type==='password'?'text':'password';$('togglePassword').textContent=p.type==='password'?'◉':'◎'};
-$('switchMode').onclick=()=>{registering=!registering;$('card').classList.toggle('registering',registering);$('welcome').innerHTML=registering?'CREATE <span>ACCOUNT</span>':'WELCOME <span>BACK</span>';$('subtitle').textContent=registering?'Create your DS FOREVER account':'Login to your DS FOREVER account';$('createText').textContent=registering?'Already registered?':'New User?';$('switchMode').textContent=registering?'Login':'Create Account';$('submit').textContent=registering?'✦  CREATE ACCOUNT':'⇥  LOGIN';$('fullName').required=registering;msg('')};
-$('loginForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('submit');btn.disabled=true;msg(registering?'Creating account…':'Logging in…');try{const id=$('email').value.trim().toLowerCase();if(!/^[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]$/.test(id))throw new Error('User ID 3-20 characters ka hona chahiye');const email=id+'@dsforever-login.com';const password=$('password').value;let result;if(registering){if(password.length<8)throw new Error('Password minimum 8 characters hona chahiye');result=await client.auth.signUp({email,password,options:{data:{full_name:$('fullName').value.trim(),username:id}}});}else{result=await client.auth.signInWithPassword({email,password});}if(result.error)throw result.error;msg(registering?'Account created successfully!':'Login successful!','ok');}catch(err){msg(err.message,'err');}finally{btn.disabled=false;btn.textContent=registering?'✦ CREATE ACCOUNT':'⇥ LOGIN';}});
-$('forgot').onclick=()=>msg('Password reset ke liye administrator se sampark karein.');
-</script></body></html>
+:root{--bg:#06101f;--panel:#0c1d33;--panel2:#102743;--line:#244363;--gold:#f5c451;--gold2:#ffe49a;--blue:#29a8e8;--muted:#9eb1c8;--white:#f5f8ff;--green:#25c58a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#15375b 0,#071426 48%,#040b15 100%);color:var(--white);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.shell{width:min(100%,520px);margin:auto;min-height:100vh;padding-bottom:82px}
+.top{position:sticky;top:0;z-index:5;background:#071426ed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 16px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#ffe69b,#d99b20);color:#071426;display:grid;place-items:center;font-weight:1000;font-size:19px;box-shadow:0 5px 22px #f5c45135}.brandname{font-weight:950;letter-spacing:1px;font-size:18px}.brandname span{color:var(--gold)}.subbrand{font-size:10px;letter-spacing:2.2px;color:var(--muted);margin-top:1px}.userpill{border:1px solid var(--line);border-radius:20px;padding:8px 11px;color:#dce9f8;font-size:12px;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hero{padding:22px 16px 16px}.eyebrow{color:var(--gold);font-size:11px;letter-spacing:2px;font-weight:800}.hero h1{font-size:27px;line-height:1.12;margin:8px 0 7px}.hero h1 span{color:var(--gold)}.hero p{margin:0;color:var(--muted);font-size:13px}
+.banner{margin:0 16px 18px;border:1px solid #896d32;border-radius:18px;padding:17px;background:linear-gradient(120deg,#173b5e,#10233b 55%,#382d18);position:relative;overflow:hidden}.banner:after{content:"";position:absolute;width:180px;height:180px;border:1px solid #f5c45155;border-radius:50%;right:-65px;top:-70px;box-shadow:0 0 0 18px #f5c4510b,0 0 0 38px #f5c45108}.banner strong{font-size:17px;display:block;max-width:75%}.banner small{color:#d1deec;display:block;margin-top:5px;font-size:12px}.banner .ball{position:absolute;right:20px;bottom:13px;font-size:48px;opacity:.9}
+.section{padding:0 16px;margin:19px 0}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sectionhead h2{font-size:16px;margin:0}.sectionhead a,.linkbtn{color:var(--gold);font-size:12px;background:none;border:0;padding:4px}
+.sports{display:flex;gap:9px;overflow:auto;padding:2px 16px 7px;scrollbar-width:none}.sports::-webkit-scrollbar{display:none}.sport{flex:0 0 82px;border:1px solid var(--line);border-radius:13px;background:#0c1d33;color:#dce9f8;padding:12px 7px;text-align:center;font-size:11px;font-weight:750}.sport .emoji{font-size:22px;display:block;margin-bottom:5px}.sport.active{border-color:var(--gold);background:linear-gradient(145deg,#3b321e,#14263d);color:var(--gold2);box-shadow:0 0 16px #f5c45119}
+.filters{display:flex;gap:8px;overflow:auto;padding:0 16px 5px}.filter{border:1px solid var(--line);border-radius:20px;background:#0b1b2e;color:#c8d7e8;padding:8px 14px;font-size:11px;white-space:nowrap}.filter.active{background:var(--gold);border-color:var(--gold);color:#111a26;font-weight:850}
+.match{background:linear-gradient(135deg,#102641,#0a192b);border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:10px}.matchtop{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px}.live{color:#5ce0a7;font-weight:850;letter-spacing:.8px}.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:13px 0}.team{text-align:center;font-weight:750;font-size:13px}.team .crest{width:34px;height:34px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;background:#173b5d;border:1px solid #37628a;font-size:17px}.vs{font-size:10px;color:var(--gold);font-weight:900}.matchbottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #29445f;padding-top:10px;color:var(--muted);font-size:10px}.tag{border:1px solid #32618a;color:#9dd8ff;padding:4px 8px;border-radius:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{background:linear-gradient(145deg,#132d49,#0b1b2e);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:94px}.tile .big{font-size:23px}.tile strong{display:block;font-size:12px;margin-top:7px}.tile small{color:var(--muted);font-size:10px}
+.news{display:flex;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid #203a55}.news:last-child{border:0}.newsicon{width:42px;height:42px;border-radius:12px;background:#193b5a;display:grid;place-items:center;font-size:21px}.news strong{font-size:12px;display:block}.news small{font-size:10px;color:var(--muted)}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,520px);display:grid;grid-template-columns:repeat(4,1fr);background:#071426f5;backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:9px 7px max(9px,env(safe-area-inset-bottom));z-index:6}.navbtn{background:none;border:0;color:#8fa7c1;font-size:10px;padding:4px}.navbtn span{display:block;font-size:19px;margin-bottom:3px}.navbtn.active{color:var(--gold)}
+.authwrap{min-height:100vh;display:grid;place-items:center;padding:22px 16px}.authcard{width:min(100%,430px);border:1px solid #345779;border-radius:24px;padding:25px 21px;background:linear-gradient(160deg,#102b49,#071426 70%);box-shadow:0 20px 60px #0008}.authbrand{text-align:center;margin-bottom:22px}.authbrand .mark{margin:0 auto 10px;width:58px;height:58px;font-size:24px}.authbrand h1{margin:0;color:var(--gold);font-size:25px;letter-spacing:1px}.authbrand p{color:var(--muted);font-size:12px;margin:6px 0}.authcard label{display:block;font-size:12px;font-weight:750;margin:14px 0 7px}.authcard input{width:100%;padding:14px;border-radius:12px;border:1px solid #38648b;background:#102943;color:white;outline:none}.authcard input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #f5c45120}.primary{width:100%;border:0;border-radius:13px;padding:15px;margin-top:20px;background:linear-gradient(180deg,#ffe58b,#e8a91f);color:#101827;font-weight:950;font-size:16px;box-shadow:0 7px 22px #e8a91f35}.switchline{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}.switchline button{border:0;background:none;color:var(--gold);font-weight:850}.status{font-size:12px;text-align:center;min-height:18px;margin-top:12px;color:#8fe6be}.status.err{color:#ff9292}
+.profilebox{background:#102641;border:1px solid var(--line);border-radius:16px;padding:16px}.profilebox p{color:var(--muted);font-size:12px}.outline{background:transparent;border:1px solid var(--line);color:#e8f1fc;border-radius:10px;padding:10px 13px}
+@media(min-width:520px){.shell{border-left:1px solid #1c3854;border-right:1px solid #1c3854}.hero h1{font-size:32px}}
+</style>
+</head>
+<body>
+<div id="authView" class="authwrap">
+  <div class="authcard">
+    <div class="authbrand"><div class="mark">DS</div><h1>DS FOREVER</h1><p>SPORTS CENTER • YOUR GAME, YOUR PASSION</p></div>
+    <form id="authForm">
+      <div id="nameField" class="hidden"><label for="fullName">Full Name</label><input id="fullName" autocomplete="name" placeholder="Enter your full name"></div>
+      <label for="userId">User ID</label><input id="userId" autocomplete="username" placeholder="Enter your User ID" required>
+      <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" minlength="8" required>
+      <button id="submitBtn" class="primary" type="submit">LOGIN</button>
+    </form>
+    <div class="switchline"><span id="switchText">New user?</span> <button id="switchMode" type="button">Create Account</button></div>
+    <div id="authStatus" class="status" role="status"></div>
+  </div>
+</div>
+<div id="appView" class="shell hidden">
+  <header class="top"><div class="toprow"><div class="brand"><div class="mark">DS</div><div><div class="brandname">DS <span>FOREVER</span></div><div class="subbrand">SPORTS CENTER</div></div></div><div class="userpill" id="userLabel">PLAYER</div></div></header>
+  <main id="homePage">
+    <section class="hero"><div class="eyebrow">WELCOME TO THE ARENA</div><h1>Feel the game.<br><span>Live the moment.</span></h1><p>Your sports hub for fixtures, scores and updates.</p></section>
+    <div class="banner"><strong>THE GAME NEVER STOPS</strong><small>Follow your favourite sports in one place.</small><div class="ball">🏆</div></div>
+    <div class="section"><div class="sectionhead"><h2>Explore Sports</h2><span class="eyebrow">01 / SPORTS</span></div></div>
+    <div class="sports" id="sportsList">
+      <button class="sport active" data-sport="All"><span class="emoji">🏆</span>All Sports</button>
+      <button class="sport" data-sport="Cricket"><span class="emoji">🏏</span>Cricket</button>
+      <button class="sport" data-sport="Football"><span class="emoji">⚽</span>Football</button>
+      <button class="sport" data-sport="Tennis"><span class="emoji">🎾</span>Tennis</button>
+      <button class="sport" data-sport="Basketball"><span class="emoji">🏀</span>Basketball</button>
+      <button class="sport" data-sport="Hockey"><span class="emoji">🏑</span>Hockey</button>
+    </div>
+    <section class="section"><div class="sectionhead"><h2>Match Center</h2><span class="eyebrow">02 / FIXTURES</span></div></section>
+    <div class="filters" id="matchFilters"><button class="filter active" data-filter="All">All Matches</button><button class="filter" data-filter="Live">Live</button><button class="filter" data-filter="Upcoming">Upcoming</button><button class="filter" data-filter="Completed">Completed</button></div>
+    <section class="section" id="matchList"></section>
+    <section class="section"><div class="sectionhead"><h2>Quick Access</h2><span class="eyebrow">03 / HUB</span></div><div class="grid2">
+      <div class="tile"><div class="big">📅</div><strong>Fixtures & Schedule</strong><small>Browse match fixtures</small></div>
+      <div class="tile"><div class="big">📊</div><strong>Results Center</strong><small>Check match results</small></div>
+      <div class="tile"><div class="big">📰</div><strong>Sports Updates</strong><small>Latest sports headlines</small></div>
+      <div class="tile"><div class="big">⭐</div><strong>Favourite Teams</strong><small>Your teams in one place</small></div>
+    </div></section>
+    <section class="section"><div class="sectionhead"><h2>Latest Updates</h2><span class="eyebrow">04 / NEWS</span></div>
+      <div class="news"><div class="newsicon">🏏</div><div><strong>Cricket match centre</strong><small>Fixtures and score updates will appear here.</small></div></div>
+      <div class="news"><div class="newsicon">⚽</div><div><strong>Football match centre</strong><small>Follow upcoming football fixtures.</small></div></div>
+    </section>
+  </main>
+  <main id="sportsPage" class="hidden"><section class="hero"><div class="eyebrow">DISCOVER</div><h1>All <span>Sports</span></h1><p>Choose a sport to view its fixtures.</p></section><div class="sports" id="sportsList2">
+    <button class="sport" data-sport="Cricket"><span class="emoji">🏏</span>Cricket</button><button class="sport" data-sport="Football"><span class="emoji">⚽</span>Football</button><button class="sport" data-sport="Tennis"><span class="emoji">🎾</span>Tennis</button><button class="sport" data-sport="Basketball"><span class="emoji">🏀</span>Basketball</button><button class="sport" data-sport="Hockey"><span class="emoji">🏑</span>Hockey</button>
+  </div><section class="section" id="sportsMatches"></section></main>
+  <main id="updatesPage" class="hidden"><section class="hero"><div class="eyebrow">DS FOREVER</div><h1>Sports <span>Updates</span></h1><p>News and announcements.</p></section><section class="section"><div class="news"><div class="newsicon">📢</div><div><strong>Welcome to DS FOREVER</strong><small>This is your sports dashboard. Live data can be connected later.</small></div></div></section></main>
+  <main id="profilePage" class="hidden"><section class="hero"><div class="eyebrow">PLAYER AREA</div><h1>My <span>Account</span></h1><p>Manage your DS FOREVER account.</p></section><section class="section"><div class="profilebox"><strong id="profileName">Player</strong><p id="profileId"></p><p>Account status: Signed in</p><button class="outline" id="logoutBtn">Log out</button></div></section></main>
+  <nav class="bottom"><button class="navbtn active" data-page="homePage"><span>⌂</span>Home</button><button class="navbtn" data-page="sportsPage"><span>⚽</span>Sports</button><button class="navbtn" data-page="updatesPage"><span>▤</span>Updates</button><button class="navbtn" data-page="profilePage"><span>♙</span>Account</button></nav>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://gplftdgweysvutrfkpni.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const $ = id => document.getElementById(id);
+let registering = false;
+let selectedSport = "All";
+let selectedFilter = "All";
+const fixtures = [
+ {sport:"Cricket",status:"Upcoming",a:"India",b:"Australia",ea:"🇮🇳",eb:"🇦🇺",time:"Fixture sample • schedule to be connected"},
+ {sport:"Football",status:"Upcoming",a:"Real Madrid",b:"Barcelona",ea:"⚪",eb:"🔴",time:"Fixture sample • schedule to be connected"},
+ {sport:"Tennis",status:"Upcoming",a:"Player A",b:"Player B",ea:"🎾",eb:"🎾",time:"Fixture sample • schedule to be connected"},
+ {sport:"Basketball",status:"Upcoming",a:"Lakers",b:"Warriors",ea:"🟡",eb:"🔵",time:"Fixture sample • schedule to be connected"},
+ {sport:"Hockey",status:"Upcoming",a:"India",b:"Netherlands",ea:"🇮🇳",eb:"🇳🇱",time:"Fixture sample • schedule to be connected"}
+];
+function showStatus(message,isError=false){$("authStatus").textContent=message;$("authStatus").classList.toggle("err",isError)}
+function setMode(value){registering=value;$("nameField").classList.toggle("hidden",!registering);$("submitBtn").textContent=registering?"CREATE ACCOUNT":"LOGIN";$("switchText").textContent=registering?"Already registered?":"New user?";$("switchMode").textContent=registering?"Login":"Create Account";$("password").autocomplete=registering?"new-password":"current-password";showStatus("")}
+$("switchMode").addEventListener("click",()=>setMode(!registering));
+function validId(id){return /^[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]$/.test(id)}
+async function enterDashboard(user,id){$("authView").classList.add("hidden");$("appView").classList.remove("hidden");const label=id||user?.user_metadata?.username||"Player";$("userLabel").textContent=label;$("profileName").textContent=user?.user_metadata?.full_name||label;$("profileId").textContent="User ID: "+label;renderMatches();showPage("homePage")}
+$("authForm").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("submitBtn");btn.disabled=true;btn.textContent=registering?"CREATING...":"LOGGING IN...";
+ try{
+  const id=$("userId").value.trim().toLowerCase();const password=$("password").value;
+  if(!validId(id))throw new Error("User ID 3–20 characters ka hona chahiye (letters, numbers, . _ -).");
+  if(password.length<8)throw new Error("Password minimum 8 characters hona chahiye.");
+  const email=id+"@dsforever-login.com";let result;
+  if(registering){
+   const fullName=$("fullName").value.trim();if(!fullName)throw new Error("Please apna full name bhariye.");
+   result=await client.auth.signUp({email,password,options:{data:{full_name:fullName,username:id}}});
+   if(result.error)throw result.error;
+   if(result.data.session){await enterDashboard(result.data.user,id);return;}
+   showStatus("Account created. Email confirmation setting check karein; phir login karein.");
+  }else{
+   result=await client.auth.signInWithPassword({email,password});
+   if(result.error)throw result.error;
+   await enterDashboard(result.data.user,id);return;
+  }
+ }catch(err){showStatus(err.message||"Kuch problem hui. Dobara koshish karein.",true)}
+ finally{btn.disabled=false;btn.textContent=registering?"CREATE ACCOUNT":"LOGIN"}
+});
+function renderMatches(){
+ const filtered=fixtures.filter(x=>(selectedSport==="All"||x.sport===selectedSport)&&(selectedFilter==="All"||x.status===selectedFilter));
+ const html=filtered.length?filtered.map(x=>`<article class="match"><div class="matchtop"><span>${x.sport.toUpperCase()}</span><span class="tag">${x.status}</span></div><div class="teams"><div class="team"><div class="crest">${x.ea}</div>${x.a}</div><div class="vs">VS</div><div class="team"><div class="crest">${x.eb}</div>${x.b}</div></div><div class="matchbottom"><span>${x.time}</span><span>DEMO FIXTURE</span></div></article>`).join(""):`<div class="match">No sample fixtures in this category.</div>`;
+ $("matchList").innerHTML=html;$("sportsMatches").innerHTML=html;
+}
+document.querySelectorAll("[data-sport]").forEach(btn=>btn.addEventListener("click",()=>{selectedSport=btn.dataset.sport;document.querySelectorAll("[data-sport]").forEach(b=>b.classList.toggle("active",b.dataset.sport===selectedSport));renderMatches();showPage("sportsPage")}));
+document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedFilter=btn.dataset.filter;document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b===btn));renderMatches()}));
+function showPage(page){["homePage","sportsPage","updatesPage","profilePage"].forEach(id=>$(id).classList.toggle("hidden",id!==page));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));window.scrollTo(0,0)}
+document.querySelectorAll(".navbtn").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
+$("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();$("appView").classList.add("hidden");$("authView").classList.remove("hidden");$("password").value="";showStatus("You have logged out.")});
+(async()=>{const {data:{session}}=await client.auth.getSession();if(session){const id=session.user.user_metadata?.username||session.user.email?.split("@")[0]||"Player";await enterDashboard(session.user,id)}})();
+</script>
+</body>
+</html>
