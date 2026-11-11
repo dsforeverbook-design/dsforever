@@ -129,5 +129,164 @@ document.querySelectorAll(".navbtn").forEach(btn=>btn.addEventListener("click",(
 $("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();$("appView").classList.add("hidden");$("authView").classList.remove("hidden");$("password").value="";showStatus("You have logged out.")});
 (async()=>{const {data:{session}}=await client.auth.getSession();if(session){const id=session.user.user_metadata?.username||session.user.email?.split("@")[0]||"Player";await enterDashboard(session.user,id)}})();
 </script>
+
+<script>  
+/* DS FOREVER account dropdown - add-on patch */  
+(() => {  
+  const user = document.getElementById("userLabel");  
+  if (!user) return;  
+  
+  const style = document.createElement("style");  
+  style.textContent = `  
+    .ds-user-wrap{position:relative}  
+    .ds-user-menu{position:absolute;right:0;top:calc(100% + 10px);width:min(290px,88vw);max-height:72vh;overflow:auto;background:#0c1d33;border:1px solid #345779;border-radius:16px;padding:9px;box-shadow:0 18px 45px #000b;z-index:30}  
+    .ds-menu-head{padding:10px 11px 12px;border-bottom:1px solid #244363;margin-bottom:5px}  
+    .ds-menu-head strong{display:block;color:#f5f8ff}  
+    .ds-menu-head small{color:#9eb1c8}  
+    .ds-menu-item{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 11px;border:0;border-radius:10px;background:transparent;color:#eaf2ff;font-size:13px}  
+    .ds-menu-item:active,.ds-menu-item:hover{background:#173653}  
+    .ds-menu-item .ico{width:22px;text-align:center;color:#f5c451;font-size:17px}  
+    .ds-menu-item.logout{color:#ff9a9a}  
+    .ds-menu-pop{position:fixed;inset:0;background:#000a;z-index:50;display:grid;place-items:center;padding:18px}  
+    .ds-menu-dialog{width:min(100%,420px);max-height:80vh;overflow:auto;background:#0c1d33;border:1px solid #345779;border-radius:18px;padding:20px;color:#f5f8ff;box-shadow:0 20px 60px #000b}  
+    .ds-menu-dialog h2{margin:0 0 10px;color:#f5c451;font-size:21px}  
+    .ds-menu-dialog p{color:#b8c8da;font-size:13px;line-height:1.55}  
+    .ds-menu-dialog label{display:block;margin:12px 0 6px;font-size:12px}  
+    .ds-menu-dialog input{width:100%;padding:12px;border-radius:10px;border:1px solid #38648b;background:#102943;color:white}  
+    .ds-menu-actions{display:flex;gap:9px;margin-top:17px}  
+    .ds-menu-actions button{flex:1;padding:11px;border-radius:10px;border:1px solid #345779;background:#102743;color:#fff}  
+    .ds-menu-actions .gold{background:linear-gradient(180deg,#ffe58b,#e8a91f);color:#101827;border:0;font-weight:800}  
+  `;  
+  document.head.appendChild(style);  
+  
+  const wrap = document.createElement("div");  
+  wrap.className = "ds-user-wrap";  
+  user.parentNode.insertBefore(wrap, user);  
+  wrap.appendChild(user);  
+  user.style.cursor = "pointer";  
+  user.setAttribute("role", "button");  
+  user.setAttribute("aria-label", "Open user menu");  
+  
+  const menu = document.createElement("div");  
+  menu.className = "ds-user-menu hidden";  
+  menu.innerHTML = `  
+    <div class="ds-menu-head"><strong id="dsMenuName">DS FOREVER MEMBER</strong><small>User Account</small></div>  
+    <button class="ds-menu-item" data-ds="home"><span class="ico">⌂</span>Home</button>  
+    <button class="ds-menu-item" data-ds="bonus"><span class="ico">🎟</span>Bonus Coupon</button>  
+    <button class="ds-menu-item" data-ds="statement"><span class="ico">▤</span>Account Statement</button>  
+    <button class="ds-menu-item" data-ds="history"><span class="ico">◷</span>Bet History</button>  
+    <button class="ds-menu-item" data-ds="unsettled"><span class="ico">◴</span>Unsettled Bets</button>  
+    <button class="ds-menu-item" data-ds="values"><span class="ico">☷</span>Set Button Values</button>  
+    <button class="ds-menu-item" data-ds="password"><span class="ico">🔑</span>Change Password</button>  
+    <button class="ds-menu-item" data-ds="rules"><span class="ico">ⓘ</span>Rules & Information</button>  
+    <button class="ds-menu-item" data-ds="support"><span class="ico">✉</span>Support Center</button>  
+    <button class="ds-menu-item" data-ds="profile"><span class="ico">♙</span>My Profile</button>  
+    <button class="ds-menu-item logout" data-ds="logout"><span class="ico">↪</span>Logout</button>  
+  `;  
+  wrap.appendChild(menu);  
+  
+  const closeMenu = () => menu.classList.add("hidden");  
+  user.addEventListener("click", (e) => {  
+    e.stopPropagation();  
+    menu.classList.toggle("hidden");  
+  });  
+  document.addEventListener("click", (e) => {  
+    if (!wrap.contains(e.target)) closeMenu();  
+  });  
+  
+  const descriptions = {  
+    bonus: ["Bonus Coupon", "Coupon services are not connected yet. No coupon can be issued or redeemed from this dashboard."],  
+    statement: ["Account Statement", "No payment wallet or financial transactions are connected to this sports information dashboard."],  
+    history: ["Bet History", "Betting services are not connected to this dashboard, so no bet records are available here."],  
+    unsettled: ["Unsettled Bets", "No betting or settlement service is connected. This page does not accept or manage wagers."],  
+    values: ["Set Button Values", "Custom betting stake/button values are not enabled. The current dashboard provides sports fixtures and information only."],  
+    rules: ["Rules & Information", "DS FOREVER currently displays sample sports fixtures. Live scores and schedules are not connected yet. No deposits, withdrawals, wagers, or cash balances are processed here."],  
+    support: ["Support Center", "Support contact details have not been configured yet. Please contact the site administrator through your usual channel."]  
+  };  
+  
+  function showDialog(title, body, passwordForm = false) {  
+    const overlay = document.createElement("div");  
+    overlay.className = "ds-menu-pop";  
+    overlay.innerHTML = `<div class="ds-menu-dialog" role="dialog" aria-modal="true">  
+      <h2>${title}</h2>${body}  
+      <div class="ds-menu-actions">  
+        <button type="button" class="ds-close">Close</button>  
+        ${passwordForm ? '<button type="submit" form="dsPasswordForm" class="gold">Update Password</button>' : ""}  
+      </div>  
+    </div>`;  
+    document.body.appendChild(overlay);  
+    overlay.addEventListener("click", e => { if (e.target === overlay || e.target.closest(".ds-close")) overlay.remove(); });  
+    return overlay;  
+  }  
+  
+  menu.addEventListener("click", async (e) => {  
+    const button = e.target.closest("[data-ds]");  
+    if (!button) return;  
+    const action = button.dataset.ds;  
+    closeMenu();  
+  
+    if (action === "home") {  
+      document.querySelector('[data-page="homePage"]')?.click();  
+      return;  
+    }  
+    if (action === "profile") {  
+      document.querySelector('[data-page="profilePage"]')?.click();  
+      return;  
+    }  
+    if (action === "logout") {  
+      document.getElementById("logoutBtn")?.click();  
+      return;  
+    }  
+    if (action === "password") {  
+      const overlay = showDialog("Change Password", `  
+        <form id="dsPasswordForm">  
+          <label for="dsNewPassword">New password (minimum 8 characters)</label>  
+          <input id="dsNewPassword" type="password" minlength="8" autocomplete="new-password" required>  
+          <label for="dsConfirmPassword">Confirm new password</label>  
+          <input id="dsConfirmPassword" type="password" minlength="8" autocomplete="new-password" required>  
+          <p id="dsPasswordStatus"></p>  
+        </form>`, true);  
+      overlay.querySelector("#dsPasswordForm").addEventListener("submit", async (ev) => {  
+        ev.preventDefault();  
+        const a = overlay.querySelector("#dsNewPassword").value;  
+        const b = overlay.querySelector("#dsConfirmPassword").value;  
+        const status = overlay.querySelector("#dsPasswordStatus");  
+        if (a.length < 8 || a !== b) {  
+          status.textContent = a.length < 8 ? "Password must be at least 8 characters." : "Passwords do not match.";  
+          return;  
+        }  
+        const submit = overlay.querySelector('button[type="submit"]');  
+        submit.disabled = true;  
+        submit.textContent = "Updating...";  
+        try {  
+          const { error } = await client.auth.updateUser({ password: a });  
+          if (error) throw error;  
+          status.textContent = "Password successfully updated.";  
+          overlay.querySelector("#dsPasswordForm").reset();  
+        } catch (err) {  
+          status.textContent = err.message || "Password update failed.";  
+        } finally {  
+          submit.disabled = false;  
+          submit.textContent = "Update Password";  
+        }  
+      });  
+      return;  
+    }  
+    if (descriptions[action]) {  
+      const [title, message] = descriptions[action];  
+      showDialog(title, `<p>${message}</p><p style="color:#f5c451;font-size:11px">INFORMATION ONLY • FEATURE NOT CONNECTED</p>`);  
+    }  
+  });  
+  
+  const syncName = () => {  
+    const name = document.getElementById("userLabel")?.textContent?.trim() || "DS FOREVER MEMBER";  
+    const target = document.getElementById("dsMenuName");  
+    if (target) target.textContent = name;  
+  };  
+  syncName();  
+  const label = document.getElementById("userLabel");  
+  if (label) new MutationObserver(syncName).observe(label, { childList: true, characterData: true, subtree: true });  
+})();  
+</script>
 </body>
 </html>
