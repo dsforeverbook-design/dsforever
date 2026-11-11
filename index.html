@@ -24,36 +24,87 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
 .authwrap{min-height:100vh;display:grid;place-items:center;padding:22px 16px}.authcard{width:min(100%,430px);border:1px solid #345779;border-radius:24px;padding:25px 21px;background:linear-gradient(160deg,#102b49,#071426 70%);box-shadow:0 20px 60px #0008}.authbrand{text-align:center;margin-bottom:22px}.authbrand .mark{margin:0 auto 10px;width:58px;height:58px;font-size:24px}.authbrand h1{margin:0;color:var(--gold);font-size:25px;letter-spacing:1px}.authbrand p{color:var(--muted);font-size:12px;margin:6px 0}.authcard label{display:block;font-size:12px;font-weight:750;margin:14px 0 7px}.authcard input{width:100%;padding:14px;border-radius:12px;border:1px solid #38648b;background:#102943;color:white;outline:none}.authcard input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #f5c45120}.primary{width:100%;border:0;border-radius:13px;padding:15px;margin-top:20px;background:linear-gradient(180deg,#ffe58b,#e8a91f);color:#101827;font-weight:950;font-size:16px;box-shadow:0 7px 22px #e8a91f35}.switchline{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}.switchline button{border:0;background:none;color:var(--gold);font-weight:850}.status{font-size:12px;text-align:center;min-height:18px;margin-top:12px;color:#8fe6be}.status.err{color:#ff9292}
 .profilebox{background:#102641;border:1px solid var(--line);border-radius:16px;padding:16px}.profilebox p{color:var(--muted);font-size:12px}.outline{background:transparent;border:1px solid var(--line);color:#e8f1fc;border-radius:10px;padding:10px 13px}
 @media(min-width:520px){.shell{border-left:1px solid #1c3854;border-right:1px solid #1c3854}.hero h1{font-size:32px}}
-  .account-strip{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:9px;
-margin-top:12px
+  
+.account-strip{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:12px;
+  margin:0;
+  padding:0;
+  background:transparent;
+  border:0;
 }
 .account-stat{
-background:linear-gradient(135deg,#132f4c,#0c1d33);
-border:1px solid #315577;
-border-radius:12px;
-padding:9px 12px
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
 }
 .account-stat small{
-display:block;
-color:#9eb1c8;
-font-size:9px;
-letter-spacing:1px
+  display:inline;
+  color:#9eb1c8;
+  font-size:10px;
 }
 .account-stat strong{
-display:block;
-color:#f5c451;
-font-size:19px;
-margin-top:3px
+  display:inline;
+  color:#f5c451;
+  font-size:13px;
+  margin:0;
 }
 .account-stat em{
-display:block;
-color:#8fa7c1;
-font-size:9px;
-font-style:normal
+  display:none;
 }
+
+.shell{
+  position:relative;
+}
+
+.account-strip{
+  position:absolute;
+  top:78px;
+  right:16px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:12px;
+  margin:0;
+  padding:0;
+  background:transparent;
+  border:0;
+  z-index:10;
+}
+
+.account-stat{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
+}
+
+.account-stat small{
+  display:inline;
+  color:#9eb1c8;
+  font-size:9px;
+}
+
+.account-stat strong{
+  display:inline;
+  color:#f5c451;
+  font-size:13px;
+  margin:0;
+}
+
+.account-stat em{
+  display:none;
+}
+  
 </style>
 </head>
 <body>
