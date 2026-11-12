@@ -7,12 +7,13 @@
 <title>DS FOREVER - Users</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{margin:0;background:#080d18;color:white;font-family:Arial;padding:20px}
-.box{max-width:850px;margin:30px auto;background:#101a2b;padding:22px;border:1px solid #354779;border-radius:16px}
+body{margin:0;background:#080d18;color:white;font-family:Arial;padding:15px}
+.box{max-width:1000px;margin:25px auto;background:#101a2b;padding:20px;border:1px solid #354779;border-radius:16px}
 h1{color:#f5c451;text-align:center}
-button{padding:12px;background:#f5c451;border:0;border-radius:8px;font-weight:bold}
-table{width:100%;border-collapse:collapse;margin-top:20px}
+button{padding:12px;background:#f5c451;border:0;border-radius:8px;font-weight:bold;margin:4px;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:20px;min-width:650px}
 th,td{padding:12px;border-bottom:1px solid #354779;text-align:left;overflow-wrap:anywhere}
+th{color:#f5c451}
 .status{color:#78e5b8}
 </style>
 </head>
@@ -20,47 +21,77 @@ th,td{padding:12px;border-bottom:1px solid #354779;text-align:left;overflow-wrap
 <div class="box">
 <h1>DS FOREVER</h1>
 <h2>Users Management</h2>
+
 <p id="status">Loading users...</p>
+
 <button onclick="loadUsers()">Refresh Users</button>
 <button onclick="location.href='admin.html'">Back to Admin</button>
+
 <div style="overflow-x:auto">
 <table>
 <thead>
-<tr><th>User ID</th><th>Name</th><th>Email</th></tr>
+<tr>
+<th>User ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Registered Date</th>
+</tr>
 </thead>
 <tbody id="users"></tbody>
 </table>
 </div>
 </div>
+
 <script>
 const URL="https://gplftdgweysvutrfkpni.supabase.co";
 const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+
 const client=window.supabase.createClient(URL,KEY);
 
 async function loadUsers(){
 const status=document.getElementById("status");
 const tbody=document.getElementById("users");
-status.textContent="Loading...";
+
+status.textContent="Loading users...";
+tbody.innerHTML="";
+
 const {data,error}=await client
 .from("profiles")
-.select("id,full_name,email")
+.select("id,full_name,email,created_at")
 .order("created_at",{ascending:false});
+
 if(error){
-status.textContent=error.message;
+status.textContent="Error: "+error.message;
 return;
 }
-tbody.innerHTML="";
+
+if(!data || data.length===0){
+status.textContent="No users found.";
+return;
+}
+
 data.forEach(user=>{
 const tr=document.createElement("tr");
-[user.id,user.full_name,user.email].forEach(value=>{
+
+[
+user.id,
+user.full_name,
+user.email,
+user.created_at
+? new Date(user.created_at).toLocaleString()
+: "-"
+].forEach(value=>{
 const td=document.createElement("td");
 td.textContent=value||"-";
 tr.appendChild(td);
 });
+
 tbody.appendChild(tr);
 });
+
 status.textContent="Total Registered Users: "+data.length;
 }
+
 loadUsers();
 </script>
 </body>
