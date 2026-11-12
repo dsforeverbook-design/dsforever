@@ -388,6 +388,52 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
 <button id="logoutBtn" class="btn" type="button">Log out</button>
 </main>
 
+<main id="adminPage" class="hidden">
+
+  <section class="hero">
+    <div class="eyebrow">DS FOREVER</div>
+    <h1>Admin <span>Panel</span></h1>
+    <p>Welcome to Admin Control Center</p>
+  </section>
+
+  <section class="section">
+    <div class="sectionhead">
+      <h2>Admin Dashboard</h2>
+      <span class="eyebrow">CONTROL</span>
+    </div>
+
+    <div class="tile">
+      <h3>Users Management</h3>
+      <p>Manage registered users</p>
+    </div>
+
+    <div class="tile">
+      <h3>Deposit Requests</h3>
+      <p>Manage deposit requests</p>
+    </div>
+
+    <div class="tile">
+      <h3>Withdrawal Requests</h3>
+      <p>Manage withdrawal requests</p>
+    </div>
+
+    <div class="tile">
+      <h3>Match Management</h3>
+      <p>Add and manage matches</p>
+    </div>
+
+    <div class="tile">
+      <h3>Live Score Management</h3>
+      <p>Manage match scores</p>
+    </div>
+
+    <button class="btn" id="adminBackBtn" type="button">
+      Back to Home
+    </button>
+  </section>
+
+</main>
+  
 <script>
 function demoRequest(type) {
  const input = document.getElementById(
@@ -470,6 +516,18 @@ $("switchMode").addEventListener("click",()=>setMode(!registering));
 function validId(id){return /^[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]$/.test(id)}
 
 async function enterDashboard(user,id){
+  const {data: adminRecord} = await client
+  .from("admin_users")
+  .select("role")
+  .eq("id", user.id)
+  .maybeSingle();
+
+if (adminRecord?.role === "admin") {
+  $("authView").classList.add("hidden");
+  $("appView").classList.add("hidden");
+  $("adminPage").classList.remove("hidden");
+  return;
+}
   $("authView").classList.add("hidden");
   $("appView").classList.remove("hidden");
 
