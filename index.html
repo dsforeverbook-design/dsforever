@@ -325,16 +325,21 @@ function showStatus(message,isError=false){$("authStatus").textContent=message;$
 function setMode(value){registering=value;$("nameField").classList.toggle("hidden",!registering);$("submitBtn").textContent=registering?"CREATE ACCOUNT":"LOGIN";$("switchText").textContent=registering?"Already registered?":"New user?";$("switchMode").textContent=registering?"Login":"Create Account";$("password").autocomplete=registering?"new-password":"current-password";showStatus("")}
 $("switchMode").addEventListener("click",()=>setMode(!registering));
 function validId(id){return /^[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]$/.test(id)}
+
 async function enterDashboard(user,id){
   $("authView").classList.add("hidden");
   $("appView").classList.remove("hidden");
+
   const label=id||user?.user_metadata?.username||"Player";
+
   $("userLabel").textContent=label;
   $("profileName").textContent=user?.user_metadata?.full_name||label;
   $("profileId").textContent="User ID: "+label;
+
   renderMatches();
   showPage("homePage");
 }
+
 $("authForm").addEventListener("submit",async e=>{
  e.preventDefault();const btn=$("submitBtn");btn.disabled=true;btn.textContent=registering?"CREATING...":"LOGGING IN...";
  try{
