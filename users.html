@@ -68,7 +68,7 @@ try{
 
 // Check login session
 const {data:sessionData,error:sessionError} =
-dsClient.auth.getSession();
+await dsClient.auth.getSession();
 
 if(sessionError) throw sessionError;
 
