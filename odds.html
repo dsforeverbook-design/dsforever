@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DS FOREVER - Match Odds</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071426;color:white;font-family:Arial;padding:16px}
+.wrap{max-width:700px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #294563;padding-bottom:15px}
+h2{color:#f5c451}
+button,select{padding:12px;border-radius:9px;border:1px solid #45617e;font-size:15px}
+button{background:#f5c451;color:#071426;font-weight:bold}
+select{background:#102743;color:white;width:100%}
+.panel,.match{background:#10243b;border:1px solid #294563;border-radius:13px;padding:15px;margin:15px 0}
+.controls{display:grid;grid-template-columns:1fr auto;gap:10px}
+.status{color:#9fe7c5;margin-top:14px;font-size:14px}
+.match h3{font-size:17px;text-align:center}
+.time{text-align:center;color:#a9bad0;font-size:12px}
+.book{border-top:1px solid #34516f;margin-top:12px;padding-top:10px}
+.bookname{color:#f5c451;font-weight:bold;margin-bottom:8px}
+.prices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.price{background:#071426;border-radius:8px;padding:10px;text-align:center}
+.price small{display:block;color:#a9bad0}
+.price b{color:#8de7b8;font-size:18px}
+@media(max-width:420px){.controls{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <h2>DS FOREVER</h2>
+ <button onclick="location.href='index.html'">Back</button>
+</header>
+
+<h2>Live Match Odds</h2>
+<div class="panel">
+ <div class="controls">
+  <select id="sport"><option value="">Loading sports...</option></select>
+  <button id="refresh">Refresh</button>
+ </div>
+ <div class="status" id="status">Connecting...</div>
+</div>
+
+<div id="matches"></div>
+</div>
+
+<script>
+const URL="https://gplftdgweysvutrfkpni.supabase.co";
+const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+const db=window.supabase.createClient(URL,KEY);
+
+const $=id=>document.getElementById(id);
+
+function safe(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+async function getOdds(body){
+ const {data,error}=await db.functions.invoke("get-odds",{body});
+ if(error) throw error;
+ if(data?.error) throw new Error(data.error);
+ return data;
+}
+
+async function loadSports(){
+ try{
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){
+   $("status").textContent="Please login first.";
+   return;
+  }
+
+  $("status").textContent="Loading sports...";
+  const data=await getOdds({});
+  if(!Array.isArray(data)) throw new Error("Invalid sports response");
+
+  const sports=data.filter(s=>s.active && !s.has_outrights);
+  const select=$("sport");
+  select.innerHTML="";
+
+  sports.sort((a,b)=>(a.group||"").localeCompare(b.group||"")||
+   (a.title||"").localeCompare(b.title||""));
+
+  sports.forEach(s=>{
+   const op=document.createElement("option");
+   op.value=s.key;
+   op.textContent=(s.group?s.group+" - ":"")+s.title;
+   select.appendChild(op);
+  });
+
+  if(!sports.length){
+   $("status").textContent="No active sports available.";
+   return;
+  }
+
+  const cricket=sports.find(s=>s.key==="cricket_odi")||
+    sports.find(s=>s.group==="Cricket")||sports[0];
+
+  select.value=cricket.key;
+  await loadMatches();
+
+ }catch(e){
+  $("status").textContent="Error: "+e.message;
+ }
+}
+
+async function loadMatches(){
+ const key=$("sport").value;
+ if(!key)return;
+
+ $("status").textContent="Loading match odds...";
+ $("matches").innerHTML="";
+
+ try{
+  const events=await getOdds({sport_key:key});
+
+  if(!Array.isArray(events)||!events.length){
+   $("status").textContent="No upcoming matches found.";
+   return;
+  }
+
+  $("status").textContent=events.length+" matches found.";
+
+  $("matches").innerHTML=events.map(event=>{
+   const books=event.bookmakers||[];
+
+   const bookHTML=books.map(book=>{
+    const market=(book.markets||[]).find(m=>m.key==="h2h");
+    if(!market)return "";
+
+    const outcomes=market.outcomes||[];
+
+    return `
+     <div class="book">
+      <div class="bookname">${safe(book.title||book.key)}</div>
+      <div class="prices">
+       ${outcomes.map(o=>`
+        <div class="price">
+         <small>${safe(o.name)}</small>
+         <b>${Number(o.price).toFixed(2)}</b>
+        </div>
+       `).join("")}
+      </div>
+     </div>
+    `;
+   }).join("");
+
+   return `
+    <div class="match">
+     <div class="time">${safe(event.sport_title||"SPORT")} | ${safe(event.commence_time||"")}</div>
+     <h3>${safe(event.home_team)} VS ${safe(event.away_team)}</h3>
+     ${bookHTML||'<div class="status">No bookmaker odds available.</div>'}
+    </div>
+   `;
+  }).join("");
+
+ }catch(e){
+  $("status").textContent="Error: "+e.message;
+ }
+}
+
+$("refresh").addEventListener("click",loadMatches);
+$("sport").addEventListener("change",loadMatches);
+
+loadSports();
+</script>
+</body>
+</html>
