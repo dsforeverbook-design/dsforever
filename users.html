@@ -49,7 +49,7 @@ th{color:#f5c451}
 const URL="https://gplftdgweysvutrfkpni.supabase.co";
 const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
 
-window.dsSupabaseClient = window.supabase.createClient(URL,KEY);
+var dsClient = window.supabase.createClient(URL,KEY);
 async function loadUsers(){
 
 const status=document.getElementById("status");
@@ -62,7 +62,7 @@ try{
 
 // Check login session
 const {data:sessionData,error:sessionError} =
-await window.dsSupabaseClient.auth.getSession();
+dsClient.auth.getSession();
 
 if(sessionError) throw sessionError;
 
@@ -76,7 +76,7 @@ return;
 // Verify Admin role
 status.textContent="Verifying Admin...";
 
-const {data:admin,error:adminError}=await window.dsSupabaseClient
+const {data:admin,error:adminError}=await dsClient
 .from("profiles")
 .select("role")
 .eq("id",session.user.id)
@@ -98,7 +98,7 @@ const timer=setTimeout(()=>controller.abort(),15000);
 let result;
 
 try{
-result=await window.dsSupabaseClient
+result=await dsClient
 .from("profiles")
 .select("id,full_name,email,created_at")
 .order("created_at",{ascending:false})
@@ -150,7 +150,7 @@ status.textContent="ERROR: "+error.message;
 }
 
 async function logout(){
-await window.dsSupabaseClient.auth.signOut();
+await dsClient.auth.signOut();
 location.href="admin.html";
 }
 
