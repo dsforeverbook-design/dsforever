@@ -568,11 +568,102 @@ $("authForm").addEventListener("submit",async e=>{
      }}catch(err){alert(err.message||String(err));showStatus(err.message||"Kuch problem hui. Dobara koshish karein.",true)}
  finally{btn.disabled=false;btn.textContent=registering?"CREATE ACCOUNT":"LOGIN"}
 });
-function renderMatches(){
- const filtered=fixtures.filter(x=>(selectedSport==="All"||x.sport===selectedSport)&&(selectedFilter==="All"||x.status===selectedFilter));
- const html=filtered.length?filtered.map(x=>`<article class="match"><div class="matchtop"><span>${x.sport.toUpperCase()}</span><span class="tag">${x.status}</span></div><div class="teams"><div class="team"><div class="crest">${x.ea}</div>${x.a}</div><div class="vs">VS</div><div class="team"><div class="crest">${x.eb}</div>${x.b}</div></div><div class="matchbottom"><span>${x.time}</span><span>DEMO FIXTURE</span></div></article>`).join(""):`<div class="match">No sample fixtures in this category.</div>`;
- $("matchList").innerHTML=html;$("sportsMatches").innerHTML=html;
+
+async function renderMatches(){
+  const list=$("matchList");
+  const sports=$("sportsMatches");
+
+  list.innerHTML='<div class="match">Loading real match odds...</div>';
+  sports.innerHTML="";
+
+  // Currently tested API sport
+  const sportKey="cricket_odi";
+
+  try{
+    const {data,error}=await client.functions.invoke(
+      "get-odds",
+      {body:{sport_key:sportKey}}
+    );
+
+    if(error) throw error;
+
+    const events=Array.isArray(data)?data:
+      (Array.isArray(data?.data)?data.data:[]);
+
+    if(!events.length){
+      list.innerHTML='<div class="match">No matches available right now.</div>';
+      return;
+    }
+
+    const escapeHTML=value=>String(value??"").replace(
+      /[&<>"']/g,
+      c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])
+    );
+
+    const html=events.map((match,index)=>{
+      const started=new Date(match.commence_time)<=new Date();
+
+      const bookmakers=(match.bookmakers||[]).map(book=>{
+        const market=(book.markets||[]).find(m=>m.key==="h2h");
+        if(!market)return "";
+
+        return `
+          <div class="match">
+            <b>${escapeHTML(book.title)}</b>
+            <div class="teams">
+              ${(market.outcomes||[]).map(outcome=>`
+                <div class="team">
+                  ${escapeHTML(outcome.name)}
+                  <div class="crest">
+                    ${escapeHTML(outcome.price)}
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>`;
+      }).join("");
+
+      return `
+        <article class="match">
+          <div class="matchtop">
+            <span>CRICKET</span>
+            <span class="tag">${started?"STARTED":"UPCOMING"}</span>
+          </div>
+
+          <div class="teams">
+            <div class="team">
+              ${escapeHTML(match.home_team)}
+            </div>
+            <div class="vs">VS</div>
+            <div class="team">
+              ${escapeHTML(match.away_team)}
+            </div>
+          </div>
+
+          <div class="matchbottom">
+            <span>${escapeHTML(
+              new Date(match.commence_time).toLocaleString()
+            )}</span>
+            <span>VIEW ODDS</span>
+          </div>
+
+          <details>
+            <summary>OPEN MATCH ODDS</summary>
+            ${bookmakers||'<p>Odds not available yet.</p>'}
+          </details>
+        </article>`;
+    }).join("");
+
+    list.innerHTML=html;
+    sports.innerHTML=html;
+
+  }catch(error){
+    console.error("ODDS ERROR:",error);
+    list.innerHTML=
+      '<div class="match">Odds load nahi hue. Please retry.</div>';
+  }
 }
+  
 document.querySelectorAll("[data-sport]").forEach(btn=>btn.addEventListener("click",()=>{selectedSport=btn.dataset.sport;document.querySelectorAll("[data-sport]").forEach(b=>b.classList.toggle("active",b.dataset.sport===selectedSport));renderMatches();showPage("sportsPage")}));
 document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedFilter=btn.dataset.filter;document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b===btn));renderMatches()}));
 function showPage(page){localStorage.setItem("dsLastPage",page);["homePage","sportsPage","updatesPage","profilePage"].forEach(id=>$(id).classList.toggle("hidden",id!==page));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));window.scrollTo(0,0)}
