@@ -50,7 +50,7 @@ select{background:#102743;color:white;width:100%}
 <script>
 const URL="https://gplftdgweysvutrfkpni.supabase.co";
 const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
-const db=window.supabase.createClient(URL,KEY);
+let db=null;
 
 const $=id=>document.getElementById(id);
 
@@ -69,6 +69,11 @@ async function getOdds(body){
 
 async function loadSports(){
  try{
+    $("status").textContent="Starting...";
+  if(!window.supabase || !window.supabase.createClient){
+   throw new Error("Supabase library load nahi hui. Internet/CDN check karein.");
+  }
+  db=window.supabase.createClient(URL,KEY);
   const {data:{session}}=await db.auth.getSession();
   if(!session){
    $("status").textContent="Please login first.";
