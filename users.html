@@ -49,7 +49,7 @@ th{color:#f5c451}
 const URL="https://gplftdgweysvutrfkpni.supabase.co";
 const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
 
-const supabaseClient=window.supabase.createClient(URL,KEY);
+window.dsSupabaseClient = window.supabase.createClient(URL,KEY);
 async function loadUsers(){
 
 const status=document.getElementById("status");
