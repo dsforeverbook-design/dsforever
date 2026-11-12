@@ -325,7 +325,10 @@ function showStatus(message,isError=false){$("authStatus").textContent=message;$
 function setMode(value){registering=value;$("nameField").classList.toggle("hidden",!registering);$("submitBtn").textContent=registering?"CREATE ACCOUNT":"LOGIN";$("switchText").textContent=registering?"Already registered?":"New user?";$("switchMode").textContent=registering?"Login":"Create Account";$("password").autocomplete=registering?"new-password":"current-password";showStatus("")}
 $("switchMode").addEventListener("click",()=>setMode(!registering));
 function validId(id){return /^[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]$/.test(id)}
-async function enterDashboard(user,id){$("authView").classList.add("hidden");$("appView").classList.remove("hidden");const label=id||user?.user_metadata?.username||"Player";$("userLabel").textContent=label;$("profileName").textContent=user?.user_metadata?.full_name||label;$("profileId").textContent="User ID: "+label;renderMatches();showPage("homePage")}
+async function enterDashboard(user,id){$("authView").classList.add("hidden");$("appView").classList.remove("hidden");const label=id||user?.user_metadata?.username||"Player";$("userLabel").textContent=label;$("profileName").textContent=user?.user_metadata?.full_name||label;$("profileId").textContent="User ID: "+label;renderMatches();
+const lastPage=localStorage.getItem("dsLastPage");
+showPage(["homePage","sportsPage","updatesPage","profilePage"].includes(lastPage)?lastPage:"homePage");
+                                      }
 $("authForm").addEventListener("submit",async e=>{
  e.preventDefault();const btn=$("submitBtn");btn.disabled=true;btn.textContent=registering?"CREATING...":"LOGGING IN...";
  try{
@@ -354,12 +357,26 @@ function renderMatches(){
 }
 document.querySelectorAll("[data-sport]").forEach(btn=>btn.addEventListener("click",()=>{selectedSport=btn.dataset.sport;document.querySelectorAll("[data-sport]").forEach(b=>b.classList.toggle("active",b.dataset.sport===selectedSport));renderMatches();showPage("sportsPage")}));
 document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedFilter=btn.dataset.filter;document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b===btn));renderMatches()}));
-function showPage(page){["homePage","sportsPage","updatesPage","profilePage"].forEach(id=>$(id).classList.toggle("hidden",id!==page));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));window.scrollTo(0,0)}
+function showPage(page){localStorage.setItem("dsLastPage",page);["homePage","sportsPage","updatesPage","profilePage"].forEach(id=>$(id).classList.toggle("hidden",id!==page));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));window.scrollTo(0,0)}
 document.querySelectorAll(".navbtn").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
 $("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();$("appView").classList.add("hidden");$("authView").classList.remove("hidden");$("password").value="";showStatus("You have logged out.")});
-(async()=>{const {data:{session}}=await client.auth.getSession();if(session){const id=session.user.user_metadata?.username||session.user.email?.split("@")[0]||"Player";await enterDashboard(session.user,id)}})();
-</script>
+(async()=>{
+  const {data:{session}}=await client.auth.getSession();
 
+  if(session){
+    const id=session.user.user_metadata?.username
+      ||session.user.email?.split("@")[0]
+      ||"Player";
+
+    await enterDashboard(session.user,id);
+
+    const lastPage=localStorage.getItem("dsLastPage");
+
+    if(["homePage","sportsPage","updatesPage","profilePage"].includes(lastPage)){
+      showPage(lastPage);
+    }
+  }
+})();
 <script>  
 /* DS FOREVER account dropdown - add-on patch */  
 (() => {  
