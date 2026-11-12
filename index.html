@@ -372,6 +372,8 @@ function showPage(page){localStorage.setItem("dsLastPage",page);["homePage","spo
 document.querySelectorAll(".navbtn").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
 $("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();$("appView").classList.add("hidden");$("authView").classList.remove("hidden");$("password").value="";showStatus("You have logged out.")});
 (async()=>{
+  
+
   const {data:{session}}=await client.auth.getSession();
 
   if(session){
@@ -380,14 +382,9 @@ $("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();$(
       ||"Player";
 
     await enterDashboard(session.user,id);
-
-    const lastPage=localStorage.getItem("dsLastPage");
-
-    if(["homePage","sportsPage","updatesPage","profilePage"].includes(lastPage)){
-      showPage(lastPage);
-    }
   }
 })();
+
 <script>  
 /* DS FOREVER account dropdown - add-on patch */  
 (() => {  
