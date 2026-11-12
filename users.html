@@ -49,7 +49,7 @@ th{color:#f5c451}
 const URL="https://gplftdgweysvutrfkpni.supabase.co";
 const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
 
-const client=window.supabase.createClient(URL,KEY);
+const supabaseClient=window.supabase.createClient(URL,KEY);
 
 async function loadUsers(){
 
@@ -63,7 +63,7 @@ try{
 
 // Check login session
 const {data:sessionData,error:sessionError} =
-await client.auth.getSession();
+await supabaseClient.auth.getSession();
 
 if(sessionError) throw sessionError;
 
@@ -77,7 +77,7 @@ return;
 // Verify Admin role
 status.textContent="Verifying Admin...";
 
-const {data:admin,error:adminError}=await client
+const {data:admin,error:adminError}=await supabaseClient
 .from("profiles")
 .select("role")
 .eq("id",session.user.id)
@@ -99,7 +99,7 @@ const timer=setTimeout(()=>controller.abort(),15000);
 let result;
 
 try{
-result=await client
+result=await supabaseClient
 .from("profiles")
 .select("id,full_name,email,created_at")
 .order("created_at",{ascending:false})
@@ -151,7 +151,7 @@ status.textContent="ERROR: "+error.message;
 }
 
 async function logout(){
-await client.auth.signOut();
+await supabaseClient.auth.signOut();
 location.href="admin.html";
 }
 
