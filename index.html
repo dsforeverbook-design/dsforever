@@ -358,8 +358,7 @@ $("authForm").addEventListener("submit",async e=>{
    if(result.error)throw result.error;
     showStatus("LOGIN SUCCESS - Opening Dashboard");
    await enterDashboard(result.data.user,id);return;
-  }
- }catch(err){showStatus(err.message||"Kuch problem hui. Dobara koshish karein.",true)}
+     }}catch(err){alert(err.message||String(err));showStatus(err.message||"Kuch problem hui. Dobara koshish karein.",true)}
  finally{btn.disabled=false;btn.textContent=registering?"CREATE ACCOUNT":"LOGIN"}
 });
 function renderMatches(){
