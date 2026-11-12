@@ -107,7 +107,7 @@ password:password
 if(error) throw error;
 
 const {data:admin,error:adminError} = await client
-.from("admin_users")
+.from("profiles")
 .select("role")
 .eq("id",data.user.id)
 .maybeSingle();
