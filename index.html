@@ -123,23 +123,163 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
 .btn:active {
   transform: scale(0.98);
 }
+
+/* DS FOREVER PREMIUM LOGIN DESIGN */
+
+#authView.authwrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 25px 15px;
+  background:
+    radial-gradient(ellipse at center, #102d49 0%, #031326 65%, #000814 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+#authView .authcard {
+  width: 100%;
+  max-width: 520px;
+  padding: 30px 24px;
+  border: 1px solid #d9a936;
+  border-radius: 26px;
+  background: linear-gradient(145deg, #102b47, #020d1d);
+  box-shadow: 0 0 35px rgba(255,190,45,.2);
+}
+
+#authView .authbrand {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+#authView .mark {
+  width: 78px;
+  height: 78px;
+  margin: auto;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: linear-gradient(145deg,#ffe49a,#d99b20);
+  color: #071426;
+  font-size: 32px;
+  font-weight: 900;
+}
+
+#authView .authbrand h1 {
+  color: #ffc94d;
+  font-size: 29px;
+  margin: 16px 0 7px;
+}
+
+#authView .authbrand p {
+  color: #a9bad0;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+#authView form label {
+  display: block;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 16px 0 9px;
+}
+
+#authView input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 17px;
+  border-radius: 15px;
+  border: 1px solid #3986c5;
+  background: #102b47;
+  color: white;
+  font-size: 16px;
+}
+
+#authView input:focus {
+  outline: 2px solid #ffc94d;
+}
+
+#authView #submitBtn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 18px;
+  border: 2px solid #ffe49a;
+  border-radius: 18px;
+  background: linear-gradient(135deg,#ffe49a,#f5bd35,#d99b20);
+  color: #071426;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+#authView .switchline {
+  text-align: center;
+  margin-top: 22px;
+  color: white;
+}
+
+#authView #switchMode {
+  color: #ffc94d;
+  font-weight: 800;
+}
+
+#authView .status {
+  color: #78e5b8;
+  text-align: center;
+  margin-top: 15px;
+}
   
 </style>
 </head>
 <body>
+
 <div id="authView" class="authwrap">
   <div class="authcard">
-    <div class="authbrand"><div class="mark">DS</div><h1>DS FOREVER</h1><p>SPORTS CENTER • YOUR GAME, YOUR PASSION</p></div>
+
+    <div class="authbrand">
+      <div class="mark">DS</div>
+      <h1>DS FOREVER</h1>
+      <p>WELCOME BACK • SPORTS CENTER</p>
+      <p>Login to your DS FOREVER account</p>
+    </div>
+
     <form id="authForm">
-      <div id="nameField" class="hidden"><label for="fullName">Full Name</label><input id="fullName" autocomplete="name" placeholder="Enter your full name"></div>
-      <label for="userId">User ID</label><input id="userId" autocomplete="username" placeholder="Enter your User ID" required>
-      <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" minlength="8" required>
-      <button id="submitBtn" class="primary" type="submit">LOGIN</button>
+
+      <div id="nameField" class="hidden">
+        <label for="fullName">Full Name</label>
+        <input id="fullName" type="text" placeholder="Enter your full name">
+      </div>
+
+      <label for="userId">User ID</label>
+      <input id="userId" type="text"
+        autocomplete="username"
+        placeholder="Enter your User ID"
+        required>
+
+      <label for="password">Password</label>
+      <input id="password" type="password"
+        autocomplete="current-password"
+        placeholder="Enter your password"
+        required>
+
+      <button id="submitBtn" class="primary" type="submit">
+        LOGIN
+      </button>
+
     </form>
-    <div class="switchline"><span id="switchText">New user?</span> <button id="switchMode" type="button">Create Account</button></div>
+
+    <div class="switchline">
+      <span id="switchText">New User?</span>
+      <button id="switchMode" type="button">
+        Create Account
+      </button>
+    </div>
+
     <div id="authStatus" class="status" role="status"></div>
+
   </div>
 </div>
+
 <div id="appView" class="shell hidden">
   <header class="top"><div class="toprow"><div class="brand"><div class="mark">DS</div><div><div class="brandname">DS <span>FOREVER</span></div><div class="subbrand">SPORTS CENTER</div></div></div><div class="userpill" id="userLabel">PLAYER</div></div></header>
   
