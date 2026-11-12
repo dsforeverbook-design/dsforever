@@ -49,8 +49,14 @@ th{color:#f5c451}
 const URL="https://gplftdgweysvutrfkpni.supabase.co";
 const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
 
-var dsClient = window.supabase.createClient(URL, KEY);
+var dsClient = window.supabase
+  ? window.supabase.createClient(URL, KEY)
+  : null;
 async function loadUsers(){
+  if(!dsClient){
+  document.getElementById("status").textContent="Supabase library not loaded";
+  return;
+  }
 
 const status=document.getElementById("status");
 const tbody=document.getElementById("users");
