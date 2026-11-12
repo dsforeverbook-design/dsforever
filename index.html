@@ -482,7 +482,7 @@ async function enterDashboard(user,id){
 }
 
 $("authForm").addEventListener("submit",async e=>{
-  alert("LOGIN BUTTON CLICKED");
+
  e.preventDefault();const btn=$("submitBtn");btn.disabled=true;btn.textContent=registering?"CREATING...":"LOGGING IN...";
  try{
   const id=$("userId").value.trim().toLowerCase();const password=$("password").value;
