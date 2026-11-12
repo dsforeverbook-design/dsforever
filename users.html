@@ -7,6 +7,7 @@
 <title>DS FOREVER - Users</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+*{box-sizing:border-box}
 body{margin:0;background:#080d18;color:white;font-family:Arial;padding:15px}
 .box{max-width:1000px;margin:25px auto;background:#101a2b;padding:20px;border:1px solid #354779;border-radius:16px}
 h1{color:#f5c451;text-align:center}
@@ -14,18 +15,20 @@ button{padding:12px;background:#f5c451;border:0;border-radius:8px;font-weight:bo
 table{width:100%;border-collapse:collapse;margin-top:20px;min-width:650px}
 th,td{padding:12px;border-bottom:1px solid #354779;text-align:left;overflow-wrap:anywhere}
 th{color:#f5c451}
-.status{color:#78e5b8}
+#status{color:#78e5b8;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
+
 <div class="box">
 <h1>DS FOREVER</h1>
 <h2>Users Management</h2>
 
-<p id="status">Loading users...</p>
+<p id="status">Checking Admin Session...</p>
 
 <button onclick="loadUsers()">Refresh Users</button>
 <button onclick="location.href='admin.html'">Back to Admin</button>
+<button onclick="logout()">Logout</button>
 
 <div style="overflow-x:auto">
 <table>
@@ -49,28 +52,73 @@ const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
 const client=window.supabase.createClient(URL,KEY);
 
 async function loadUsers(){
+
 const status=document.getElementById("status");
 const tbody=document.getElementById("users");
 
-status.textContent="Loading users...";
 tbody.innerHTML="";
+status.textContent="Checking Admin Login...";
 
-const {data,error}=await client
-.from("profiles")
-.select("id,full_name,email,created_at")
-.order("created_at",{ascending:false});
+try{
 
-if(error){
-status.textContent="Error: "+error.message;
+// Check login session
+const {data:sessionData,error:sessionError} =
+await client.auth.getSession();
+
+if(sessionError) throw sessionError;
+
+const session=sessionData.session;
+
+if(!session){
+status.textContent="Admin session not found. Please login again.";
 return;
 }
 
-if(!data || data.length===0){
+// Verify Admin role
+status.textContent="Verifying Admin...";
+
+const {data:admin,error:adminError}=await client
+.from("profiles")
+.select("role")
+.eq("id",session.user.id)
+.maybeSingle();
+
+if(adminError) throw adminError;
+
+if(!admin || admin.role!=="admin"){
+status.textContent="Access denied: Admin only.";
+return;
+}
+
+// Fetch all registered users
+status.textContent="Loading registered users...";
+
+const controller=new AbortController();
+const timer=setTimeout(()=>controller.abort(),15000);
+
+let result;
+
+try{
+result=await client
+.from("profiles")
+.select("id,full_name,email,created_at")
+.order("created_at",{ascending:false})
+.abortSignal(controller.signal);
+}finally{
+clearTimeout(timer);
+}
+
+if(result.error) throw result.error;
+
+const users=result.data;
+
+if(!users || users.length===0){
 status.textContent="No users found.";
 return;
 }
 
-data.forEach(user=>{
+users.forEach(user=>{
+
 const tr=document.createElement("tr");
 
 [
@@ -81,15 +129,30 @@ user.created_at
 ? new Date(user.created_at).toLocaleString()
 : "-"
 ].forEach(value=>{
+
 const td=document.createElement("td");
-td.textContent=value||"-";
+td.textContent=value || "-";
 tr.appendChild(td);
+
 });
 
 tbody.appendChild(tr);
+
 });
 
-status.textContent="Total Registered Users: "+data.length;
+status.textContent="Total Registered Users: "+users.length;
+
+}catch(error){
+
+status.textContent="ERROR: "+error.message;
+
+}
+
+}
+
+async function logout(){
+await client.auth.signOut();
+location.href="admin.html";
 }
 
 loadUsers();
