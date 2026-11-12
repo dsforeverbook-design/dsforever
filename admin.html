@@ -1,33 +1,138 @@
+
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DS FOREVER | Admin</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DS FOREVER | Admin Login</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#080b12;--panel:#141c2a;--line:#2c3a50;--gold:#efbd55;--muted:#aab5c7;--green:#57d49b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f6f7fb;font:15px Arial,sans-serif}
-header{padding:17px;background:#121a28;border-bottom:2px solid var(--gold);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.logo{font-size:23px;color:var(--gold);font-weight:800}.muted{color:var(--muted);font-size:13px}
-.layout{display:flex;min-height:calc(100vh - 65px)}aside{width:205px;background:#0e1420;border-right:1px solid var(--line);padding:12px;flex-shrink:0}
-nav button{display:block;width:100%;text-align:left;margin:5px 0;background:transparent;border:0;color:#c3ccda;padding:12px;border-radius:8px}nav button.active,nav button:hover{background:#263044;color:var(--gold)}
-main{padding:22px;width:100%;max-width:1200px;margin:auto}.view{display:none}.view.active{display:block}h1{margin-top:0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}.num{font-size:27px;font-weight:bold;color:var(--gold);margin:10px 0}
-button.action{background:var(--gold);color:#17130b;border:0;padding:10px 14px;border-radius:8px;font-weight:bold;cursor:pointer}
-input,select{width:100%;padding:11px;background:#0b111c;color:white;border:1px solid var(--line);border-radius:8px;margin:6px 0 12px}label{color:var(--muted);font-size:12px}
-.notice{background:#2b2415;border:1px solid #6c5424;color:#f1d58f;padding:13px;border-radius:9px;line-height:1.5}
-.row{padding:11px 0;border-bottom:1px solid var(--line)}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:450px}td,th{text-align:left;padding:10px;border-bottom:1px solid var(--line)}th{color:var(--muted)}
-@media(max-width:650px){.layout{display:block}aside{width:100%;display:flex;overflow:auto}nav button{white-space:nowrap;width:auto;padding:10px}main{padding:15px}}
-</style></head><body>
-<header><div><div class="logo">🏏 DS FOREVER</div><div class="muted">MASTER ADMIN CONSOLE</div></div><span class="muted">FRONT-END PREVIEW</span></header>
-<div class="layout"><aside><nav>
-<button class="active" onclick="view('dash',this)">▦ Dashboard</button><button onclick="view('users',this)">♙ Users</button><button onclick="view('matches',this)">🏏 Matches</button><button onclick="view('scores',this)">▤ Scoreboard</button><button onclick="view('support',this)">✉ Support</button><button onclick="view('settings',this)">⚙ Settings</button>
-</nav></aside><main>
-<section id="dash" class="view active"><h1>Dashboard Overview</h1><p class="muted">Manage cricket information and site content.</p><div class="notice"><b>Important:</b> This is a static preview. It has no secure admin authentication, database, server-side permissions or persistent storage. Do not enter real customer data. Configure a secure backend before public administration.</div>
-<div class="grid"><div class="card">Registered Users<div class="num" id="uc">0</div><span class="muted">This session only</span></div><div class="card">Fixtures<div class="num" id="mc">0</div><span class="muted">This session only</span></div><div class="card">Support Requests<div class="num">0</div><span class="muted">No backend connected</span></div><div class="card">Website Status<div class="num" style="font-size:20px;color:var(--green)">Preview</div><span class="muted">GitHub Pages</span></div></div></section>
-<section id="users" class="view"><h1>User Management</h1><p class="muted">Demo list only; real user accounts are not connected.</p><div class="card"><button class="action" onclick="addDemoUser()">Add demo user</button><div class="tablewrap"><table><thead><tr><th>Name</th><th>Email</th></tr></thead><tbody id="userRows"><tr><td colspan="2">No demo users</td></tr></tbody></table></div></div></section>
-<section id="matches" class="view"><h1>Match Management</h1><div class="card"><label>Team 1</label><input id="t1" placeholder="India"><label>Team 2</label><input id="t2" placeholder="Australia"><label>Date</label><input id="dt" type="date"><button class="action" onclick="addMatch()">Add demo fixture</button></div><div class="card"><div id="fixtureRows">No fixtures added.</div></div></section>
-<section id="scores" class="view"><h1>Scoreboard</h1><div class="notice">Live score data is not connected. Publish only verified cricket information using a trusted source.</div><div class="card"><p class="muted">Scorecard publishing will require a secure backend and authorized data source.</p></div></section>
-<section id="support" class="view"><h1>Customer Support</h1><div class="card"><label>Public support email</label><input type="email" placeholder="support@example.com"><label>Support hours</label><select><option>24/7 (only if staffed)</option><option>Business hours</option></select><p class="muted">This preview does not send or receive support messages.</p></div></section>
-<section id="settings" class="view"><h1>Website Settings</h1><div class="card"><label>Website title</label><input value="DS FOREVER"><label>Theme</label><select><option>Premium Black & Gold</option><option>Dark Blue</option></select><p class="muted">Settings are not saved to a server in this preview.</p></div></section>
-</main></div>
+*{box-sizing:border-box}
+body{margin:0;background:#080d18;color:white;font-family:Arial,sans-serif;padding:20px}
+.wrap{max-width:430px;margin:70px auto;background:#101a2b;padding:25px;border:1px solid #354779;border-radius:18px}
+h1{text-align:center;color:#f5c451}
+p{text-align:center;color:#aab5c8}
+label{display:block;margin-top:18px}
+input{width:100%;padding:14px;margin-top:8px;border-radius:9px;border:1px solid #354779;background:#0b1220;color:white}
+button{width:100%;padding:14px;margin-top:20px;border:0;border-radius:9px;background:#f5c451;color:#101827;font-weight:bold}
+#status{margin-top:15px;text-align:center;color:#78e5b8}
+#dashboard{display:none;max-width:700px;margin:40px auto}
+.tile{background:#101a2b;padding:22px;margin:14px 0;border:1px solid #354779;border-radius:12px}
+.logout{background:#a83232;color:white}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="loginBox">
+<h1>DS FOREVER</h1>
+<p>ADMIN CONTROL PANEL</p>
+
+<form id="loginForm">
+<label>Admin User ID</label>
+<input id="userId" required placeholder="Enter Admin User ID">
+
+<label>Password</label>
+<input id="password" type="password" required placeholder="Enter Password">
+
+<button id="loginBtn" type="submit">ADMIN LOGIN</button>
+</form>
+<div id="status"></div>
+</div>
+
+<div id="dashboard">
+<h1>ADMIN DASHBOARD</h1>
+<p>Welcome to DS FOREVER Admin Control Center</p>
+
+<div class="tile">
+<h3>Users Management</h3>
+<p>Manage registered users</p>
+</div>
+<div class="tile">
+<h3>Deposit Requests</h3>
+<p>Manage deposit requests</p>
+</div>
+<div class="tile">
+<h3>Withdrawal Requests</h3>
+<p>Manage withdrawal requests</p>
+</div>
+<div class="tile">
+<h3>Match Management</h3>
+<p>Manage matches</p>
+</div>
+<div class="tile">
+<h3>Live Score Management</h3>
+<p>Manage match scores</p>
+</div>
+<button class="logout" onclick="logout()">LOG OUT</button>
+</div>
+
 <script>
-let us=[],ms=[];function view(id,b){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}
-function addDemoUser(){let n=prompt('Demo name');if(!n)return;let e=prompt('Demo email')||'demo@example.com';us.push({n,e});document.getElementById('uc').textContent=us.length;document.getElementById('userRows').innerHTML=us.map(x=>'<tr><td>'+safe(x.n)+'</td><td>'+safe(x.e)+'</td></tr>').join('')}
-function addMatch(){let a=document.getElementById('t1').value.trim(),b=document.getElementById('t2').value.trim(),d=document.getElementById('dt').value;if(!a||!b||!d){alert('Enter both teams and a date.');return}ms.push({a,b,d});document.getElementById('mc').textContent=ms.length;document.getElementById('fixtureRows').innerHTML=ms.map(x=>'<div class="row">'+safe(x.a)+' vs '+safe(x.b)+' · '+x.d+'</div>').join('')}
-function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-</script></body></html>
+const SUPABASE_URL =
+"https://gplftdgweysvutrfkpni.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_YSRfi0A-OZ2PpeJF0qsRNw_ee5z30VU";
+
+const client = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+const form = document.getElementById("loginForm");
+const statusBox = document.getElementById("status");
+const loginBtn = document.getElementById("loginBtn");
+
+form.addEventListener("submit", async function(e){
+e.preventDefault();
+
+const id = document.getElementById("userId").value.trim().toLowerCase();
+const password = document.getElementById("password").value;
+
+if(!/^[a-z0-9._-]{3,20}$/.test(id)){
+statusBox.textContent = "Invalid Admin User ID";
+return;
+}
+
+loginBtn.disabled = true;
+statusBox.textContent = "Checking Admin Login...";
+
+try{
+const email = id + "@dsforever-login.com";
+
+const {data,error} = await client.auth.signInWithPassword({
+email:email,
+password:password
+});
+
+if(error) throw error;
+
+const {data:admin,error:adminError} = await client
+.from("admin_users")
+.select("role")
+.eq("id",data.user.id)
+.maybeSingle();
+
+if(adminError) throw adminError;
+
+if(!admin || admin.role !== "admin"){
+await client.auth.signOut();
+throw new Error("You are not an authorized Admin.");
+}
+
+document.getElementById("loginBox").style.display = "none";
+document.getElementById("dashboard").style.display = "block";
+
+}catch(error){
+statusBox.textContent = error.message;
+}finally{
+loginBtn.disabled = false;
+}
+});
+
+async function logout(){
+await client.auth.signOut();
+location.reload();
+}
+</script>
+</body>
+</html>
