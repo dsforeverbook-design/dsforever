@@ -233,50 +233,51 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
 </head>
 <body>
 
+
 <div id="authView" class="authwrap">
   <div class="authcard">
-
     <div class="authbrand">
+      <div style="font-size:38px;color:#ffd34e;">♛</div>
       <div class="mark">DS</div>
       <h1>DS FOREVER</h1>
-      <p>WELCOME BACK • SPORTS CENTER</p>
+      <p>SPORTS CENTER • YOUR GAME, YOUR PASSION</p>
+      <h2 style="color:white;margin-top:28px;font-size:27px;">
+        WELCOME <span style="color:#ffca42;">BACK</span>
+      </h2>
       <p>Login to your DS FOREVER account</p>
+      <div style="color:#ffca42;margin:22px 0;">━━━━━━━━━━━━━━━━</div>
+      <div style="font-size:25px;">🏏 ⚽ 🎾</div>
     </div>
 
     <form id="authForm">
-
       <div id="nameField" class="hidden">
         <label for="fullName">Full Name</label>
         <input id="fullName" type="text" placeholder="Enter your full name">
       </div>
 
       <label for="userId">User ID</label>
-      <input id="userId" type="text"
-        autocomplete="username"
-        placeholder="Enter your User ID"
-        required>
+      <input id="userId" type="text" autocomplete="username"
+        placeholder="Enter your User ID" required>
 
       <label for="password">Password</label>
-      <input id="password" type="password"
-        autocomplete="current-password"
-        placeholder="Enter your password"
-        required>
+      <input id="password" type="password" autocomplete="current-password"
+        placeholder="Enter your password" required>
 
-      <button id="submitBtn" class="primary" type="submit">
-        LOGIN
-      </button>
-
+      <button id="submitBtn" class="primary" type="submit">➜ LOGIN</button>
     </form>
 
     <div class="switchline">
       <span id="switchText">New User?</span>
-      <button id="switchMode" type="button">
-        Create Account
-      </button>
+      <button id="switchMode" type="button">Create Account</button>
     </div>
 
     <div id="authStatus" class="status" role="status"></div>
 
+    <div style="text-align:center;color:white;margin-top:25px;">
+      🛡️ Secure Login <span style="color:#ffca42;"> • </span>
+      Free Coins <span style="color:#ffca42;"> • </span>
+      Sports Center
+    </div>
   </div>
 </div>
 
