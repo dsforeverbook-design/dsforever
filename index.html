@@ -167,7 +167,123 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
     <button class="sport" data-sport="Cricket"><span class="emoji">🏏</span>Cricket</button><button class="sport" data-sport="Football"><span class="emoji">⚽</span>Football</button><button class="sport" data-sport="Tennis"><span class="emoji">🎾</span>Tennis</button><button class="sport" data-sport="Basketball"><span class="emoji">🏀</span>Basketball</button><button class="sport" data-sport="Hockey"><span class="emoji">🏑</span>Hockey</button>
   </div><section class="section" id="sportsMatches"></section></main>
   <main id="updatesPage" class="hidden"><section class="hero"><div class="eyebrow">DS FOREVER</div><h1>Sports <span>Updates</span></h1><p>News and announcements.</p></section><section class="section"><div class="news"><div class="newsicon">📢</div><div><strong>Welcome to DS FOREVER</strong><small>This is your sports dashboard. Live data can be connected later.</small></div></div></section></main>
-  <main id="profilePage" class="hidden"><section class="hero"><div class="eyebrow">PLAYER AREA</div><h1>My <span>Account</span></h1><p>Manage your DS FOREVER account.</p></section><section class="section"><div class="profilebox"><strong id="profileName">Player</strong><p id="profileId"></p><p>Account status: Signed in</p><button class="outline" id="logoutBtn">Log out</button></div></section></main>
+  
+<main id="profilePage" class="hidden">
+<section class="hero">
+<div class="eyebrow">PLAYER AREA</div>
+<h1>My <span>Account</span></h1>
+<p>Welcome to DS FOREVER</p>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Player Profile</h2>
+<span class="eyebrow">MY ACCOUNT</span>
+</div>
+<div class="tile">
+<strong id="profileName">Player</strong>
+<p>User ID: <span id="profileId">My Account</span></p>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Demo Wallet</h2>
+<span class="eyebrow">TEST MODE</span>
+</div>
+
+<div class="tile">
+<h3>Deposit Request</h3>
+<input id="demoDepositAmount" type="number" placeholder="Enter deposit amount">
+<button class="btn" onclick="demoRequest('Deposit')">Submit Deposit Request</button>
+</div>
+
+<div class="tile">
+<h3>Withdrawal Request</h3>
+<input id="demoWithdrawAmount" type="number" placeholder="Enter withdrawal amount">
+<button class="btn" onclick="demoRequest('Withdrawal')">Submit Withdrawal Request</button>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Request Status</h2>
+</div>
+<div class="tile">
+<p id="demoRequestStatus">No requests submitted yet.</p>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Transaction History</h2>
+</div>
+<div class="tile" id="demoTransactionHistory">
+<p>No transactions yet.</p>
+</div>
+</section>
+
+<button id="logoutBtn" class="btn" type="button">Log out</button>
+</main>
+
+<script>
+function demoRequest(type) {
+ const input = document.getElementById(
+ type === "Deposit" ? "demoDepositAmount" : "demoWithdrawAmount"
+ );
+ const amount = Number(input.value);
+
+ if (!Number.isFinite(amount) || amount <= 0) {
+   alert("Please enter a valid amount.");
+   return;
+ }
+
+ const history = JSON.parse(
+   localStorage.getItem("dsDemoHistory") || "[]"
+ );
+
+ const request = {
+   type: type,
+   amount: amount,
+   status: "Pending (Demo)",
+   date: new Date().toLocaleString()
+ };
+
+ history.unshift(request);
+ localStorage.setItem("dsDemoHistory", JSON.stringify(history));
+
+ input.value = "";
+ renderDemoHistory();
+
+ document.getElementById("demoRequestStatus").textContent =
+   type + " request submitted. Status: Pending (Demo)";
+}
+
+function renderDemoHistory() {
+ const history = JSON.parse(
+   localStorage.getItem("dsDemoHistory") || "[]"
+ );
+
+ const box = document.getElementById("demoTransactionHistory");
+
+ if (!history.length) {
+   box.innerHTML = "<p>No transactions yet.</p>";
+   return;
+ }
+
+ box.innerHTML = history.map(item =>
+   "<div class='tile'><strong>" + item.type +
+   "</strong><p>Amount: ₹" + item.amount +
+   "</p><p>Status: " + item.status +
+   "</p><small>" + item.date + "</small></div>"
+ ).join("");
+}
+
+renderDemoHistory();
+</script>
+
+
+  
   <nav class="bottom"><button class="navbtn active" data-page="homePage"><span>⌂</span>Home</button><button class="navbtn" data-page="sportsPage"><span>⚽</span>Sports</button><button class="navbtn" data-page="updatesPage"><span>▤</span>Updates</button><button class="navbtn" data-page="profilePage"><span>♙</span>Account</button></nav>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
