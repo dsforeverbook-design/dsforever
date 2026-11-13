@@ -543,6 +543,7 @@ if (adminRecord?.role === "admin") {
   $("profileId").textContent="User ID: "+label;
 
   renderMatches();
+  startDsOddsAutoRefresh();
   showPage("homePage");
 }
 
@@ -667,6 +668,31 @@ async function renderMatches(){
       '<div class="match">Odds load nahi hue. Please retry.</div>';
   }
 }
+
+// Refresh match reference odds periodically while the dashboard is visible.
+// This refreshes the provider's bookmaker reference data; it is not a direct exchange feed.
+let dsOddsRefreshTimer = null;
+let dsOddsRefreshBusy = false;
+
+function startDsOddsAutoRefresh(){
+  if(dsOddsRefreshTimer) clearInterval(dsOddsRefreshTimer);
+  dsOddsRefreshTimer = setInterval(async()=>{
+    if(document.hidden || $("appView").classList.contains("hidden") || dsOddsRefreshBusy) return;
+    dsOddsRefreshBusy = true;
+    try { await renderMatches(); }
+    finally { dsOddsRefreshBusy = false; }
+  }, 60000);
+}
+
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden && !$("appView").classList.contains("hidden")){
+    if(!dsOddsRefreshBusy){
+      dsOddsRefreshBusy = true;
+      renderMatches().finally(()=>{ dsOddsRefreshBusy = false; });
+    }
+  }
+});
+
   
 document.querySelectorAll("[data-sport]").forEach(btn=>btn.addEventListener("click",()=>{selectedSport=btn.dataset.sport;document.querySelectorAll("[data-sport]").forEach(b=>b.classList.toggle("active",b.dataset.sport===selectedSport));renderMatches();showPage("sportsPage")}));
 document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedFilter=btn.dataset.filter;document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b===btn));renderMatches()}));
