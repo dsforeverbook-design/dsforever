@@ -1067,8 +1067,8 @@ async function loadRapidMatchOdds(eventId){
       return `<div class="ds-ex-runner ds-session-row">
         <div class="ds-ex-team">${esc(sessionName)}</div>
         <div class="ds-ex-quotes">
-          <div class="ds-ex-back"><small>YES / BACK</small><b>${backPrice!==null?backPrice.toFixed(0):"—"}</b></div>
-          <div class="ds-ex-lay"><small>NO / LAY</small><b>${layPrice!==null?layPrice.toFixed(0):"—"}</b></div>
+        <div class="ds-ex-lay"><small>NO / LAY</small><b>${layPrice!==null?layPrice.toFixed(0):"—"}</b></div>
+        <div class="ds-ex-back"><small>YES / BACK</small><b>${backPrice!==null?backPrice.toFixed(0):"—"}</b></div>
         </div>
         <small class="ds-ex-source">Back size: ${back?esc(back.size):"—"} · Lay size: ${lay?esc(lay.size):"—"}${status?" · "+esc(status):""}</small>
       </div>`;
