@@ -1019,9 +1019,15 @@ async function loadRapidMatchOdds(eventId){
       return `<div class="ds-ex-runner">
         <div class="ds-ex-team">${esc(r.runnerName)}</div>
         <div class="ds-ex-quotes">
-          <div class="ds-ex-back"><small>BACK</small><b>${bestBack?Number(bestBack.price).toFixed(2):"—"}</b></div>
-          <div class="ds-ex-lay"><small>LAY</small><b>${bestLay?Number(bestLay.price).toFixed(2):"—"}</b></div>
-        </div>
+  <div class="ds-ex-lay">
+    <small>LAY</small>
+    <b>${bestLay?Number(bestLay.price).toFixed(2):"—"}</b>
+  </div>
+  <div class="ds-ex-back">
+    <small>BACK</small>
+    <b>${bestBack?Number(bestBack.price).toFixed(2):"—"}</b>
+  </div>
+</div>
         <small class="ds-ex-source">Back size: ${bestBack?esc(bestBack.size):"—"} · Lay size: ${bestLay?esc(bestLay.size):"—"}</small>
       </div>`;
     }).join("");
