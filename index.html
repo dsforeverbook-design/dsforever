@@ -51,7 +51,7 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
 }  
   /* Reduce Exchange Height */
 .ds-exchange{
-  width:85% !important;
+  width:100% !important;
   margin-left:auto !important;
   margin-right:auto !important;
   padding:6px !important;
@@ -1007,6 +1007,17 @@ font-size: 18px;
 .ds-session-empty{color:#9eb1c8;font-size:11px;line-height:1.5;padding:10px;background:#102943;border:1px solid #294967;border-radius:9px}
 .ds-session-row .ds-ex-quotes{grid-template-columns:1fr 1fr}
 .ds-ex-foot{text-align:center;color:#f5c451;font-size:8px;letter-spacing:.5px;margin-top:10px}
+.ds-ex-quotes{
+  display:flex !important;
+  gap:8px !important;
+  justify-content:space-between !important;
+}
+
+.ds-ex-quotes > div{
+  width:44% !important;
+  max-width:44% !important;
+  flex:none !important;
+}
 </style>
 \n
 <div id="matchDetailOverlay" class="match-detail-overlay hidden" role="dialog" aria-modal="true" aria-label="Match details">
