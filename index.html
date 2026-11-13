@@ -607,6 +607,11 @@ if (adminRecord?.role === "admin") {
   renderMatches();
   startDsOddsAutoRefresh();
   showPage("homePage");
+  setTimeout(() => {
+  if (typeof restoreSavedMatchDetail === "function") {
+    restoreSavedMatchDetail();
+  }
+}, 250);
 }
 
 $("authForm").addEventListener("submit",async e=>{
@@ -1180,22 +1185,38 @@ function startRapidOddsRefresh(eventId){
   },30000);
 }
 
+
 document.addEventListener("click",function(event){
   const openButton=event.target.closest(".match-open");
+
   if(openButton){
     const card=openButton.closest(".match");
     const data=card.querySelector(".match-teams-data");
     const exchange=card.querySelector(".match-exchange-template");
     const rapidEventId=openButton.dataset.rapidEvent;
 
+    if(rapidEventId){
+      localStorage.setItem("dsOpenMatch",JSON.stringify({
+        eventId:String(rapidEventId),
+        home:data?.dataset.home||"Team 1",
+        away:data?.dataset.away||"Team 2",
+        status:data?.dataset.status||"MATCH",
+        time:data?.dataset.time||""
+      }));
+    }else{
+      localStorage.removeItem("dsOpenMatch");
+    }
+
     stopRapidOddsRefresh();
+
     $("detailHomeTeam").textContent=data?.dataset.home||"Team 1";
     $("detailAwayTeam").textContent=data?.dataset.away||"Team 2";
     $("detailMatchStatus").textContent=data?.dataset.status||"MATCH";
     $("detailMatchTime").textContent=data?.dataset.time||"";
+
     $("detailExchangeContent").innerHTML=rapidEventId
       ? '<p class="match-detail-empty">Loading live Match Odds…</p>'
-      : (exchange?.innerHTML||'<p class="match-detail-empty">Exchange data is not available for this match yet.</p>');
+      : (exchange?.innerHTML||"Exchange unavailable");
 
     $("matchDetailOverlay").classList.remove("hidden");
     document.body.style.overflow="hidden";
@@ -1204,20 +1225,47 @@ document.addEventListener("click",function(event){
   }
 });
 
+function restoreSavedMatchDetail(){
+  let saved;
+  try{
+    saved=JSON.parse(localStorage.getItem("dsOpenMatch")||"null");
+  }catch(e){
+    localStorage.removeItem("dsOpenMatch");
+    return;
+  }
+
+  if(!saved?.eventId)return;
+
+  $("detailHomeTeam").textContent=saved.home;
+  $("detailAwayTeam").textContent=saved.away;
+  $("detailMatchStatus").textContent=saved.status;
+  $("detailMatchTime").textContent=saved.time;
+  $("detailExchangeContent").innerHTML=
+    '<p class="match-detail-empty">Loading live Exchange prices…</p>';
+
+  $("matchDetailOverlay").classList.remove("hidden");
+  document.body.style.overflow="hidden";
+  startRapidOddsRefresh(saved.eventId);
+}
+
 function closeMatchDetail(){
   stopRapidOddsRefresh();
+  localStorage.removeItem("dsOpenMatch");
   $("matchDetailOverlay").classList.add("hidden");
   document.body.style.overflow="";
 }
+
 $("closeMatchDetail").addEventListener("click",closeMatchDetail);
+
 $("matchDetailOverlay").addEventListener("click",function(event){
-  if(event.target===$("matchDetailOverlay")) closeMatchDetail();
+  if(event.target===$("matchDetailOverlay"))closeMatchDetail();
 });
+
 document.addEventListener("visibilitychange",()=>{
-  if(document.hidden) return;
+  if(document.hidden)return;
   if(dsRapidOddsEventId &&
-     !$("matchDetailOverlay").classList.contains("hidden") &&
-     !dsRapidOddsBusy){
+    !$("matchDetailOverlay").classList.contains("hidden") &&
+    !dsRapidOddsBusy){
     loadRapidMatchOdds(dsRapidOddsEventId);
   }
 });
