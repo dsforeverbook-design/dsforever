@@ -1,0 +1,1356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071426">
+<title>DS FOREVER | Sports Center</title>
+<style>
+:root{--bg:#06101f;--panel:#0c1d33;--panel2:#102743;--line:#244363;--gold:#f5c451;--gold2:#ffe49a;--blue:#29a8e8;--muted:#9eb1c8;--white:#f5f8ff;--green:#25c58a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#15375b 0,#071426 48%,#040b15 100%);color:var(--white);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.shell{width:min(100%,520px);margin:auto;min-height:100vh;padding-bottom:82px}
+.top{position:sticky;top:0;z-index:5;background:#071426ed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 16px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#ffe69b,#d99b20);color:#071426;display:grid;place-items:center;font-weight:1000;font-size:19px;box-shadow:0 5px 22px #f5c45135}.brandname{font-weight:950;letter-spacing:1px;font-size:18px}.brandname span{color:var(--gold)}.subbrand{font-size:10px;letter-spacing:2.2px;color:var(--muted);margin-top:1px}.userpill{border:1px solid var(--line);border-radius:20px;padding:8px 11px;color:#dce9f8;font-size:12px;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hero{padding:22px 16px 16px}.eyebrow{color:var(--gold);font-size:11px;letter-spacing:2px;font-weight:800}.hero h1{font-size:27px;line-height:1.12;margin:8px 0 7px}.hero h1 span{color:var(--gold)}.hero p{margin:0;color:var(--muted);font-size:13px}
+.banner{margin:0 16px 18px;border:1px solid #896d32;border-radius:18px;padding:17px;background:linear-gradient(120deg,#173b5e,#10233b 55%,#382d18);position:relative;overflow:hidden}.banner:after{content:"";position:absolute;width:180px;height:180px;border:1px solid #f5c45155;border-radius:50%;right:-65px;top:-70px;box-shadow:0 0 0 18px #f5c4510b,0 0 0 38px #f5c45108}.banner strong{font-size:17px;display:block;max-width:75%}.banner small{color:#d1deec;display:block;margin-top:5px;font-size:12px}.banner .ball{position:absolute;right:20px;bottom:13px;font-size:48px;opacity:.9}
+.section{padding:0 16px;margin:19px 0}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sectionhead h2{font-size:16px;margin:0}.sectionhead a,.linkbtn{color:var(--gold);font-size:12px;background:none;border:0;padding:4px}
+.sports{display:flex;gap:9px;overflow:auto;padding:2px 16px 7px;scrollbar-width:none}.sports::-webkit-scrollbar{display:none}.sport{flex:0 0 82px;border:1px solid var(--line);border-radius:13px;background:#0c1d33;color:#dce9f8;padding:12px 7px;text-align:center;font-size:11px;font-weight:750}.sport .emoji{font-size:22px;display:block;margin-bottom:5px}.sport.active{border-color:var(--gold);background:linear-gradient(145deg,#3b321e,#14263d);color:var(--gold2);box-shadow:0 0 16px #f5c45119}
+.filters{display:flex;gap:8px;overflow:auto;padding:0 16px 5px}.filter{border:1px solid var(--line);border-radius:20px;background:#0b1b2e;color:#c8d7e8;padding:8px 14px;font-size:11px;white-space:nowrap}.filter.active{background:var(--gold);border-color:var(--gold);color:#111a26;font-weight:850}
+.match{background:linear-gradient(135deg,#102641,#0a192b);border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:10px}.matchtop{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px}.live{color:#5ce0a7;font-weight:850;letter-spacing:.8px}.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:13px 0}.team{text-align:center;font-weight:750;font-size:13px}.team .crest{width:34px;height:34px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;background:#173b5d;border:1px solid #37628a;font-size:17px}.vs{font-size:10px;color:var(--gold);font-weight:900}.matchbottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #29445f;padding-top:10px;color:var(--muted);font-size:10px}.tag{border:1px solid #32618a;color:#9dd8ff;padding:4px 8px;border-radius:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{background:linear-gradient(145deg,#132d49,#0b1b2e);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:94px}.tile .big{font-size:23px}.tile strong{display:block;font-size:12px;margin-top:7px}.tile small{color:var(--muted);font-size:10px}
+.news{display:flex;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid #203a55}.news:last-child{border:0}.newsicon{width:42px;height:42px;border-radius:12px;background:#193b5a;display:grid;place-items:center;font-size:21px}.news strong{font-size:12px;display:block}.news small{font-size:10px;color:var(--muted)}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,520px);display:grid;grid-template-columns:repeat(4,1fr);background:#071426f5;backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:9px 7px max(9px,env(safe-area-inset-bottom));z-index:6}.navbtn{background:none;border:0;color:#8fa7c1;font-size:10px;padding:4px}.navbtn span{display:block;font-size:19px;margin-bottom:3px}.navbtn.active{color:var(--gold)}
+.authwrap{min-height:100vh;display:grid;place-items:center;padding:22px 16px}.authcard{width:min(100%,430px);border:1px solid #345779;border-radius:24px;padding:25px 21px;background:linear-gradient(160deg,#102b49,#071426 70%);box-shadow:0 20px 60px #0008}.authbrand{text-align:center;margin-bottom:22px}.authbrand .mark{margin:0 auto 10px;width:58px;height:58px;font-size:24px}.authbrand h1{margin:0;color:var(--gold);font-size:25px;letter-spacing:1px}.authbrand p{color:var(--muted);font-size:12px;margin:6px 0}.authcard label{display:block;font-size:12px;font-weight:750;margin:14px 0 7px}.authcard input{width:100%;padding:14px;border-radius:12px;border:1px solid #38648b;background:#102943;color:white;outline:none}.authcard input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #f5c45120}.primary{width:100%;border:0;border-radius:13px;padding:15px;margin-top:20px;background:linear-gradient(180deg,#ffe58b,#e8a91f);color:#101827;font-weight:950;font-size:16px;box-shadow:0 7px 22px #e8a91f35}.switchline{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}.switchline button{border:0;background:none;color:var(--gold);font-weight:850}.status{font-size:12px;text-align:center;min-height:18px;margin-top:12px;color:#8fe6be}.status.err{color:#ff9292}
+.profilebox{background:#102641;border:1px solid var(--line);border-radius:16px;padding:16px}.profilebox p{color:var(--muted);font-size:12px}.outline{background:transparent;border:1px solid var(--line);color:#e8f1fc;border-radius:10px;padding:10px 13px}
+@media(min-width:520px){.shell{border-left:1px solid #1c3854;border-right:1px solid #1c3854}.hero h1{font-size:32px}}
+/* Compact Match Exchange */
+.ds-exchange{
+  zoom:1.0 !important;
+  font-size:13px !important;
+}
+.ds-ex-runner{
+  padding:10px !important;
+  margin-bottom:8px !important;
+}
+.ds-ex-team{
+  font-size:13px !important;
+}
+.ds-ex-quotes > div{
+  min-height:42px !important;
+  padding:8px 10px !important;
+}
+.ds-ex-quotes b{
+  font-size:17px !important;
+}
+.ds-ex-quotes small{
+  font-size:11px !important;
+}
+.ds-ex-source{
+  font-size:10px !important;
+}  
+  /* Reduce Exchange Height */
+.ds-exchange{
+  width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  padding:6px !important;
+}
+.ds-ex-head{
+  margin-bottom:5px !important;
+}
+.ds-ex-note{
+  margin:4px 0 !important;
+  line-height:1.25 !important;
+}
+.ds-ex-runner{
+  padding:6px !important;
+  margin-bottom:5px !important;
+}
+.ds-ex-team{
+  margin-bottom:4px !important;
+}
+.ds-ex-quotes{
+  gap:5px !important;
+}
+.ds-ex-quotes > div{
+  min-height:30px !important;
+  padding:5px 7px !important;
+}
+.ds-ex-source{
+  margin-top:3px !important;
+  line-height:1.1 !important;
+}
+.ds-ex-session-heading{
+  margin:8px 0 4px !important;
+}
+.ds-ex-grid{
+  gap:5px !important;
+}
+.account-strip{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:12px;
+  margin:0;
+  padding:0;
+  background:transparent;
+  border:0;
+}
+.account-stat{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
+}
+.account-stat small{
+  display:inline;
+  color:#9eb1c8;
+  font-size:10px;
+}
+.account-stat strong{
+  display:inline;
+  color:#f5c451;
+  font-size:13px;
+  margin:0;
+}
+.account-stat em{
+  display:none;
+}
+
+.shell{
+  position:relative;
+}
+
+.account-strip{
+  position:absolute;
+  top:78px;
+  right:16px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:12px;
+  margin:0;
+  padding:0;
+  background:transparent;
+  border:0;
+  z-index:10;
+}
+
+.account-stat{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
+}
+
+.account-stat small{
+  display:inline;
+  color:#9eb1c8;
+  font-size:9px;
+}
+
+.account-stat strong{
+  display:inline;
+  color:#f5c451;
+  font-size:13px;
+  margin:0;
+}
+
+.account-stat em{
+  display:none;
+}
+
+/* DS FOREVER GOLDEN BUTTON DESIGN */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px 18px;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #ffe49a, #f5c451, #d99b20);
+  color: #071426;
+  border: 1px solid #ffe49a;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(245,196,81,0.18);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* DS FOREVER PREMIUM LOGIN DESIGN */
+
+#authView.authwrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 25px 15px;
+  background:
+    radial-gradient(ellipse at center, #102d49 0%, #031326 65%, #000814 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+#authView .authcard {
+  width: 100%;
+  max-width: 520px;
+  padding: 30px 24px;
+  border: 1px solid #d9a936;
+  border-radius: 26px;
+  background: linear-gradient(145deg, #102b47, #020d1d);
+  box-shadow: 0 0 35px rgba(255,190,45,.2);
+}
+
+#authView .authbrand {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+#authView .mark {
+  width: 78px;
+  height: 78px;
+  margin: auto;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: linear-gradient(145deg,#ffe49a,#d99b20);
+  color: #071426;
+  font-size: 32px;
+  font-weight: 900;
+}
+
+#authView .authbrand h1 {
+  color: #ffc94d;
+  font-size: 29px;
+  margin: 16px 0 7px;
+}
+
+#authView .authbrand p {
+  color: #a9bad0;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+#authView form label {
+  display: block;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 16px 0 9px;
+}
+
+#authView input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 17px;
+  border-radius: 15px;
+  border: 1px solid #3986c5;
+  background: #102b47;
+  color: white;
+  font-size: 16px;
+}
+
+#authView input:focus {
+  outline: 2px solid #ffc94d;
+}
+
+#authView #submitBtn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 18px;
+  border: 2px solid #ffe49a;
+  border-radius: 18px;
+  background: linear-gradient(135deg,#ffe49a,#f5bd35,#d99b20);
+  color: #071426;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+#authView .switchline {
+  text-align: center;
+  margin-top: 22px;
+  color: white;
+}
+
+#authView #switchMode {
+  color: #ffc94d;
+  font-weight: 800;
+}
+
+#authView .status {
+  color: #78e5b8;
+  text-align: center;
+  margin-top: 15px;
+}
+  
+
+.live-score-logo{width:25px;height:25px;object-fit:contain}
+</style>
+</head>
+<body>
+
+
+<div id="authView" class="authwrap">
+  <div class="authcard">
+    <div class="authbrand">
+      <div style="font-size:38px;color:#ffd34e;">♛</div>
+      <div class="mark">DS</div>
+      <h1>DS FOREVER</h1>
+      <p>SPORTS CENTER • YOUR GAME, YOUR PASSION</p>
+      <h2 style="color:white;margin-top:28px;font-size:27px;">
+        WELCOME <span style="color:#ffca42;">BACK</span>
+      </h2>
+      <p>Login to your DS FOREVER account</p>
+      <div style="color:#ffca42;margin:22px 0;">━━━━━━━━━━━━━━━━</div>
+      <div style="font-size:25px;">🏏 ⚽ 🎾</div>
+    </div>
+
+    <form id="authForm">
+      <div id="nameField" class="hidden">
+        <label for="fullName">Full Name</label>
+        <input id="fullName" type="text" placeholder="Enter your full name">
+      </div>
+
+      <label for="userId">User ID</label>
+      <input id="userId" type="text" autocomplete="username"
+        placeholder="Enter your User ID" required>
+
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password"
+        placeholder="Enter your password" required>
+
+      <button id="submitBtn" class="primary" type="submit">➜ LOGIN</button>
+    </form>
+
+    <div class="switchline">
+      <span id="switchText">New User?</span>
+      <button id="switchMode" type="button">Create Account</button>
+    </div>
+
+    <div id="authStatus" class="status" role="status"></div>
+
+    <div style="text-align:center;color:white;margin-top:25px;">
+      🛡️ Secure Login <span style="color:#ffca42;"> • </span>
+      Free Coins <span style="color:#ffca42;"> • </span>
+      Sports Center
+    </div>
+  </div>
+</div>
+
+<div id="appView" class="shell hidden">
+  <header class="top"><div class="toprow"><div class="brand"><div class="mark">DS</div><div><div class="brandname">DS <span>FOREVER</span></div><div class="subbrand">SPORTS CENTER</div></div></div><div class="userpill" id="userLabel">PLAYER</div></div></header>
+  
+<div class="account-strip">
+  <div class="account-stat">
+    <small>MY POINTS</small>
+    <strong id="pointsBalance">0</strong>
+    <em>Available Points</em>
+  </div>
+  <div class="account-stat">
+    <small>EXPOSURE</small>
+    <strong id="exposureValue">0</strong>
+    <em>Current Exposure</em>
+  </div>
+</div>
+
+  <main id="homePage">
+    <section class="hero"><div class="eyebrow">WELCOME TO THE ARENA</div><h1>Feel the game.<br><span>Live the moment.</span></h1><p>Your sports hub for fixtures, scores and updates.</p></section>
+    <div class="banner"><strong>THE GAME NEVER STOPS</strong><small>Follow your favourite sports in one place.</small><div class="ball">🏆</div></div>
+    <div class="section"><div class="sectionhead"><h2>Explore Sports</h2><span class="eyebrow">01 / SPORTS</span></div></div>
+    <div class="sports" id="sportsList">
+      <button class="sport active" data-sport="All"><span class="emoji">🏆</span>All Sports</button>
+      <button class="sport" data-sport="Cricket"><span class="emoji">🏏</span>Cricket</button>
+      <button class="sport" data-sport="Football"><span class="emoji">⚽</span>Football</button>
+      <button class="sport" data-sport="Tennis"><span class="emoji">🎾</span>Tennis</button>
+      <button class="sport" data-sport="Basketball"><span class="emoji">🏀</span>Basketball</button>
+      <button class="sport" data-sport="Table Tennis"><span class="emoji">🏓</span>Table Tennis</button>
+      <button class="sport" data-sport="Hockey"><span class="emoji">🏑</span>Hockey</button>
+    </div>
+    <section class="section"><div class="sectionhead"><h2>Match Center</h2><span class="eyebrow">02 / FIXTURES</span></div></section>
+    <div class="filters" id="matchFilters"><button class="filter active" data-filter="All">All Matches</button><button class="filter" data-filter="Live">Live</button><button class="filter" data-filter="Upcoming">Upcoming</button></div>
+    <div class="section" style="padding-top:8px"><label for="leagueSelect" style="display:block;margin-bottom:8px;color:#9fb4cc">Choose League</label><select id="leagueSelect" style="width:100%;padding:13px;border-radius:12px;background:#102743;color:#fff;border:1px solid #244363"><option value="cricket_odi">One Day Internationals</option></select><small id="leagueNote" style="display:block;margin-top:8px;color:#9fb4cc">One league is loaded at a time to protect Trial API credits. Live scores are shown separately in the SportScore Live Score Center below.</small></div>
+    <section class="section" id="liveScoreSection">
+      <div class="sectionhead"><h2>🔴 Live Score Center</h2><span class="eyebrow">SPORTSCORE</span></div>
+      <div class="filters" id="liveSportFilters">
+        <button class="filter active" type="button" data-live-sport="football">⚽ Football</button>
+        <button class="filter" type="button" data-live-sport="cricket">🏏 Cricket</button>
+        <button class="filter" type="button" data-live-sport="basketball">🏀 Basketball</button>
+        <button class="filter" type="button" data-live-sport="tennis">🎾 Tennis</button>
+      </div>
+      <div id="liveScoreStatus" class="match" aria-live="polite">Loading verified live scores…</div>
+      <div id="liveScoreList"></div>
+      <div class="match" style="font-size:10px;color:#9eb1c8">Live score data by <a href="https://sportscore.com/" target="_blank" rel="noopener noreferrer" style="color:#f5c451">Powered by SportScore</a>. Refreshes automatically every 60 seconds. Broadcast/TV streams are not supplied by this score feed.</div>
+    </section>
+    <section class="section" id="matchList"></section>
+    <section class="section"><div class="sectionhead"><h2>Quick Access</h2><span class="eyebrow">03 / HUB</span></div><div class="grid2">
+      <div class="tile"><div class="big">📅</div><strong>Fixtures & Schedule</strong><small>Browse match fixtures</small></div>
+      <div class="tile"><div class="big">📊</div><strong>Results Center</strong><small>Check match results</small></div>
+      <div class="tile"><div class="big">📰</div><strong>Sports Updates</strong><small>Latest sports headlines</small></div>
+      <div class="tile"><div class="big">⭐</div><strong>Favourite Teams</strong><small>Your teams in one place</small></div>
+   <div class="tile" onclick="location.href='odds.html'" style="cursor:pointer">
+  <div class="big">📈</div>
+  <strong>Live Match Odds</strong>
+  <small>View automatic match odds</small>
+   </div>
+    </div></section>
+    <section class="section"><div class="sectionhead"><h2>Latest Updates</h2><span class="eyebrow">04 / NEWS</span></div>
+      <div class="news"><div class="newsicon">🏏</div><div><strong>Cricket match centre</strong><small>Fixtures and score updates will appear here.</small></div></div>
+      <div class="news"><div class="newsicon">⚽</div><div><strong>Football match centre</strong><small>Follow upcoming football fixtures.</small></div></div>
+    </section>
+  </main>
+  <main id="sportsPage" class="hidden"><section class="hero"><div class="eyebrow">DISCOVER</div><h1>All <span>Sports</span></h1><p>Choose a sport to view its fixtures.</p></section><div class="sports" id="sportsList2">
+    <button class="sport" data-sport="Cricket"><span class="emoji">🏏</span>Cricket</button><button class="sport" data-sport="Football"><span class="emoji">⚽</span>Football</button><button class="sport" data-sport="Tennis"><span class="emoji">🎾</span>Tennis</button><button class="sport" data-sport="Basketball"><span class="emoji">🏀</span>Basketball</button><button class="sport" data-sport="Hockey"><span class="emoji">🏑</span>Hockey</button>
+  <button class="sport" data-sport="Table Tennis"><span class="emoji">🏓</span>Table Tennis</button>
+  </div><section class="section" id="sportsMatches"></section></main>
+  <main id="updatesPage" class="hidden"><section class="hero"><div class="eyebrow">DS FOREVER</div><h1>Sports <span>Updates</span></h1><p>News and announcements.</p></section><section class="section"><div class="news"><div class="newsicon">📢</div><div><strong>Welcome to DS FOREVER</strong><small>This is your sports dashboard. Live scores appear in the Live Score Center.</small></div></div></section></main>
+  
+<main id="profilePage" class="hidden">
+<section class="hero">
+<div class="eyebrow">PLAYER AREA</div>
+<h1>My <span>Account</span></h1>
+<p>Welcome to DS FOREVER</p>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Player Profile</h2>
+<span class="eyebrow">MY ACCOUNT</span>
+</div>
+<div class="tile">
+<strong id="profileName">Player</strong>
+<p><span id="profileId">My Account</span></p>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Demo Wallet</h2>
+<span class="eyebrow">TEST MODE</span>
+</div>
+
+<div class="tile">
+<h3>Deposit Request</h3>
+<input id="demoDepositAmount" type="number" placeholder="Enter deposit amount">
+<button class="btn" onclick="demoRequest('Deposit')">Submit Deposit Request</button>
+</div>
+
+<div class="tile">
+<h3>Withdrawal Request</h3>
+<input id="demoWithdrawAmount" type="number" placeholder="Enter withdrawal amount">
+<button class="btn" onclick="demoRequest('Withdrawal')">Submit Withdrawal Request</button>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Request Status</h2>
+</div>
+<div class="tile">
+<p id="demoRequestStatus">No requests submitted yet.</p>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Transaction History</h2>
+</div>
+<div class="tile" id="demoTransactionHistory">
+<p>No transactions yet.</p>
+</div>
+</section>
+
+<button id="logoutBtn" class="btn" type="button">Log out</button>
+</main>
+
+<main id="adminPage" class="hidden">
+
+  <section class="hero">
+    <div class="eyebrow">DS FOREVER</div>
+    <h1>Admin <span>Panel</span></h1>
+    <p>Welcome to Admin Control Center</p>
+  </section>
+
+  <section class="section">
+    <div class="sectionhead">
+      <h2>Admin Dashboard</h2>
+      <span class="eyebrow">CONTROL</span>
+    </div>
+
+    <div class="tile">
+      <h3>Users Management</h3>
+      <p>Manage registered users</p>
+    </div>
+
+    <div class="tile">
+      <h3>Deposit Requests</h3>
+      <p>Manage deposit requests</p>
+    </div>
+
+    <div class="tile">
+      <h3>Withdrawal Requests</h3>
+      <p>Manage withdrawal requests</p>
+    </div>
+
+    <div class="tile">
+      <h3>Match Management</h3>
+      <p>Add and manage matches</p>
+    </div>
+
+    <div class="tile">
+      <h3>Live Score Management</h3>
+      <p>Manage match scores</p>
+    </div>
+
+    <button class="btn" id="adminBackBtn" type="button">
+      Back to Home
+    </button>
+  </section>
+
+</main>
+  
+<script>
+function demoRequest(type) {
+ const input = document.getElementById(
+ type === "Deposit" ? "demoDepositAmount" : "demoWithdrawAmount"
+ );
+ const amount = Number(input.value);
+
+ if (!Number.isFinite(amount) || amount <= 0) {
+   alert("Please enter a valid amount.");
+   return;
+ }
+
+ const history = JSON.parse(
+   localStorage.getItem("dsDemoHistory") || "[]"
+ );
+
+ const request = {
+   type: type,
+   amount: amount,
+   status: "Pending (Demo)",
+   date: new Date().toLocaleString()
+ };
+
+ history.unshift(request);
+ localStorage.setItem("dsDemoHistory", JSON.stringify(history));
+
+ input.value = "";
+ renderDemoHistory();
+
+ document.getElementById("demoRequestStatus").textContent =
+   type + " request submitted. Status: Pending (Demo)";
+}
+
+function renderDemoHistory() {
+ const history = JSON.parse(
+   localStorage.getItem("dsDemoHistory") || "[]"
+ );
+
+ const box = document.getElementById("demoTransactionHistory");
+
+ if (!history.length) {
+   box.innerHTML = "<p>No transactions yet.</p>";
+   return;
+ }
+
+ box.innerHTML = history.map(item =>
+   "<div class='tile'><strong>" + item.type +
+   "</strong><p>Amount: ₹" + item.amount +
+   "</p><p>Status: " + item.status +
+   "</p><small>" + item.date + "</small></div>"
+ ).join("");
+}
+
+renderDemoHistory();
+</script>
+
+
+  
+  <nav class="bottom"><button class="navbtn active" data-page="homePage"><span>⌂</span>Home</button><button class="navbtn" data-page="sportsPage"><span>⚽</span>Sports</button><button class="navbtn" data-page="updatesPage"><span>▤</span>Updates</button><button class="navbtn" data-page="profilePage"><span>♙</span>Account</button></nav>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://gplftdgweysvutrfkpni.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const $ = id => document.getElementById(id);
+let registering = false;
+let selectedSport = "All";
+let selectedFilter = "All";
+const fixtures = [
+ {sport:"Cricket",status:"Upcoming",a:"India",b:"Australia",ea:"🇮🇳",eb:"🇦🇺",time:"Fixture sample • schedule to be connected"},
+ {sport:"Football",status:"Upcoming",a:"Real Madrid",b:"Barcelona",ea:"⚪",eb:"🔴",time:"Fixture sample • schedule to be connected"},
+ {sport:"Tennis",status:"Upcoming",a:"Player A",b:"Player B",ea:"🎾",eb:"🎾",time:"Fixture sample • schedule to be connected"},
+ {sport:"Basketball",status:"Upcoming",a:"Lakers",b:"Warriors",ea:"🟡",eb:"🔵",time:"Fixture sample • schedule to be connected"},
+ {sport:"Hockey",status:"Upcoming",a:"India",b:"Netherlands",ea:"🇮🇳",eb:"🇳🇱",time:"Fixture sample • schedule to be connected"}
+];
+function showStatus(message,isError=false){$("authStatus").textContent=message;$("authStatus").classList.toggle("err",isError)}
+function setMode(value){registering=value;$("nameField").classList.toggle("hidden",!registering);$("submitBtn").textContent=registering?"CREATE ACCOUNT":"LOGIN";$("switchText").textContent=registering?"Already registered?":"New user?";$("switchMode").textContent=registering?"Login":"Create Account";$("password").autocomplete=registering?"new-password":"current-password";showStatus("")}
+$("switchMode").addEventListener("click",()=>setMode(!registering));
+function validId(id){return /^[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]$/.test(id)}
+
+async function enterDashboard(user,id){
+  const {data: adminRecord} = await client
+  .from("admin_users")
+  .select("role")
+  .eq("id", user.id)
+  .maybeSingle();
+
+if (adminRecord?.role === "admin") {
+  $("authView").classList.add("hidden");
+  $("appView").classList.add("hidden");
+  $("adminPage").classList.remove("hidden");
+  return;
+}
+  $("authView").classList.add("hidden");
+  $("appView").classList.remove("hidden");
+
+  const label=id||user?.user_metadata?.username||"Player";
+
+  $("userLabel").textContent=label;
+  $("profileName").textContent=user?.user_metadata?.full_name||label;
+  $("profileId").textContent="User ID: "+label;
+
+  renderMatches();
+  startDsOddsAutoRefresh();
+  startDsLiveScoreRefresh();
+  showPage("homePage");
+  setTimeout(() => {
+  if (typeof restoreSavedMatchDetail === "function") {
+    restoreSavedMatchDetail();
+  }
+}, 250);
+}
+
+$("authForm").addEventListener("submit",async e=>{
+
+ e.preventDefault();const btn=$("submitBtn");btn.disabled=true;btn.textContent=registering?"CREATING...":"LOGGING IN...";
+ try{
+  const id=$("userId").value.trim().toLowerCase();const password=$("password").value;
+  if(!validId(id))throw new Error("User ID 3–20 characters ka hona chahiye (letters, numbers, . _ -).");
+  if(password.length<8)throw new Error("Password minimum 8 characters hona chahiye.");
+  const email=id+"@dsforever-login.com";let result;
+  if(registering){
+   const fullName=$("fullName").value.trim();if(!fullName)throw new Error("Please apna full name bhariye.");
+   result=await client.auth.signUp({email,password,options:{data:{full_name:fullName,username:id}}});
+   if(result.error)throw result.error;
+   if(result.data.session){await enterDashboard(result.data.user,id);return;}
+   showStatus("Account created. Email confirmation setting check karein; phir login karein.");
+  }else{
+   result=await client.auth.signInWithPassword({email,password});
+   if(result.error)throw result.error;
+    showStatus("LOGIN SUCCESS - Opening Dashboard");
+   await enterDashboard(result.data.user,id);return;
+     }}catch(err){alert(err.message||String(err));showStatus(err.message||"Kuch problem hui. Dobara koshish karein.",true)}
+ finally{btn.disabled=false;btn.textContent=registering?"CREATE ACCOUNT":"LOGIN"}
+});
+
+const dsLeagueGroups = {
+  "Cricket": [
+    ["cricket_big_bash","Big Bash League"],
+    ["cricket_odi","One Day Internationals"],
+    ["cricket_test_match","Test Matches"]
+  ],
+  "Football": [
+    ["soccer_argentina_primera_division","Argentina Primera División"],["soccer_australia_aleague","A-League"],["soccer_austria_bundesliga","Austria Bundesliga"],["soccer_belgium_first_div","Belgium First Division"],["soccer_brazil_campeonato","Brazil Série A"],["soccer_brazil_serie_b","Brazil Série B"],["soccer_chile_campeonato","Chile Primera División"],["soccer_conmebol_copa_libertadores","Copa Libertadores"],["soccer_conmebol_copa_sudamericana","Copa Sudamericana"],["soccer_denmark_superliga","Denmark Superliga"],["soccer_efl_champ","EFL Championship"],["soccer_england_efl_cup","EFL Cup"],["soccer_england_league1","EFL League One"],["soccer_england_league2","EFL League Two"],["soccer_epl","English Premier League"],["soccer_france_coupe_de_france","Coupe de France"],["soccer_france_ligue_one","Ligue 1"],["soccer_france_ligue_two","Ligue 2"],["soccer_germany_bundesliga","Bundesliga"],["soccer_germany_bundesliga2","Bundesliga 2"],["soccer_germany_bundesliga_women","Frauen-Bundesliga"],["soccer_germany_dfb_pokal","DFB-Pokal"],["soccer_germany_liga3","3. Liga"],["soccer_greece_super_league","Greece Super League"],["soccer_italy_serie_a","Serie A"],["soccer_italy_serie_b","Serie B"],["soccer_japan_j_league","J League"],["soccer_mexico_ligamx","Liga MX"],["soccer_netherlands_eredivisie","Eredivisie"],["soccer_norway_eliteserien","Norway Eliteserien"],["soccer_poland_ekstraklasa","Poland Ekstraklasa"],["soccer_portugal_primeira_liga","Primeira Liga"],["soccer_russia_premier_league","Russia Premier League"],["soccer_spain_copa_del_rey","Copa del Rey"],["soccer_spain_la_liga","La Liga"],["soccer_spain_segunda_division","La Liga 2"],["soccer_spl","Scottish Premiership"],["soccer_sweden_allsvenskan","Sweden Allsvenskan"],["soccer_sweden_superettan","Sweden Superettan"],["soccer_switzerland_superleague","Swiss Super League"],["soccer_turkey_super_league","Turkey Super League"],["soccer_uefa_champs_league","UEFA Champions League"],["soccer_uefa_europa_conference_league","UEFA Europa Conference League"],["soccer_uefa_europa_league","UEFA Europa League"],["soccer_uefa_nations_league","UEFA Nations League"],["soccer_usa_mls","MLS"]
+  ],
+  "Tennis": [["tennis_atp_finals","ATP Finals"],["tennis_wta_finals","WTA Finals"]],
+  "Hockey": [["icehockey_ahl","AHL"],["icehockey_liiga","Liiga"],["icehockey_mestis","Mestis"],["icehockey_nhl","NHL"],["icehockey_sweden_allsvenskan","HockeyAllsvenskan"],["icehockey_sweden_hockey_league","Swedish Hockey League"]],
+  "Basketball": [["basketball_euroleague","Euroleague"],["basketball_nba","NBA"],["basketball_nbl","NBL"],["basketball_ncaab","NCAAB"],["basketball_wncaab","WNCAAB"]]
+};
+
+function updateLeagueOptions(){
+  const select=$("leagueSelect");
+  if(!select) return;
+  const sport=selectedSport==="All"?"Cricket":selectedSport;
+  const leagues=dsLeagueGroups[sport]||[];
+  const previous=select.value;
+  select.innerHTML=leagues.map(([key,label])=>`<option value="${key}">${label}</option>`).join("");
+  if(leagues.some(([key])=>key===previous)) select.value=previous;
+  const note=$("leagueNote");
+  if(note) note.textContent=`${leagues.length} available leagues. One selected league is fetched per refresh to protect Trial API credits.`;
+}
+
+async function renderMatches(){
+  const list=$("matchList");
+  const sports=$("sportsMatches");
+  if(!list||!sports) return;
+  updateLeagueOptions();
+  const select=$("leagueSelect");
+  const sport=selectedSport==="All"?"Cricket":selectedSport;
+  const sportKey=select?.value||dsLeagueGroups[sport]?.[0]?.[0];
+  const sportLabel=sport.toUpperCase();
+  list.innerHTML='<div class="match">Loading selected league fixtures and odds…</div>';
+  sports.innerHTML='';
+  if(!sportKey){
+    list.innerHTML='<div class="match">Choose a supported sport to view its leagues.</div>';
+    return;
+  }
+  try{
+    const {data,error}=await client.functions.invoke("get-odds",{body:{sport_key:sportKey}});
+    if(error) throw error;
+    const events=Array.isArray(data)?data:(Array.isArray(data?.data)?data.data:[]);
+    const now=Date.now();
+    const visible=events.filter(match=>{
+      const time=Date.parse(match.commence_time);
+      if(!Number.isFinite(time)) return false;
+      // Odds API response is not a verified live-score/status feed.
+      if(selectedFilter==="Upcoming") return time>now;
+      if(selectedFilter==="Live") return time<=now;
+      if(selectedFilter==="Completed") return false;
+      return true;
+    });
+    const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const leagueName=select?.selectedOptions?.[0]?.textContent||sportKey;
+    const html=visible.map(match=>{
+      const start=Date.parse(match.commence_time);
+      const started=start<=now;
+      const home=esc(match.home_team),away=esc(match.away_team);
+      const odds=(match.bookmakers||[]).slice(0,2).map(book=>{
+        const market=(book.markets||[]).find(m=>m.key==="h2h");
+        if(!market) return "";
+        return `<div class="ds-session-empty"><b>${esc(book.title||book.key)}</b>: ${(market.outcomes||[]).map(o=>`${esc(o.name)} ${Number(o.price).toFixed(2)}`).join(" · ")}</div>`;
+      }).join("");
+      const matchTime=esc(new Date(start).toLocaleString());
+      const exchangeInfo=odds||'<p class="ds-session-empty">Bookmaker odds are not available from provider right now.</p>';
+      return `<article class="match">
+        <button type="button" class="match-open" aria-label="Open ${home} vs ${away} match details">
+          <div class="matchtop"><span>${esc(sportLabel)} · ${esc(leagueName)}</span><span class="tag">${started?"STARTED TIME":"UPCOMING"}</span></div>
+          <div class="teams"><div class="team">${home}</div><div class="vs">VS</div><div class="team">${away}</div></div>
+          <div class="matchbottom"><span>${matchTime}</span><span>VIEW MATCH</span></div>
+          <div class="match-open-hint"><span>OPEN MATCH DETAILS</span><span>›</span></div>
+        </button>
+        <div class="match-exchange-template hidden">${exchangeInfo}<p class="ds-session-empty">These are bookmaker reference odds, not live Back/Lay exchange prices. Live score/status is not verified by this fixture feed.</p></div>
+        <div class="match-teams-data hidden" data-home="${home}" data-away="${away}" data-status="${started?"STARTED TIME":"UPCOMING"}" data-time="${matchTime}"></div>
+      </article>`;
+    }).join("");
+    const output=html||`<div class="match">No ${selectedFilter==="Live"?"started-time":selectedFilter==="Upcoming"?"upcoming":""} fixtures returned for ${esc(leagueName)} right now.</div>`;
+    list.innerHTML=output;
+    sports.innerHTML=output;
+  }catch(error){
+    console.error("ODDS ERROR:",error);
+    list.innerHTML='<div class="match">League data could not load. Check API credits and try again.</div>';
+    sports.innerHTML=list.innerHTML;
+  }
+}
+
+// SportScore live-score feed. This is independent from Odds API and the existing RapidAPI exchange.
+let dsLiveSport = "football";
+let dsLiveTimer = null;
+let dsLiveBusy = false;
+const dsLiveSportLabels = {football:"Football",cricket:"Cricket",basketball:"Basketball",tennis:"Tennis"};
+const dsLiveEsc = value => String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+async function loadDsLiveScores(){
+  const statusEl=$("liveScoreStatus"), listEl=$("liveScoreList");
+  if(!statusEl || !listEl || dsLiveBusy) return;
+  dsLiveBusy=true;
+  statusEl.textContent=`Loading ${dsLiveSportLabels[dsLiveSport]} live scores…`;
+  try{
+    const url=`https://sportscore.com/api/v1/fixtures/?sport=${encodeURIComponent(dsLiveSport)}&status=live&limit=100`;
+    const response=await fetch(url,{method:"GET",headers:{"Accept":"application/json"},cache:"no-store"});
+    if(!response.ok) throw new Error(`SportScore returned HTTP ${response.status}`);
+    const payload=await response.json();
+    const matches=Array.isArray(payload)?payload:(Array.isArray(payload?.matches)?payload.matches:[]);
+    const live=matches.filter(m=>String(m.status||"").toLowerCase()==="live");
+    if(!live.length){
+      statusEl.textContent=`No ${dsLiveSportLabels[dsLiveSport]} live matches are listed right now.`;
+      listEl.innerHTML="";
+      return;
+    }
+    statusEl.textContent=`🔴 ${live.length} ${dsLiveSportLabels[dsLiveSport]} matches live · Updated ${new Date().toLocaleTimeString()}`;
+    listEl.innerHTML=live.map(m=>{
+      const home=dsLiveEsc(m.home||"Home"), away=dsLiveEsc(m.away||"Away");
+      const hs=m.home_score==null||m.home_score===""?"—":dsLiveEsc(m.home_score);
+      const as=m.away_score==null||m.away_score===""?"—":dsLiveEsc(m.away_score);
+      const phase=dsLiveEsc(m.status_text||"LIVE");
+      const league=dsLiveEsc(m.competition||dsLiveSportLabels[dsLiveSport]);
+      const time=dsLiveEsc(m.time||"");
+      const homeLogo=m.home_logo?`<img src="${dsLiveEsc(m.home_logo)}" alt="" loading="lazy" style="width:25px;height:25px;object-fit:contain">`:"";
+      const awayLogo=m.away_logo?`<img src="${dsLiveEsc(m.away_logo)}" alt="" loading="lazy" style="width:25px;height:25px;object-fit:contain">`:"";
+      return `<article class="match"><div class="matchtop"><span>${league}</span><span class="live">● LIVE ${time?"· "+time:""}</span></div><div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:13px 0"><div style="display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;font-weight:750;font-size:12px">${homeLogo}<span>${home}</span></div><strong style="color:#f5c451;font-size:18px;white-space:nowrap">${hs} - ${as}</strong><div style="display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;font-weight:750;font-size:12px">${away}<span>${awayLogo}</span></div></div><div class="matchbottom"><span class="live">${phase}</span><span>SPORTSCORE LIVE</span></div></article>`;
+    }).join("");
+  }catch(error){
+    console.error("SPORTSCORE LIVE FEED ERROR:",error);
+    statusEl.textContent="Live scores could not load in this browser. The API link works, but browser access may be blocked; a Supabase proxy may be needed.";
+    listEl.innerHTML="";
+  }finally{dsLiveBusy=false;}
+}
+
+document.querySelectorAll("[data-live-sport]").forEach(button=>button.addEventListener("click",()=>{
+  dsLiveSport=button.dataset.liveSport;
+  document.querySelectorAll("[data-live-sport]").forEach(b=>b.classList.toggle("active",b===button));
+  loadDsLiveScores();
+}));
+function startDsLiveScoreRefresh(){
+  if(dsLiveTimer) clearInterval(dsLiveTimer);
+  loadDsLiveScores();
+  dsLiveTimer=setInterval(()=>{
+    if(!document.hidden && !$("appView").classList.contains("hidden")) loadDsLiveScores();
+  },60000);
+}
+
+$("leagueSelect")?.addEventListener("change",()=>renderMatches());
+
+// Refresh match reference odds periodically while the dashboard is visible.
+// This refreshes the provider's bookmaker reference data; it is not a direct exchange feed.
+let dsOddsRefreshTimer = null;
+let dsOddsRefreshBusy = false;
+
+function startDsOddsAutoRefresh(){
+  if(dsOddsRefreshTimer) clearInterval(dsOddsRefreshTimer);
+  dsOddsRefreshTimer = setInterval(async()=>{
+    if(document.hidden || $("appView").classList.contains("hidden") || dsOddsRefreshBusy) return;
+    dsOddsRefreshBusy = true;
+    try { await renderMatches(); }
+    finally { dsOddsRefreshBusy = false; }
+  }, 60000);
+}
+
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden && !$("appView").classList.contains("hidden")){
+    if(!dsOddsRefreshBusy){
+      dsOddsRefreshBusy = true;
+      renderMatches().finally(()=>{ dsOddsRefreshBusy = false; });
+    }
+  }
+});
+
+  
+document.querySelectorAll("[data-sport]").forEach(btn=>btn.addEventListener("click",()=>{selectedSport=btn.dataset.sport;document.querySelectorAll("[data-sport]").forEach(b=>b.classList.toggle("active",b.dataset.sport===selectedSport));renderMatches();showPage("sportsPage")}));
+document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedFilter=btn.dataset.filter;document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b===btn));renderMatches()}));
+function showPage(page){localStorage.setItem("dsLastPage",page);["homePage","sportsPage","updatesPage","profilePage"].forEach(id=>$(id).classList.toggle("hidden",id!==page));document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));window.scrollTo(0,0)}
+document.querySelectorAll(".navbtn").forEach(btn=>btn.addEventListener("click",()=>showPage(btn.dataset.page)));
+$("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();$("appView").classList.add("hidden");$("authView").classList.remove("hidden");$("password").value="";showStatus("You have logged out.")});
+(async()=>{
+  
+
+  const {data:{session}}=await client.auth.getSession();
+
+  if(session){
+    const id=session.user.user_metadata?.username
+      ||session.user.email?.split("@")[0]
+      ||"Player";
+
+    await enterDashboard(session.user,id);
+  }
+})();
+</script>
+<script>  
+/* DS FOREVER account dropdown - add-on patch */  
+(() => {  
+  const user = document.getElementById("userLabel");  
+  if (!user) return;  
+  
+  const style = document.createElement("style");  
+  style.textContent = `  
+    .ds-user-wrap{position:relative}  
+    .ds-user-menu{position:absolute;right:0;top:calc(100% + 10px);width:min(290px,88vw);max-height:72vh;overflow:auto;background:#0c1d33;border:1px solid #345779;border-radius:16px;padding:9px;box-shadow:0 18px 45px #000b;z-index:30}  
+    .ds-menu-head{padding:10px 11px 12px;border-bottom:1px solid #244363;margin-bottom:5px}  
+    .ds-menu-head strong{display:block;color:#f5f8ff}  
+    .ds-menu-head small{color:#9eb1c8}  
+    .ds-menu-item{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 11px;border:0;border-radius:10px;background:transparent;color:#eaf2ff;font-size:13px}  
+    .ds-menu-item:active,.ds-menu-item:hover{background:#173653}  
+    .ds-menu-item .ico{width:22px;text-align:center;color:#f5c451;font-size:17px}  
+    .ds-menu-item.logout{color:#ff9a9a}  
+    .ds-menu-pop{position:fixed;inset:0;background:#000a;z-index:50;display:grid;place-items:center;padding:18px}  
+    .ds-menu-dialog{width:min(100%,420px);max-height:80vh;overflow:auto;background:#0c1d33;border:1px solid #345779;border-radius:18px;padding:20px;color:#f5f8ff;box-shadow:0 20px 60px #000b}  
+    .ds-menu-dialog h2{margin:0 0 10px;color:#f5c451;font-size:21px}  
+    .ds-menu-dialog p{color:#b8c8da;font-size:13px;line-height:1.55}  
+    .ds-menu-dialog label{display:block;margin:12px 0 6px;font-size:12px}  
+    .ds-menu-dialog input{width:100%;padding:12px;border-radius:10px;border:1px solid #38648b;background:#102943;color:white}  
+    .ds-menu-actions{display:flex;gap:9px;margin-top:17px}  
+    .ds-menu-actions button{flex:1;padding:11px;border-radius:10px;border:1px solid #345779;background:#102743;color:#fff}  
+    .ds-menu-actions .gold{background:linear-gradient(180deg,#ffe58b,#e8a91f);color:#101827;border:0;font-weight:800}  
+  `;  
+  document.head.appendChild(style);  
+  
+  const wrap = document.createElement("div");  
+  wrap.className = "ds-user-wrap";  
+  user.parentNode.insertBefore(wrap, user);  
+  wrap.appendChild(user);  
+  user.style.cursor = "pointer";  
+  user.setAttribute("role", "button");  
+  user.setAttribute("aria-label", "Open user menu");  
+  
+  const menu = document.createElement("div");  
+  menu.className = "ds-user-menu hidden";  
+  menu.innerHTML = `  
+    <div class="ds-menu-head"><strong id="dsMenuName">DS FOREVER MEMBER</strong><small>User Account</small></div>  
+    <button class="ds-menu-item" data-ds="home"><span class="ico">⌂</span>Home</button>  
+    <button class="ds-menu-item" data-ds="bonus"><span class="ico">🎟</span>Bonus Coupon</button>  
+    <button class="ds-menu-item" data-ds="statement"><span class="ico">▤</span>Account Statement</button>  
+    <button class="ds-menu-item" data-ds="history"><span class="ico">◷</span>Bet History</button>  
+    <button class="ds-menu-item" data-ds="unsettled"><span class="ico">◴</span>Unsettled Bets</button>  
+    <button class="ds-menu-item" data-ds="values"><span class="ico">☷</span>Set Button Values</button>  
+    <button class="ds-menu-item" data-ds="password"><span class="ico">🔑</span>Change Password</button>  
+    <button class="ds-menu-item" data-ds="rules"><span class="ico">ⓘ</span>Rules & Information</button>  
+    <button class="ds-menu-item" data-ds="support"><span class="ico">✉</span>Support Center</button>  
+    <button class="ds-menu-item" data-ds="profile"><span class="ico">♙</span>My Profile</button>  
+    <button class="ds-menu-item logout" data-ds="logout"><span class="ico">↪</span>Logout</button>  
+  `;  
+  wrap.appendChild(menu);  
+  
+  const closeMenu = () => menu.classList.add("hidden");  
+  user.addEventListener("click", (e) => {  
+    e.stopPropagation();  
+    menu.classList.toggle("hidden");  
+  });  
+  document.addEventListener("click", (e) => {  
+    if (!wrap.contains(e.target)) closeMenu();  
+  });  
+  
+  const descriptions = {  
+    bonus: ["Bonus Coupon", "Coupon services are not connected yet. No coupon can be issued or redeemed from this dashboard."],  
+    statement: ["Account Statement", "No payment wallet or financial transactions are connected to this sports information dashboard."],  
+    history: ["Bet History", "Betting services are not connected to this dashboard, so no bet records are available here."],  
+    unsettled: ["Unsettled Bets", "No betting or settlement service is connected. This page does not accept or manage wagers."],  
+    values: ["Set Button Values", "Custom betting stake/button values are not enabled. The current dashboard provides sports fixtures and information only."],  
+    rules: ["Rules & Information", "DS FOREVER currently displays sample sports fixtures. Live scores and schedules are not connected yet. No deposits, withdrawals, wagers, or cash balances are processed here."],  
+    support: ["Support Center", "Support contact details have not been configured yet. Please contact the site administrator through your usual channel."]  
+  };  
+  
+  function showDialog(title, body, passwordForm = false) {  
+    const overlay = document.createElement("div");  
+    overlay.className = "ds-menu-pop";  
+    overlay.innerHTML = `<div class="ds-menu-dialog" role="dialog" aria-modal="true">  
+      <h2>${title}</h2>${body}  
+      <div class="ds-menu-actions">  
+        <button type="button" class="ds-close">Close</button>  
+        ${passwordForm ? '<button type="submit" form="dsPasswordForm" class="gold">Update Password</button>' : ""}  
+      </div>  
+    </div>`;  
+    document.body.appendChild(overlay);  
+    overlay.addEventListener("click", e => { if (e.target === overlay || e.target.closest(".ds-close")) overlay.remove(); });  
+    return overlay;  
+  }  
+  
+  menu.addEventListener("click", async (e) => {  
+    const button = e.target.closest("[data-ds]");  
+    if (!button) return;  
+    const action = button.dataset.ds;  
+    closeMenu();  
+  
+    if (action === "home") {  
+      document.querySelector('[data-page="homePage"]')?.click();  
+      return;  
+    }  
+    if (action === "profile") {  
+      document.querySelector('[data-page="profilePage"]')?.click();  
+      return;  
+    }  
+    if (action === "logout") {  
+      document.getElementById("logoutBtn")?.click();  
+      return;  
+    }  
+    if (action === "password") {  
+      const overlay = showDialog("Change Password", `  
+        <form id="dsPasswordForm">  
+          <label for="dsNewPassword">New password (minimum 8 characters)</label>  
+          <input id="dsNewPassword" type="password" minlength="8" autocomplete="new-password" required>  
+          <label for="dsConfirmPassword">Confirm new password</label>  
+          <input id="dsConfirmPassword" type="password" minlength="8" autocomplete="new-password" required>  
+          <p id="dsPasswordStatus"></p>  
+        </form>`, true);  
+      overlay.querySelector("#dsPasswordForm").addEventListener("submit", async (ev) => {  
+        ev.preventDefault();  
+        const a = overlay.querySelector("#dsNewPassword").value;  
+        const b = overlay.querySelector("#dsConfirmPassword").value;  
+        const status = overlay.querySelector("#dsPasswordStatus");  
+        if (a.length < 8 || a !== b) {  
+          status.textContent = a.length < 8 ? "Password must be at least 8 characters." : "Passwords do not match.";  
+          return;  
+        }  
+        const submit = overlay.querySelector('button[type="submit"]');  
+        submit.disabled = true;  
+        submit.textContent = "Updating...";  
+        try {  
+          const { error } = await client.auth.updateUser({ password: a });  
+          if (error) throw error;  
+          status.textContent = "Password successfully updated.";  
+          overlay.querySelector("#dsPasswordForm").reset();  
+        } catch (err) {  
+          status.textContent = err.message || "Password update failed.";  
+        } finally {  
+          submit.disabled = false;  
+          submit.textContent = "Update Password";  
+        }  
+      });  
+      return;  
+    }  
+    if (descriptions[action]) {  
+      const [title, message] = descriptions[action];  
+      showDialog(title, `<p>${message}</p><p style="color:#f5c451;font-size:11px">INFORMATION ONLY • FEATURE NOT CONNECTED</p>`);  
+    }  
+  });  
+  
+  const syncName = () => {  
+    const name = document.getElementById("userLabel")?.textContent?.trim() || "DS FOREVER MEMBER";  
+    const target = document.getElementById("dsMenuName");  
+    if (target) target.textContent = name;  
+  };  
+  syncName();  
+  const label = document.getElementById("userLabel");  
+  if (label) new MutationObserver(syncName).observe(label, { childList: true, characterData: true, subtree: true });  
+})();  
+</script>
+  
+<!-- DS FOREVER WhatsApp Customer Support -->
+<a href="https://wa.me/13676676450?text=Hello%20DS%20FOREVER%20Support"
+   class="ds-whatsapp-support"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="Chat with DS FOREVER Support">
+  <span class="ds-wa-icon">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="22" height="22">
+  </span>
+  <span class="ds-wa-text">
+    <strong>24×7</strong>
+    <small>Customer Support</small>
+  </span>
+</a>
+
+<style>
+.ds-whatsapp-support {
+  position: fixed;
+  right: 15px;
+  bottom: 90px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 3px;
+  background: #087f45;
+  color: white;
+  text-decoration: none;
+  border: 2px solid #fff;
+  border-radius: 40px;
+  box-shadow: 0 4px 16px #0008;
+  font-family: Arial, sans-serif;
+}
+.ds-wa-icon {
+font-size: 18px;
+  font-weight: bold;
+}
+  .ds-wa-icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+.ds-wa-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.ds-wa-text strong {
+  font-size: 13px;
+}
+.ds-wa-text small {
+  font-size: 10px;
+}
+.ds-whatsapp-support:active {
+  transform: scale(.96);
+}
+
+.match-open{display:block;width:100%;text-align:left;color:inherit;background:transparent;border:0;padding:0}
+.match-open:active{opacity:.85}
+.match-open-hint{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:var(--gold);font-size:11px;font-weight:800}
+.match-detail-overlay{position:fixed;inset:0;z-index:100;background:#040b15f5;overflow:auto;padding:14px 12px 100px}
+.match-detail-card{width:min(100%,520px);margin:0 auto;background:#0c1d33;border:1px solid #315777;border-radius:18px;padding:16px;min-height:70vh}
+.match-detail-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
+.match-detail-back{border:1px solid #315777;background:#102743;color:#fff;border-radius:12px;padding:10px 14px;font-weight:750}
+.match-detail-title{font-size:17px;font-weight:900}
+.match-detail-teams{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:18px 8px;margin-bottom:12px;border-bottom:1px solid var(--line);font-weight:850;text-align:center}
+.match-detail-teams span{flex:1}
+.match-detail-teams b{color:var(--gold)}
+.match-detail-card .ds-exchange{margin-top:14px}
+.match-detail-empty{color:var(--muted);font-size:13px;padding:14px 0}
+</style>
+  
+<style>
+.ds-exchange{margin-top:12px;padding:12px;border:1px solid #3b6387;border-radius:13px;background:linear-gradient(145deg,#0a2037,#091729)}
+.ds-ex-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#f5c451;font-size:11px;letter-spacing:.5px}
+.ds-ex-head span{font-size:9px;color:#9eb1c8}
+.ds-ex-note{font-size:10px;line-height:1.5;color:#b6c8dc;margin:9px 0}
+.ds-ex-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.ds-ex-runner{padding:10px;background:#102943;border:1px solid #294967;border-radius:10px}
+.ds-ex-team{font-size:12px;font-weight:800;margin-bottom:8px}
+.ds-ex-quotes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ds-ex-back,.ds-ex-lay{display:flex;justify-content:space-between;align-items:center;padding:9px;border-radius:8px}
+.ds-ex-back{background:#174b70}.ds-ex-lay{background:#673b49}
+.ds-ex-quotes small{font-size:9px;color:#e6f0fb}.ds-ex-quotes b{font-size:17px;color:#fff}
+.ds-ex-source{display:block;color:#9eb1c8;font-size:9px;margin-top:7px}
+.ds-session-heading{display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px;color:#f5c451;font-size:12px;font-weight:900;letter-spacing:.4px}
+.ds-session-heading span{font-size:9px;color:#9eb1c8;font-weight:600}
+.ds-session-empty{color:#9eb1c8;font-size:11px;line-height:1.5;padding:10px;background:#102943;border:1px solid #294967;border-radius:9px}
+.ds-session-row .ds-ex-quotes{grid-template-columns:1fr 1fr}
+.ds-ex-foot{text-align:center;color:#f5c451;font-size:8px;letter-spacing:.5px;margin-top:10px}
+.ds-ex-quotes{
+  display:flex !important;
+  gap:8px !important;
+  justify-content:space-between !important;
+}
+
+.ds-ex-quotes > div{
+  width:44% !important;
+  max-width:44% !important;
+  flex:none !important;
+}
+</style>
+\n
+<div id="matchDetailOverlay" class="match-detail-overlay hidden" role="dialog" aria-modal="true" aria-label="Match details">
+  <div class="match-detail-card">
+    <div class="match-detail-top">
+      <button type="button" class="match-detail-back" id="closeMatchDetail">← Back to matches</button>
+      <span class="tag" id="detailMatchStatus">MATCH</span>
+    </div>
+    <div class="match-detail-title">MATCH CENTER</div>
+    <div class="match-detail-teams"><span id="detailHomeTeam">Team 1</span><b>VS</b><span id="detailAwayTeam">Team 2</span></div>
+    <div id="detailMatchTime" class="match-detail-empty"></div>
+    <div class="match-detail-title" style="margin-top:18px">MATCH EXCHANGE</div>
+    <div id="detailExchangeContent"></div>
+  </div>
+</div>
+<script>
+let dsRapidOddsTimer = null;
+let dsRapidOddsBusy = false;
+let dsRapidOddsEventId = null;
+let dsRapidOddsRequestToken = 0;
+
+function stopRapidOddsRefresh(){
+  if(dsRapidOddsTimer){
+    clearInterval(dsRapidOddsTimer);
+    dsRapidOddsTimer = null;
+  }
+  dsRapidOddsEventId = null;
+  dsRapidOddsRequestToken++;
+  dsRapidOddsBusy = false;
+}
+
+async function loadRapidMatchOdds(eventId){
+  if(dsRapidOddsBusy || String(eventId) !== String(dsRapidOddsEventId)) return;
+  dsRapidOddsBusy = true;
+  const requestToken = ++dsRapidOddsRequestToken;
+  const content = $("detailExchangeContent");
+
+  try{
+    const {data:feed,error} = await client.functions.invoke(
+      "get-odds",
+      {body:{event_id:Number(eventId)}}
+    );
+    if(error) throw error;
+
+    // Ignore late responses if the user has closed or changed the match.
+    if(requestToken !== dsRapidOddsRequestToken ||
+       String(eventId) !== String(dsRapidOddsEventId) ||
+       $("matchDetailOverlay").classList.contains("hidden")) return;
+
+    const market=(feed?.odds||[]).find(
+      m=>String(m.marketName||"").toLowerCase()==="match odds"
+    ) || (feed?.odds||[]).find(m=>Array.isArray(m.runners));
+    const runners=market?.runners||[];
+    const esc=value=>String(value??"").replace(/[&<>"']/g,
+      c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])
+    );
+
+    if(!runners.length){
+      content.innerHTML='<p class="match-detail-empty">Live odds are not available right now. Retrying automatically…</p>';
+      return;
+    }
+
+    const rows=runners.map(r=>{
+      const backs=(r.ex?.availableToBack||[])
+        .filter(q=>Number(q.price)>1&&Number(q.price)<1000);
+      const lays=(r.ex?.availableToLay||[])
+        .filter(q=>Number(q.price)>1&&Number(q.price)<1000);
+      // Best back is the highest available price; best lay is the lowest.
+      const bestBack=backs.reduce((best,q)=>!best||Number(q.price)>Number(best.price)?q:best,null);
+      const bestLay=lays.reduce((best,q)=>!best||Number(q.price)<Number(best.price)?q:best,null);
+
+      return `<div class="ds-ex-runner">
+        <div class="ds-ex-team">${esc(r.runnerName)}</div>
+        <div class="ds-ex-quotes">
+          <div class="ds-ex-back">
+          <small>BACK</small>
+          <b>${bestBack?Number(bestBack.price).toFixed(2):"—"}</b>
+        </div>
+        <div class="ds-ex-lay">
+          <small>LAY</small>
+          <b>${bestLay?Number(bestLay.price).toFixed(2):"—"}</b>
+        </div>
+</div>
+        <small class="ds-ex-source">Back size: ${bestBack?esc(bestBack.size):"—"} · Lay size: ${bestLay?esc(bestLay.size):"—"}</small>
+      </div>`;
+    }).join("");
+
+    // Session/Fancy data may arrive under feed.section, feed.event.section,
+    // or nested inside market entries in feed.odds. Read all supported locations.
+    const sessionMarkets=(feed?.odds||[]).filter(m=>{
+      const type=String(m.gtype||m.marketType||"").toLowerCase();
+      const name=String(m.marketName||m.mname||"").toLowerCase();
+      return type.includes("fancy") || type.includes("session") ||
+             name.includes("session") || name.includes("fancy");
+    });
+
+    const nestedSections=sessionMarkets.flatMap(m=>{
+      return Array.isArray(m.section)?m.section:(m.section?[m.section]:[]);
+    });
+    // event.section contains match runners, not fancy/session markets.
+    const allSessionSections=nestedSections;
+
+    const sessionRows=allSessionSections.map(section=>{
+      if(!section) return "";
+      const quotes=Array.isArray(section.odds)?section.odds:[];
+      const back=quotes.find(q=>
+        String(q.otype||"").toLowerCase()==="back" &&
+        String(q.oname||"").toLowerCase()==="back1" &&
+        Number(q.odds)>0 && Number(q.size)>0
+      );
+      const lay=quotes.find(q=>
+        String(q.otype||"").toLowerCase()==="lay" &&
+        String(q.oname||"").toLowerCase()==="lay1" &&
+        Number(q.odds)>0 && Number(q.size)>0
+      );
+      const sessionName=section.nat||section.name||section.mname||"Session";
+      const status=section.gstatus||section.status||"";
+      const backPrice=back?Number(back.odds):null;
+      const layPrice=lay?Number(lay.odds):null;
+      return `<div class="ds-ex-runner ds-session-row">
+        <div class="ds-ex-team">${esc(sessionName)}</div>
+        <div class="ds-ex-quotes">
+        <div class="ds-ex-lay"><small>NO / LAY</small><b>${layPrice!==null?layPrice.toFixed(0):"—"}</b></div>
+        <div class="ds-ex-back"><small>YES / BACK</small><b>${backPrice!==null?backPrice.toFixed(0):"—"}</b></div>
+        </div>
+        <small class="ds-ex-source">Back size: ${back?esc(back.size):"—"} · Lay size: ${lay?esc(lay.size):"—"}${status?" · "+esc(status):""}</small>
+      </div>`;
+    }).filter(Boolean).join("");
+
+    content.innerHTML=`<div class="ds-exchange">
+      <div class="ds-ex-head"><strong>MATCH ODDS · ${esc(market?.status||"UNKNOWN")}</strong><span>RAPIDAPI EXCHANGE FEED</span></div>
+      <p class="ds-ex-note">Exchange prices and available sizes returned by the connected RapidAPI feed. Display only; no order placement is connected.</p>
+      <div class="ds-ex-grid">${rows}</div>
+      <div class="ds-session-heading">SESSION MARKETS <span>RAPIDAPI FEED</span></div>
+      ${sessionRows
+        ? `<div class="ds-ex-grid">${sessionRows}</div>`
+        : '<p class="ds-session-empty">Session markets abhi available nahi hain. Feed me prices aate hi yahan dikh jayenge.</p>'}
+      <div class="ds-ex-foot">DISPLAY ONLY · NO ORDER PLACEMENT · REFRESHES EVERY 30 SECONDS</div>
+    </div>`;
+  }catch(err){
+    console.error("RAPIDAPI MATCH ODDS ERROR:",err);
+    if(requestToken === dsRapidOddsRequestToken &&
+       String(eventId) === String(dsRapidOddsEventId) &&
+       !$("matchDetailOverlay").classList.contains("hidden")){
+      content.innerHTML='<p class="match-detail-empty">Odds refresh nahi hue. Dobara koshish ho rahi hai…</p>';
+    }
+  }finally{
+    if(requestToken === dsRapidOddsRequestToken) dsRapidOddsBusy=false;
+  }
+}
+
+function startRapidOddsRefresh(eventId){
+  stopRapidOddsRefresh();
+  dsRapidOddsEventId = String(eventId);
+  loadRapidMatchOdds(eventId); // Load immediately when match opens.
+  dsRapidOddsTimer = setInterval(()=>{
+    if(document.hidden ||
+       $("matchDetailOverlay").classList.contains("hidden")) return;
+    loadRapidMatchOdds(eventId);
+  },3000);
+}
+
+
+document.addEventListener("click",function(event){
+  const openButton=event.target.closest(".match-open");
+
+  if(openButton){
+    const card=openButton.closest(".match");
+    const data=card.querySelector(".match-teams-data");
+    const exchange=card.querySelector(".match-exchange-template");
+    const rapidEventId=openButton.dataset.rapidEvent;
+
+    if(rapidEventId){
+      localStorage.setItem("dsOpenMatch",JSON.stringify({
+        eventId:String(rapidEventId),
+        home:data?.dataset.home||"Team 1",
+        away:data?.dataset.away||"Team 2",
+        status:data?.dataset.status||"MATCH",
+        time:data?.dataset.time||""
+      }));
+    }else{
+      localStorage.removeItem("dsOpenMatch");
+    }
+
+    stopRapidOddsRefresh();
+
+    $("detailHomeTeam").textContent=data?.dataset.home||"Team 1";
+    $("detailAwayTeam").textContent=data?.dataset.away||"Team 2";
+    $("detailMatchStatus").textContent=data?.dataset.status||"MATCH";
+    $("detailMatchTime").textContent=data?.dataset.time||"";
+
+    $("detailExchangeContent").innerHTML=rapidEventId
+      ? '<p class="match-detail-empty">Loading live Match Odds…</p>'
+      : (exchange?.innerHTML||"Exchange unavailable");
+
+    $("matchDetailOverlay").classList.remove("hidden");
+    document.body.style.overflow="hidden";
+
+    if(rapidEventId) startRapidOddsRefresh(rapidEventId);
+  }
+});
+
+function restoreSavedMatchDetail(){
+  let saved;
+  try{
+    saved=JSON.parse(localStorage.getItem("dsOpenMatch")||"null");
+  }catch(e){
+    localStorage.removeItem("dsOpenMatch");
+    return;
+  }
+
+  if(!saved?.eventId)return;
+
+  $("detailHomeTeam").textContent=saved.home;
+  $("detailAwayTeam").textContent=saved.away;
+  $("detailMatchStatus").textContent=saved.status;
+  $("detailMatchTime").textContent=saved.time;
+  $("detailExchangeContent").innerHTML=
+    '<p class="match-detail-empty">Loading live Exchange prices…</p>';
+
+  $("matchDetailOverlay").classList.remove("hidden");
+  document.body.style.overflow="hidden";
+  startRapidOddsRefresh(saved.eventId);
+}
+
+function closeMatchDetail(){
+  stopRapidOddsRefresh();
+  localStorage.removeItem("dsOpenMatch");
+  $("matchDetailOverlay").classList.add("hidden");
+  document.body.style.overflow="";
+}
+
+$("closeMatchDetail").addEventListener("click",closeMatchDetail);
+
+$("matchDetailOverlay").addEventListener("click",function(event){
+  if(event.target===$("matchDetailOverlay"))closeMatchDetail();
+});
+
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden)return;
+  if(dsRapidOddsEventId &&
+    !$("matchDetailOverlay").classList.contains("hidden") &&
+    !dsRapidOddsBusy){
+    loadRapidMatchOdds(dsRapidOddsEventId);
+  }
+});
+</script>
+
+</body>
+</html>
