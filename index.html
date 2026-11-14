@@ -1141,135 +1141,454 @@ async function loadRapidMatchOdds(eventId){
       const sessionName=section.nat||section.name||section.mname||"Session";
       const status=section.gstatus||section.status||"";
       const backPrice=back?Number(back.odds):null;
-      const layPrice=lay?Number(lay.odds):null;
-      return `<div class="ds-ex-runner ds-session-row">
-        <div class="ds-ex-team">${esc(sessionName)}</div>
-        <div class="ds-ex-quotes">
-        <div class="ds-ex-lay"><small>NO / LAY</small><b>${layPrice!==null?layPrice.toFixed(0):"—"}</b></div>
-        <div class="ds-ex-back"><small>YES / BACK</small><b>${backPrice!==null?backPrice.toFixed(0):"—"}</b></div>
-        </div>
-        <small class="ds-ex-source">Back size: ${back?esc(back.size):"—"} · Lay size: ${lay?esc(lay.size):"—"}${status?" · "+esc(status):""}</small>
-      </div>`;
-    }).filter(Boolean).join("");
-
-    content.innerHTML=`<div class="ds-exchange">
-      <div class="ds-ex-head"><strong>MATCH ODDS · ${esc(market?.status||"UNKNOWN")}</strong><span>RAPIDAPI EXCHANGE FEED</span></div>
-      <p class="ds-ex-note">Exchange prices and available sizes returned by the connected RapidAPI feed. Display only; no order placement is connected.</p>
-      <div class="ds-ex-grid">${rows}</div>
-      <div class="ds-session-heading">SESSION MARKETS <span>RAPIDAPI FEED</span></div>
-      ${sessionRows
-        ? `<div class="ds-ex-grid">${sessionRows}</div>`
-        : '<p class="ds-session-empty">Session markets abhi available nahi hain. Feed me prices aate hi yahan dikh jayenge.</p>'}
-      <div class="ds-ex-foot">DISPLAY ONLY · NO ORDER PLACEMENT · REFRESHES EVERY 30 SECONDS</div>
-    </div>`;
-  }catch(err){
-    console.error("RAPIDAPI MATCH ODDS ERROR:",err);
-    if(requestToken === dsRapidOddsRequestToken &&
-       String(eventId) === String(dsRapidOddsEventId) &&
-       !$("matchDetailOverlay").classList.contains("hidden")){
-      content.innerHTML='<p class="match-detail-empty">Odds refresh nahi hue. Dobara koshish ho rahi hai…</p>';
-    }
-  }finally{
-    if(requestToken === dsRapidOddsRequestToken) dsRapidOddsBusy=false;
-  }
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071426">
+<title>DS FOREVER | Sports Center</title>
+<style>
+:root{--bg:#06101f;--panel:#0c1d33;--panel2:#102743;--line:#244363;--gold:#f5c451;--gold2:#ffe49a;--blue:#29a8e8;--muted:#9eb1c8;--white:#f5f8ff;--green:#25c58a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#15375b 0,#071426 48%,#040b15 100%);color:var(--white);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.shell{width:min(100%,520px);margin:auto;min-height:100vh;padding-bottom:82px}
+.top{position:sticky;top:0;z-index:5;background:#071426ed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 16px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#ffe69b,#d99b20);color:#071426;display:grid;place-items:center;font-weight:1000;font-size:19px;box-shadow:0 5px 22px #f5c45135}.brandname{font-weight:950;letter-spacing:1px;font-size:18px}.brandname span{color:var(--gold)}.subbrand{font-size:10px;letter-spacing:2.2px;color:var(--muted);margin-top:1px}.userpill{border:1px solid var(--line);border-radius:20px;padding:8px 11px;color:#dce9f8;font-size:12px;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hero{padding:22px 16px 16px}.eyebrow{color:var(--gold);font-size:11px;letter-spacing:2px;font-weight:800}.hero h1{font-size:27px;line-height:1.12;margin:8px 0 7px}.hero h1 span{color:var(--gold)}.hero p{margin:0;color:var(--muted);font-size:13px}
+.banner{margin:0 16px 18px;border:1px solid #896d32;border-radius:18px;padding:17px;background:linear-gradient(120deg,#173b5e,#10233b 55%,#382d18);position:relative;overflow:hidden}.banner:after{content:"";position:absolute;width:180px;height:180px;border:1px solid #f5c45155;border-radius:50%;right:-65px;top:-70px;box-shadow:0 0 0 18px #f5c4510b,0 0 0 38px #f5c45108}.banner strong{font-size:17px;display:block;max-width:75%}.banner small{color:#d1deec;display:block;margin-top:5px;font-size:12px}.banner .ball{position:absolute;right:20px;bottom:13px;font-size:48px;opacity:.9}
+.section{padding:0 16px;margin:19px 0}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sectionhead h2{font-size:16px;margin:0}.sectionhead a,.linkbtn{color:var(--gold);font-size:12px;background:none;border:0;padding:4px}
+.sports{display:flex;gap:9px;overflow:auto;padding:2px 16px 7px;scrollbar-width:none}.sports::-webkit-scrollbar{display:none}.sport{flex:0 0 82px;border:1px solid var(--line);border-radius:13px;background:#0c1d33;color:#dce9f8;padding:12px 7px;text-align:center;font-size:11px;font-weight:750}.sport .emoji{font-size:22px;display:block;margin-bottom:5px}.sport.active{border-color:var(--gold);background:linear-gradient(145deg,#3b321e,#14263d);color:var(--gold2);box-shadow:0 0 16px #f5c45119}
+.filters{display:flex;gap:8px;overflow:auto;padding:0 16px 5px}.filter{border:1px solid var(--line);border-radius:20px;background:#0b1b2e;color:#c8d7e8;padding:8px 14px;font-size:11px;white-space:nowrap}.filter.active{background:var(--gold);border-color:var(--gold);color:#111a26;font-weight:850}
+.match{background:linear-gradient(135deg,#102641,#0a192b);border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:10px}.matchtop{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px}.live{color:#5ce0a7;font-weight:850;letter-spacing:.8px}.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:13px 0}.team{text-align:center;font-weight:750;font-size:13px}.team .crest{width:34px;height:34px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;background:#173b5d;border:1px solid #37628a;font-size:17px}.vs{font-size:10px;color:var(--gold);font-weight:900}.matchbottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #29445f;padding-top:10px;color:var(--muted);font-size:10px}.tag{border:1px solid #32618a;color:#9dd8ff;padding:4px 8px;border-radius:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{background:linear-gradient(145deg,#132d49,#0b1b2e);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:94px}.tile .big{font-size:23px}.tile strong{display:block;font-size:12px;margin-top:7px}.tile small{color:var(--muted);font-size:10px}
+.news{display:flex;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid #203a55}.news:last-child{border:0}.newsicon{width:42px;height:42px;border-radius:12px;background:#193b5a;display:grid;place-items:center;font-size:21px}.news strong{font-size:12px;display:block}.news small{font-size:10px;color:var(--muted)}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,520px);display:grid;grid-template-columns:repeat(4,1fr);background:#071426f5;backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:9px 7px max(9px,env(safe-area-inset-bottom));z-index:6}.navbtn{background:none;border:0;color:#8fa7c1;font-size:10px;padding:4px}.navbtn span{display:block;font-size:19px;margin-bottom:3px}.navbtn.active{color:var(--gold)}
+.authwrap{min-height:100vh;display:grid;place-items:center;padding:22px 16px}.authcard{width:min(100%,430px);border:1px solid #345779;border-radius:24px;padding:25px 21px;background:linear-gradient(160deg,#102b49,#071426 70%);box-shadow:0 20px 60px #0008}.authbrand{text-align:center;margin-bottom:22px}.authbrand .mark{margin:0 auto 10px;width:58px;height:58px;font-size:24px}.authbrand h1{margin:0;color:var(--gold);font-size:25px;letter-spacing:1px}.authbrand p{color:var(--muted);font-size:12px;margin:6px 0}.authcard label{display:block;font-size:12px;font-weight:750;margin:14px 0 7px}.authcard input{width:100%;padding:14px;border-radius:12px;border:1px solid #38648b;background:#102943;color:white;outline:none}.authcard input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #f5c45120}.primary{width:100%;border:0;border-radius:13px;padding:15px;margin-top:20px;background:linear-gradient(180deg,#ffe58b,#e8a91f);color:#101827;font-weight:950;font-size:16px;box-shadow:0 7px 22px #e8a91f35}.switchline{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}.switchline button{border:0;background:none;color:var(--gold);font-weight:850}.status{font-size:12px;text-align:center;min-height:18px;margin-top:12px;color:#8fe6be}.status.err{color:#ff9292}
+.profilebox{background:#102641;border:1px solid var(--line);border-radius:16px;padding:16px}.profilebox p{color:var(--muted);font-size:12px}.outline{background:transparent;border:1px solid var(--line);color:#e8f1fc;border-radius:10px;padding:10px 13px}
+@media(min-width:520px){.shell{border-left:1px solid #1c3854;border-right:1px solid #1c3854}.hero h1{font-size:32px}}
+/* Compact Match Exchange */
+.ds-exchange{
+  zoom:1.0 !important;
+  font-size:13px !important;
+}
+.ds-ex-runner{
+  padding:10px !important;
+  margin-bottom:8px !important;
+}
+.ds-ex-team{
+  font-size:13px !important;
+}
+.ds-ex-quotes > div{
+  min-height:42px !important;
+  padding:8px 10px !important;
+}
+.ds-ex-quotes b{
+  font-size:17px !important;
+}
+.ds-ex-quotes small{
+  font-size:11px !important;
+}
+.ds-ex-source{
+  font-size:10px !important;
+}  
+  /* Reduce Exchange Height */
+.ds-exchange{
+  width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  padding:6px !important;
+}
+.ds-ex-head{
+  margin-bottom:5px !important;
+}
+.ds-ex-note{
+  margin:4px 0 !important;
+  line-height:1.25 !important;
+}
+.ds-ex-runner{
+  padding:6px !important;
+  margin-bottom:5px !important;
+}
+.ds-ex-team{
+  margin-bottom:4px !important;
+}
+.ds-ex-quotes{
+  gap:5px !important;
+}
+.ds-ex-quotes > div{
+  min-height:30px !important;
+  padding:5px 7px !important;
+}
+.ds-ex-source{
+  margin-top:3px !important;
+  line-height:1.1 !important;
+}
+.ds-ex-session-heading{
+  margin:8px 0 4px !important;
+}
+.ds-ex-grid{
+  gap:5px !important;
+}
+.account-strip{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:12px;
+  margin:0;
+  padding:0;
+  background:transparent;
+  border:0;
+}
+.account-stat{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
+}
+.account-stat small{
+  display:inline;
+  color:#9eb1c8;
+  font-size:10px;
+}
+.account-stat strong{
+  display:inline;
+  color:#f5c451;
+  font-size:13px;
+  margin:0;
+}
+.account-stat em{
+  display:none;
 }
 
-function startRapidOddsRefresh(eventId){
-  stopRapidOddsRefresh();
-  dsRapidOddsEventId = String(eventId);
-  loadRapidMatchOdds(eventId); // Load immediately when match opens.
-  dsRapidOddsTimer = setInterval(()=>{
-    if(document.hidden ||
-       $("matchDetailOverlay").classList.contains("hidden")) return;
-    loadRapidMatchOdds(eventId);
-  },3000);
+.shell{
+  position:relative;
 }
 
-
-document.addEventListener("click",function(event){
-  const openButton=event.target.closest(".match-open");
-
-  if(openButton){
-    const card=openButton.closest(".match");
-    const data=card.querySelector(".match-teams-data");
-    const exchange=card.querySelector(".match-exchange-template");
-    const rapidEventId=openButton.dataset.rapidEvent;
-
-    if(rapidEventId){
-      localStorage.setItem("dsOpenMatch",JSON.stringify({
-        eventId:String(rapidEventId),
-        home:data?.dataset.home||"Team 1",
-        away:data?.dataset.away||"Team 2",
-        status:data?.dataset.status||"MATCH",
-        time:data?.dataset.time||""
-      }));
-    }else{
-      localStorage.removeItem("dsOpenMatch");
-    }
-
-    stopRapidOddsRefresh();
-
-    $("detailHomeTeam").textContent=data?.dataset.home||"Team 1";
-    $("detailAwayTeam").textContent=data?.dataset.away||"Team 2";
-    $("detailMatchStatus").textContent=data?.dataset.status||"MATCH";
-    $("detailMatchTime").textContent=data?.dataset.time||"";
-
-    $("detailExchangeContent").innerHTML=rapidEventId
-      ? '<p class="match-detail-empty">Loading live Match Odds…</p>'
-      : (exchange?.innerHTML||"Exchange unavailable");
-
-    $("matchDetailOverlay").classList.remove("hidden");
-    document.body.style.overflow="hidden";
-
-    if(rapidEventId) startRapidOddsRefresh(rapidEventId);
-  }
-});
-
-function restoreSavedMatchDetail(){
-  let saved;
-  try{
-    saved=JSON.parse(localStorage.getItem("dsOpenMatch")||"null");
-  }catch(e){
-    localStorage.removeItem("dsOpenMatch");
-    return;
-  }
-
-  if(!saved?.eventId)return;
-
-  $("detailHomeTeam").textContent=saved.home;
-  $("detailAwayTeam").textContent=saved.away;
-  $("detailMatchStatus").textContent=saved.status;
-  $("detailMatchTime").textContent=saved.time;
-  $("detailExchangeContent").innerHTML=
-    '<p class="match-detail-empty">Loading live Exchange prices…</p>';
-
-  $("matchDetailOverlay").classList.remove("hidden");
-  document.body.style.overflow="hidden";
-  startRapidOddsRefresh(saved.eventId);
+.account-strip{
+  position:absolute;
+  top:78px;
+  right:16px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:12px;
+  margin:0;
+  padding:0;
+  background:transparent;
+  border:0;
+  z-index:10;
 }
 
-function closeMatchDetail(){
-  stopRapidOddsRefresh();
-  localStorage.removeItem("dsOpenMatch");
-  $("matchDetailOverlay").classList.add("hidden");
-  document.body.style.overflow="";
+.account-stat{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
 }
 
-$("closeMatchDetail").addEventListener("click",closeMatchDetail);
+.account-stat small{
+  display:inline;
+  color:#9eb1c8;
+  font-size:9px;
+}
 
-$("matchDetailOverlay").addEventListener("click",function(event){
-  if(event.target===$("matchDetailOverlay"))closeMatchDetail();
-});
+.account-stat strong{
+  display:inline;
+  color:#f5c451;
+  font-size:13px;
+  margin:0;
+}
 
-document.addEventListener("visibilitychange",()=>{
-  if(document.hidden)return;
-  if(dsRapidOddsEventId &&
-    !$("matchDetailOverlay").classList.contains("hidden") &&
-    !dsRapidOddsBusy){
-    loadRapidMatchOdds(dsRapidOddsEventId);
-  }
-});
-</script>
+.account-stat em{
+  display:none;
+}
 
-</body>
-</html>
+/* DS FOREVER GOLDEN BUTTON DESIGN */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px 18px;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #ffe49a, #f5c451, #d99b20);
+  color: #071426;
+  border: 1px solid #ffe49a;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(245,196,81,0.18);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* DS FOREVER PREMIUM LOGIN DESIGN */
+
+#authView.authwrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 25px 15px;
+  background:
+    radial-gradient(ellipse at center, #102d49 0%, #031326 65%, #000814 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+#authView .authcard {
+  width: 100%;
+  max-width: 520px;
+  padding: 30px 24px;
+  border: 1px solid #d9a936;
+  border-radius: 26px;
+  background: linear-gradient(145deg, #102b47, #020d1d);
+  box-shadow: 0 0 35px rgba(255,190,45,.2);
+}
+
+#authView .authbrand {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+#authView .mark {
+  width: 78px;
+  height: 78px;
+  margin: auto;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: linear-gradient(145deg,#ffe49a,#d99b20);
+  color: #071426;
+  font-size: 32px;
+  font-weight: 900;
+}
+
+#authView .authbrand h1 {
+  color: #ffc94d;
+  font-size: 29px;
+  margin: 16px 0 7px;
+}
+
+#authView .authbrand p {
+  color: #a9bad0;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+#authView form label {
+  display: block;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 16px 0 9px;
+}
+
+#authView input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 17px;
+  border-radius: 15px;
+  border: 1px solid #3986c5;
+  background: #102b47;
+  color: white;
+  font-size: 16px;
+}
+
+#authView input:focus {
+  outline: 2px solid #ffc94d;
+}
+
+#authView #submitBtn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 18px;
+  border: 2px solid #ffe49a;
+  border-radius: 18px;
+  background: linear-gradient(135deg,#ffe49a,#f5bd35,#d99b20);
+  color: #071426;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+#authView .switchline {
+  text-align: center;
+  margin-top: 22px;
+  color: white;
+}
+
+#authView #switchMode {
+  color: #ffc94d;
+  font-weight: 800;
+}
+
+#authView .status {
+  color: #78e5b8;
+  text-align: center;
+  margin-top: 15px;
+}
+  
+</style>
+</head>
+<body>
+
+
+<div id="authView" class="authwrap">
+  <div class="authcard">
+    <div class="authbrand">
+      <div style="font-size:38px;color:#ffd34e;">♛</div>
+      <div class="mark">DS</div>
+      <h1>DS FOREVER</h1>
+      <p>SPORTS CENTER • YOUR GAME, YOUR PASSION</p>
+      <h2 style="color:white;margin-top:28px;font-size:27px;">
+        WELCOME <span style="color:#ffca42;">BACK</span>
+      </h2>
+      <p>Login to your DS FOREVER account</p>
+      <div style="color:#ffca42;margin:22px 0;">━━━━━━━━━━━━━━━━</div>
+      <div style="font-size:25px;">🏏 ⚽ 🎾</div>
+    </div>
+
+    <form id="authForm">
+      <div id="nameField" class="hidden">
+        <label for="fullName">Full Name</label>
+        <input id="fullName" type="text" placeholder="Enter your full name">
+      </div>
+
+      <label for="userId">User ID</label>
+      <input id="userId" type="text" autocomplete="username"
+        placeholder="Enter your User ID" required>
+
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password"
+        placeholder="Enter your password" required>
+
+      <button id="submitBtn" class="primary" type="submit">➜ LOGIN</button>
+    </form>
+
+    <div class="switchline">
+      <span id="switchText">New User?</span>
+      <button id="switchMode" type="button">Create Account</button>
+    </div>
+
+    <div id="authStatus" class="status" role="status"></div>
+
+    <div style="text-align:center;color:white;margin-top:25px;">
+      🛡️ Secure Login <span style="color:#ffca42;"> • </span>
+      Free Coins <span style="color:#ffca42;"> • </span>
+      Sports Center
+    </div>
+  </div>
+</div>
+
+<div id="appView" class="shell hidden">
+  <header class="top"><div class="toprow"><div class="brand"><div class="mark">DS</div><div><div class="brandname">DS <span>FOREVER</span></div><div class="subbrand">SPORTS CENTER</div></div></div><div class="userpill" id="userLabel">PLAYER</div></div></header>
+  
+<div class="account-strip">
+  <div class="account-stat">
+    <small>MY POINTS</small>
+    <strong id="pointsBalance">0</strong>
+    <em>Available Points</em>
+  </div>
+  <div class="account-stat">
+    <small>EXPOSURE</small>
+    <strong id="exposureValue">0</strong>
+    <em>Current Exposure</em>
+  </div>
+</div>
+
+  <main id="homePage">
+    <section class="hero"><div class="eyebrow">WELCOME TO THE ARENA</div><h1>Feel the game.<br><span>Live the moment.</span></h1><p>Your sports hub for fixtures, scores and updates.</p></section>
+    <div class="banner"><strong>THE GAME NEVER STOPS</strong><small>Follow your favourite sports in one place.</small><div class="ball">🏆</div></div>
+    <div class="section"><div class="sectionhead"><h2>Explore Sports</h2><span class="eyebrow">01 / SPORTS</span></div></div>
+    <div class="sports" id="sportsList">
+      <button class="sport active" data-sport="All"><span class="emoji">🏆</span>All Sports</button>
+      <button class="sport" data-sport="Cricket"><span class="emoji">🏏</span>Cricket</button>
+      <button class="sport" data-sport="Football"><span class="emoji">⚽</span>Football</button>
+      <button class="sport" data-sport="Tennis"><span class="emoji">🎾</span>Tennis</button>
+      <button class="sport" data-sport="Basketball"><span class="emoji">🏀</span>Basketball</button>
+      <button class="sport" data-sport="Table Tennis"><span class="emoji">🏓</span>Table Tennis</button>
+      <button class="sport" data-sport="Hockey"><span class="emoji">🏑</span>Hockey</button>
+    </div>
+    <section class="section"><div class="sectionhead"><h2>Match Center</h2><span class="eyebrow">02 / FIXTURES</span></div></section>
+    <div class="filters" id="matchFilters"><button class="filter active" data-filter="All">All Matches</button><button class="filter" data-filter="Live">Live</button><button class="filter" data-filter="Upcoming">Upcoming</button></div>
+    <div class="section" style="padding-top:8px"><label for="leagueSelect" style="display:block;margin-bottom:8px;color:#9fb4cc">Choose League</label><select id="leagueSelect" style="width:100%;padding:13px;border-radius:12px;background:#102743;color:#fff;border:1px solid #244363"><option value="cricket_odi">One Day Internationals</option></select><small id="leagueNote" style="display:block;margin-top:8px;color:#9fb4cc">One league is loaded at a time to protect Trial API credits. Live scores and final results need a separate score/status feed.</small></div>
+    <section class="section" id="matchList"></section>
+    <section class="section"><div class="sectionhead"><h2>Quick Access</h2><span class="eyebrow">03 / HUB</span></div><div class="grid2">
+      <div class="tile"><div class="big">📅</div><strong>Fixtures & Schedule</strong><small>Browse match fixtures</small></div>
+      <div class="tile"><div class="big">📊</div><strong>Results Center</strong><small>Check match results</small></div>
+      <div class="tile"><div class="big">📰</div><strong>Sports Updates</strong><small>Latest sports headlines</small></div>
+      <div class="tile"><div class="big">⭐</div><strong>Favourite Teams</strong><small>Your teams in one place</small></div>
+   <div class="tile" onclick="location.href='odds.html'" style="cursor:pointer">
+  <div class="big">📈</div>
+  <strong>Live Match Odds</strong>
+  <small>View automatic match odds</small>
+   </div>
+    </div></section>
+    <section class="section"><div class="sectionhead"><h2>Latest Updates</h2><span class="eyebrow">04 / NEWS</span></div>
+      <div class="news"><div class="newsicon">🏏</div><div><strong>Cricket match centre</strong><small>Fixtures and score updates will appear here.</small></div></div>
+      <div class="news"><div class="newsicon">⚽</div><div><strong>Football match centre</strong><small>Follow upcoming football fixtures.</small></div></div>
+    </section>
+  </main>
+  <main id="sportsPage" class="hidden"><section class="hero"><div class="eyebrow">DISCOVER</div><h1>All <span>Sports</span></h1><p>Choose a sport to view its fixtures.</p></section><div class="sports" id="sportsList2">
+    <button class="sport" data-sport="Cricket"><span class="emoji">🏏</span>Cricket</button><button class="sport" data-sport="Football"><span class="emoji">⚽</span>Football</button><button class="sport" data-sport="Tennis"><span class="emoji">🎾</span>Tennis</button><button class="sport" data-sport="Basketball"><span class="emoji">🏀</span>Basketball</button><button class="sport" data-sport="Hockey"><span class="emoji">🏑</span>Hockey</button>
+  <button class="sport" data-sport="Table Tennis"><span class="emoji">🏓</span>Table Tennis</button>
+  </div><section class="section" id="sportsMatches"></section></main>
+  <main id="updatesPage" class="hidden"><section class="hero"><div class="eyebrow">DS FOREVER</div><h1>Sports <span>Updates</span></h1><p>News and announcements.</p></section><section class="section"><div class="news"><div class="newsicon">📢</div><div><strong>Welcome to DS FOREVER</strong><small>This is your sports dashboard. Live data can be connected later.</small></div></div></section></main>
+  
+<main id="profilePage" class="hidden">
+<section class="hero">
+<div class="eyebrow">PLAYER AREA</div>
+<h1>My <span>Account</span></h1>
+<p>Welcome to DS FOREVER</p>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Player Profile</h2>
+<span class="eyebrow">MY ACCOUNT</span>
+</div>
+<div class="tile">
+<strong id="profileName">Player</strong>
+<p><span id="profileId">My Account</span></p>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Demo Wallet</h2>
+<span class="eyebrow">TEST MODE</span>
+</div>
+
+<div class="tile">
+<h3>Deposit Request</h3>
+<input id="demoDepositAmount" type="number" placeholder="Enter deposit amount">
+<button class="btn" onclick="demoRequest('Deposit')">Submit Deposit Request</button>
+</div>
+
+<div class="tile">
+<h3>Withdrawal Request</h3>
+<input id="demoWithdrawAmount" type="number" placeholder="Enter withdrawal amount">
+<button class="btn" onclick="demoRequest('Withdrawal')">Submit Withdrawal Request</button>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Request Status</h2>
+</div>
+<div class="tile">
+<p id="demoRequestStatus">No requests submitted yet.</p>
+</div>
+</section>
+
+<section class="section">
+<div class="sectionhead">
+<h2>Transaction History</h2>
+</div>
+<div class="tile" id="demoTransacti
