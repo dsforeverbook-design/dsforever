@@ -1358,11 +1358,9 @@
         throw new Error("Could not verify account role. Please try again.");
       }
 
-      if (adminRecord?.role === "admin") {
-        $("authView").classList.add("hidden");
-        $("appView").classList.add("hidden");
-        $("adminPage").classList.remove("hidden");
-        return;
+      if (String(adminRecord?.role || "").toLowerCase() === "admin") {
+  window.location.replace("admin.html");
+  return;
       }
       $("authView").classList.add("hidden");
       $("appView").classList.remove("hidden");
