@@ -973,10 +973,21 @@
       </div>
 
       <form id="authForm">
-        <div id="nameField" class="hidden">
-          <label for="fullName">Full Name</label>
-          <input id="fullName" type="text" placeholder="Enter your full name">
-        </div>
+    
+<div id="nameField" class="hidden">
+  <label for="fullName">Full Name</label>
+  <input id="fullName" type="text" placeholder="Enter your full name">
+
+  <label for="phoneNumber">Mobile Number</label>
+  <input
+    id="phoneNumber"
+    type="tel"
+    inputmode="tel"
+    autocomplete="tel"
+    placeholder="Enter mobile number"
+  >
+</div>
+        
 
         <label for="userId">User ID</label>
         <input id="userId" type="text" autocomplete="username" placeholder="Enter your User ID" required>
