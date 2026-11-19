@@ -102,6 +102,28 @@ $("applyBtn").onclick=async()=>{
 };
 $("backBtn").onclick=()=>location.href="admin.html";
 $("logoutBtn").onclick=async()=>{await db.auth.signOut();location.reload();};
-(async()=>{try{if(await verifyAdmin())await showApp();}catch(e){$("loginStatus").textContent=e.message;}})();
+(async()=>{
+ const key="ds-forever-admin-auth";
+ const present=(()=>{try{return localStorage.getItem(key)!==null}catch(e){return "unavailable"}})();
+ $("loginStatus").textContent="Checking Admin session...";
+ try{
+  const {data,error}=await db.auth.getSession();
+  if(error) throw new Error("SESSION ERROR: "+error.message);
+  if(!data.session){
+   $("loginStatus").textContent="DIAGNOSTIC: SESSION NOT FOUND\nStorage key present: "+present+"\nOrigin: "+location.origin;
+   return;
+  }
+  const {data:profile,error:roleError}=await db.from("profiles").select("role").eq("id",data.session.user.id).maybeSingle();
+  if(roleError) throw new Error("ROLE CHECK ERROR: "+roleError.message);
+  if(String(profile?.role||"").toLowerCase()!=="admin"){
+   $("loginStatus").textContent="SESSION FOUND, BUT ADMIN ROLE FAILED: "+(profile?.role||"No profile/role");
+   return;
+  }
+  $("loginBox").classList.add("hidden");
+  $("app").classList.remove("hidden");
+ }catch(e){
+  $("loginStatus").textContent="DIAGNOSTIC ERROR: "+e.message;
+ }
+})();
 </script>
 </body></html>
