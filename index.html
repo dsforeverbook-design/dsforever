@@ -3391,7 +3391,7 @@
         const backPrice = back?.odds ?? "—", layPrice = lay?.odds ?? "—";
         return `<div class="ds-ex-runner ${fancy ? 'ds-session-row' : ''}">
       <div class="ds-ex-team">${esc(name)}</div>
-      <div class="ds-ex-quotes"><div class="ds-ex-back"><small>${fancy ? 'YES / BACK' : 'BACK'}</small><b>${esc(backPrice)}</b></div><div class="ds-ex-lay"><small>${fancy ? 'NO / LAY' : 'LAY'}</small><b>${esc(layPrice)}</b></div></div>
+      <div class="ds-ex-quotes"><div class="ds-ex-lay"><small>${fancy ? 'NO / LAY' : 'LAY'}</small><b>${esc(layPrice)}</b></div><div class="ds-ex-back"><small>${fancy ? 'YES / BACK' : 'BACK'}</small><b>${esc(backPrice)}</b></div></div>
       <small class="ds-ex-source">Back size: ${esc(back?.size ?? '—')} · Lay size: ${esc(lay?.size ?? '—')}${section.gstatus ? ' · ' + esc(section.gstatus) : ''}</small>
     </div>`;
       }
