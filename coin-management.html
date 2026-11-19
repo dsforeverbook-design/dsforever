@@ -69,7 +69,12 @@ $("loginForm").addEventListener("submit",async e=>{
   await showApp();
  }catch(err){$("loginStatus").textContent=err.message;}finally{$("loginBtn").disabled=false;}
 });
-async function showApp(){if(!await verifyAdmin())return;$("loginBox").classList.add("hidden");$("app").classList.remove("hidden");}
+async function showApp(){
+ const ok=await verifyAdmin();
+ if(!ok) throw new Error("LOGIN SUCCESS, BUT ADMIN SESSION NOT FOUND. Please check Supabase session.");
+ $("loginBox").classList.add("hidden");
+ $("app").classList.remove("hidden");
+}
 $("searchBtn").onclick=async()=>{
  $("searchResults").textContent="Searching…";$("status").textContent="";
  try{
