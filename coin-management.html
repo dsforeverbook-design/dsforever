@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DS FOREVER | Points Management</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:16px;background:#080d18;color:#fff;font-family:Arial,sans-serif}
+.wrap{max-width:760px;margin:20px auto;background:#101a2b;border:1px solid #354779;border-radius:16px;padding:18px}
+h1,h2{color:#f5c451}label{display:block;margin:14px 0 6px}input,select,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #354779;background:#0b1220;color:white}
+button{padding:12px 16px;margin:8px 6px 8px 0;border:0;border-radius:8px;background:#f5c451;color:#101827;font-weight:bold}
+button.secondary{background:#263a59;color:#fff}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:120px}
+#status{color:#8fe6be;white-space:pre-wrap}.entry{padding:12px;border-bottom:1px solid #354779}.muted{color:#aab5c8;font-size:13px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap" id="loginBox">
+<h1>DS FOREVER</h1><p>Admin Points Management</p>
+<form id="loginForm">
+<label>Admin User ID</label><input id="userId" required autocomplete="username">
+<label>Password</label><input id="password" type="password" required autocomplete="current-password">
+<button id="loginBtn">ADMIN LOGIN</button>
+</form><p id="loginStatus"></p>
+</div>
+<div class="wrap hidden" id="app">
+<h1>Points Management</h1>
+<p class="muted">Non-cash, non-transferable points only. No wagering, staking, cash value, purchase or redemption.</p>
+<label>Find user by User ID / email / name</label>
+<input id="userSearch" placeholder="Type at least 2 characters">
+<button id="searchBtn">Search users</button>
+<div id="searchResults"></div>
+<hr style="border-color:#354779;margin:20px 0">
+<div id="selectedUser" class="hidden">
+<h2 id="userHeading">Selected user</h2>
+<label>Points amount</label><input id="amount" type="number" min="1" step="1" placeholder="e.g. 100">
+<label>Action</label><select id="action"><option value="add">Add points</option><option value="remove">Remove points</option></select>
+<label>Reason (required)</label><textarea id="reason" rows="2" maxlength="240" placeholder="Reason for adjustment"></textarea>
+<button id="applyBtn">Save adjustment</button>
+<h2>Recent statement</h2><div id="userLedger"></div>
+</div>
+<p id="status"></p>
+<button class="secondary" id="backBtn">Back to Admin</button>
+<button class="secondary" id="logoutBtn">Log out</button>
+</div>
+<script>
+const URL="https://gplftdgweysvutrfkpni.supabase.co";
+const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+const db=window.supabase.createClient(URL,KEY,{auth:{storageKey:"ds-forever-admin-auth",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+let selected=null;
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+async function verifyAdmin(){
+ const {data:{session},error}=await db.auth.getSession(); if(error) throw error;
+ if(!session) return false;
+ const {data:profile,error:roleError}=await db.from("profiles").select("role").eq("id",session.user.id).maybeSingle();
+ if(roleError) throw roleError;
+ if(profile?.role!=="admin"){await db.auth.signOut();throw new Error("Admin access only.");}
+ return true;
+}
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();$("loginBtn").disabled=true;
+ try{
+  const id=$("userId").value.trim().toLowerCase();
+  if(!/^[a-z0-9._-]{3,20}$/.test(id)) throw new Error("Invalid Admin User ID.");
+  const {error}=await db.auth.signInWithPassword({email:id+"@dsforever-login.com",password:$("password").value});
+  if(error) throw error;
+  await showApp();
+ }catch(err){$("loginStatus").textContent=err.message;}finally{$("loginBtn").disabled=false;}
+});
+async function showApp(){if(!await verifyAdmin())return;$("loginBox").classList.add("hidden");$("app").classList.remove("hidden");}
+$("searchBtn").onclick=async()=>{
+ $("searchResults").textContent="Searching…";$("status").textContent="";
+ try{
+  const q=$("userSearch").value.trim();if(q.length<2)throw new Error("Enter at least 2 characters.");
+  const {data,error}=await db.from("profiles").select("id,full_name,email").or(`full_name.ilike.%${q}%,email.ilike.%${q}%`).limit(20);
+  if(error)throw error;
+  $("searchResults").innerHTML=(data||[]).map(u=>`<div class="entry"><strong>${esc(u.full_name||"User")}</strong><div class="muted">${esc(u.email)}<br>${esc(u.id)}</div><button data-user="${esc(u.id)}">Select user</button></div>`).join("")||"No users found.";
+  $("searchResults").querySelectorAll("button[data-user]").forEach(b=>b.onclick=()=>selectUser((data||[]).find(u=>u.id===b.dataset.user)));
+ }catch(err){$("searchResults").textContent=err.message;}
+};
+async function selectUser(u){selected=u;$("selectedUser").classList.remove("hidden");$("userHeading").textContent=(u.full_name||u.email||"User")+" • "+u.id;await loadLedger();}
+async function loadLedger(){
+ const {data,error}=await db.from("ds_coin_ledger").select("id,action,amount,reason,created_at").eq("user_id",selected.id).order("created_at",{ascending:false}).limit(50);
+ if(error){$("userLedger").textContent=error.message;return;}
+ const bal=(data||[]).reduce((s,r)=>s+(r.action==="add"?Number(r.amount):-Number(r.amount)),0);
+ $("userLedger").innerHTML=`<h3>Current points: ${bal.toLocaleString()}</h3>`+((data||[]).map(r=>`<div class="entry">${r.action==="add"?"+":"−"}${Number(r.amount).toLocaleString()} points — ${esc(r.reason)}<div class="muted">${new Date(r.created_at).toLocaleString()}</div></div>`).join("")||"<p>No history yet.</p>");
+}
+$("applyBtn").onclick=async()=>{
+ $("applyBtn").disabled=true;
+ try{
+  if(!selected)throw new Error("Select a user first.");
+  const amount=Number($("amount").value),action=$("action").value,reason=$("reason").value.trim();
+  if(!Number.isSafeInteger(amount)||amount<1)throw new Error("Enter a whole number greater than zero.");
+  if(reason.length<3)throw new Error("Enter a reason (at least 3 characters).");
+  const {data,error}=await db.rpc("ds_admin_adjust_points",{p_user_id:selected.id,p_action:action,p_amount:amount,p_reason:reason});
+  if(error)throw error;
+  $("status").textContent="Points adjustment saved.";
+  $("amount").value="";$("reason").value="";await loadLedger();
+ }catch(err){$("status").textContent="ERROR: "+err.message;}finally{$("applyBtn").disabled=false;}
+};
+$("backBtn").onclick=()=>location.href="admin.html";
+$("logoutBtn").onclick=async()=>{await db.auth.signOut();location.reload();};
+(async()=>{try{if(await verifyAdmin())await showApp();}catch(e){$("loginStatus").textContent=e.message;}})();
+</script>
+</body></html>
