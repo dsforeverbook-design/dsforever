@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DS FOREVER | Users Management</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#080d18;--panel:#101a2b;--panel2:#0b1425;--line:#354779;--gold:#f5c451;--muted:#aab5c8;--ok:#78e5b8;--bad:#ff8d8d}
+*{box-sizing:border-box}body{margin:0;padding:16px;background:var(--bg);color:#fff;font-family:Arial,sans-serif}.box{max-width:1100px;margin:22px auto;background:var(--panel);padding:22px;border:1px solid var(--line);border-radius:16px}h1{color:var(--gold);margin:0 0 8px}h2{margin:0 0 8px}p{line-height:1.5}.muted,.small{color:var(--muted)}.small{font-size:13px}button,.btn{display:inline-block;padding:11px 14px;background:var(--gold);color:#101827;border:0;border-radius:8px;font-weight:bold;margin:4px;cursor:pointer;text-decoration:none}.secondary{background:#243452;color:#fff}.danger{background:#a83232;color:#fff}button:disabled{opacity:.6;cursor:wait}#status{color:var(--ok);overflow-wrap:anywhere;min-height:24px}#status.error{color:var(--bad)}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:15px 0}.toolbar input{flex:1;min-width:200px;padding:12px;border:1px solid var(--line);border-radius:8px;background:#0b1220;color:#fff;font-size:16px}.count{display:inline-block;padding:8px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--gold);font-weight:bold}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;margin-top:14px}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;overflow-wrap:anywhere;vertical-align:top}th{color:var(--gold)}td:first-child{font-family:ui-monospace,monospace;font-size:13px;max-width:270px}.mobile-list{display:none}.user-card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;overflow-wrap:anywhere}.user-card strong{color:var(--gold)}.user-card .uid{font:12px ui-monospace,monospace;color:var(--muted);overflow-wrap:anywhere;margin:7px 0}.empty{padding:22px;text-align:center;color:var(--muted)}.note{padding:12px;background:var(--panel2);border-left:3px solid var(--gold);border-radius:6px;margin-top:18px}
+@media(max-width:650px){body{padding:9px}.box{padding:15px;margin:10px auto}.tablewrap{display:none}.mobile-list{display:block}.toolbar input{flex-basis:100%;min-width:100%}.toolbar button,.toolbar .btn{flex:1;text-align:center}.header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="header"><h1>DS FOREVER</h1><span class="count" id="count">Users: —</span></div>
+  <h2>Users Management</h2>
+  <p id="status" role="status" aria-live="polite">Checking Admin session…</p>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Search name, email or user ID" aria-label="Search users">
+    <button id="refreshBtn" type="button">Refresh Users</button>
+    <a class="btn secondary" href="admin.html">Back to Admin</a>
+    <button class="danger" id="logoutBtn" type="button">Logout</button>
+  </div>
+  <p class="small">Showing account records from <code>public.profiles</code>. This page is read-only. Points, deposits, withdrawals, blocking and account edits are not enabled until their database schema and secure admin RPC/RLS permissions are verified.</p>
+  <div class="tablewrap"><table><thead><tr><th>User ID</th><th>Name</th><th>Email</th><th>Registered</th></tr></thead><tbody id="usersTable"><tr><td colspan="4" class="empty">Loading users…</td></tr></tbody></table></div>
+  <div class="mobile-list" id="usersMobile"><div class="empty">Loading users…</div></div>
+  <p class="note small">Admin access is checked against <code>profiles.role = 'admin'</code>. Row-level security must also enforce access in the database; hiding buttons in a webpage is not a security control.</p>
+</div>
+<script>
+(() => {
+  "use strict";
+  const SUPABASE_URL="https://gplftdgweysvutrfkpni.supabase.co";
+  const SUPABASE_KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const $=id=>document.getElementById(id),status=$("status"),search=$("search"),table=$("usersTable"),mobile=$("usersMobile"),refresh=$("refreshBtn");
+  let allUsers=[];
+  function setStatus(message,isError=false){status.textContent=message;status.classList.toggle("error",isError)}
+  function addCell(row,value){const cell=document.createElement("td");cell.textContent=String(value??"—");row.appendChild(cell)}
+  function render(){
+    const term=search.value.trim().toLowerCase();
+    const rows=allUsers.filter(u=>[u.id,u.full_name,u.email].some(v=>String(v||"").toLowerCase().includes(term)));
+    $("count").textContent="Users: "+allUsers.length;
+    table.replaceChildren();mobile.replaceChildren();
+    if(!rows.length){const msg=allUsers.length?"No matching users.":"No users found.";const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.className="empty";td.textContent=msg;tr.appendChild(td);table.appendChild(tr);const div=document.createElement("div");div.className="empty";div.textContent=msg;mobile.appendChild(div);return}
+    for(const u of rows){
+      const tr=document.createElement("tr");addCell(tr,u.id);addCell(tr,u.full_name||"—");addCell(tr,u.email||"—");addCell(tr,u.created_at?new Date(u.created_at).toLocaleString():"—");table.appendChild(tr);
+      const card=document.createElement("article");card.className="user-card";
+      const name=document.createElement("strong");name.textContent=u.full_name||"Unnamed user";card.appendChild(name);
+      const id=document.createElement("div");id.className="uid";id.textContent="User ID: "+u.id;card.appendChild(id);
+      const email=document.createElement("div");email.textContent="Email: "+(u.email||"—");card.appendChild(email);
+      const date=document.createElement("div");date.className="small";date.style.marginTop="6px";date.textContent="Registered: "+(u.created_at?new Date(u.created_at).toLocaleString():"—");card.appendChild(date);mobile.appendChild(card);
+    }
+  }
+  async function loadUsers(){
+    refresh.disabled=true;setStatus("Checking Admin session…");table.innerHTML='<tr><td colspan="4" class="empty">Loading users…</td></tr>';mobile.innerHTML='<div class="empty">Loading users…</div>';
+    try{
+      const {data:sessionData,error:sessionError}=await client.auth.getSession();if(sessionError)throw sessionError;
+      const user=sessionData.session?.user;if(!user){setStatus("Admin session not found. Please login from admin.html.",true);throw new Error("No active Admin session.")}
+      const {data:admin,error:adminError}=await client.from("profiles").select("role").eq("id",user.id).maybeSingle();
+      if(adminError)throw new Error("Could not verify Admin role. Check the profiles SELECT RLS policy. "+adminError.message);
+      if(!admin||String(admin.role||"").toLowerCase()!=="admin"){await client.auth.signOut();throw new Error("Access denied: this account is not an Admin.")}
+      setStatus("Loading registered users…");
+      const {data,error}=await client.from("profiles").select("id,full_name,email,created_at").order("created_at",{ascending:false}).limit(1000);
+      if(error)throw new Error("Could not load users. Check the Admin SELECT policy on profiles. "+error.message);
+      allUsers=data||[];render();setStatus("Admin verified. Total registered users: "+allUsers.length);
+    }catch(error){if(error.message!=="No active Admin session.")setStatus("ERROR: "+(error.message||String(error)),true);allUsers=[];$("count").textContent="Users: —";table.innerHTML='<tr><td colspan="4" class="empty">Unable to load users. See the error above.</td></tr>';mobile.innerHTML='<div class="empty">Unable to load users.</div>'}
+    finally{refresh.disabled=false}
+  }
+  refresh.addEventListener("click",loadUsers);search.addEventListener("input",render);
+  $("logoutBtn").addEventListener("click",async()=>{const {error}=await client.auth.signOut();if(error){setStatus("Logout error: "+error.message,true);return}location.href="admin.html"});
+  loadUsers();
+})();
+</script>
+</body>
+</html>
