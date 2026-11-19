@@ -51,27 +51,29 @@ const db=window.supabase.createClient(URL,KEY,{auth:{storageKey:"ds-forever-admi
 let selected=null;
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-async function verifyAdmin(){
- const {data:{session},error}=await db.auth.getSession(); if(error) throw error;
- if(!session) return false;
- const {data:profile,error:roleError}=await db.from("profiles").select("role").eq("id",session.user.id).maybeSingle();
- if(roleError) throw roleError;
- if(String(profile?.role||"").toLowerCase()!=="admin"){await db.auth.signOut();throw new Error("Admin access only.");}
- return true;
+async function verifyAdmin(user){
+ if(!user?.id) throw new Error("Login session/user is missing. Please sign in again.");
+ const {data:profile,error:roleError}=await db.from("profiles").select("id,role,full_name").eq("id",user.id).maybeSingle();
+ if(roleError) throw new Error("Signed in, but Admin profile could not be read. Check profiles SELECT policy. Details: "+roleError.message);
+ if(!profile) throw new Error("No profiles row exists for this account (user id: "+user.id+").");
+ if(String(profile.role||"").toLowerCase()!=="admin"){
+  await db.auth.signOut();
+  throw new Error("This account is not an admin. Current role: "+(profile.role||"not set"));
+ }
+ return profile;
 }
 $("loginForm").addEventListener("submit",async e=>{
  e.preventDefault();$("loginBtn").disabled=true;
  try{
   const id=$("userId").value.trim().toLowerCase();
   if(!/^[a-z0-9._-]{3,20}$/.test(id)) throw new Error("Invalid Admin User ID.");
-  const {error}=await db.auth.signInWithPassword({email:id+"@dsforever-login.com",password:$("password").value});
+  const {data,error}=await db.auth.signInWithPassword({email:id+"@dsforever-login.com",password:$("password").value});
   if(error) throw error;
-  await showApp();
+  await showApp(data.user);
  }catch(err){$("loginStatus").textContent=err.message;}finally{$("loginBtn").disabled=false;}
 });
-async function showApp(){
- const ok=await verifyAdmin();
- if(!ok) throw new Error("LOGIN SUCCESS, BUT ADMIN SESSION NOT FOUND. Please check Supabase session.");
+async function showApp(user){
+ await verifyAdmin(user);
  $("loginBox").classList.add("hidden");
  $("app").classList.remove("hidden");
 }
@@ -108,26 +110,14 @@ $("applyBtn").onclick=async()=>{
 $("backBtn").onclick=()=>location.href="admin.html";
 $("logoutBtn").onclick=async()=>{await db.auth.signOut();location.reload();};
 (async()=>{
- const key="ds-forever-admin-auth";
- const present=(()=>{try{return localStorage.getItem(key)!==null}catch(e){return "unavailable"}})();
- $("loginStatus").textContent="Checking Admin session...";
+ $("loginStatus").textContent="Checking saved Admin session...";
  try{
   const {data,error}=await db.auth.getSession();
-  if(error) throw new Error("SESSION ERROR: "+error.message);
-  if(!data.session){
-   $("loginStatus").textContent="DIAGNOSTIC: SESSION NOT FOUND\nStorage key present: "+present+"\nOrigin: "+location.origin;
-   return;
-  }
-  const {data:profile,error:roleError}=await db.from("profiles").select("role").eq("id",data.session.user.id).maybeSingle();
-  if(roleError) throw new Error("ROLE CHECK ERROR: "+roleError.message);
-  if(String(profile?.role||"").toLowerCase()!=="admin"){
-   $("loginStatus").textContent="SESSION FOUND, BUT ADMIN ROLE FAILED: "+(profile?.role||"No profile/role");
-   return;
-  }
-  $("loginBox").classList.add("hidden");
-  $("app").classList.remove("hidden");
+  if(error) throw error;
+  if(data.session?.user) await showApp(data.session.user);
+  else $("loginStatus").textContent="No saved Admin session found. Please open Admin Dashboard and sign in first.";
  }catch(e){
-  $("loginStatus").textContent="DIAGNOSTIC ERROR: "+e.message;
+  $("loginStatus").textContent="ADMIN CHECK FAILED: "+(e.message||String(e));
  }
 })();
 </script>
