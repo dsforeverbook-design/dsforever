@@ -25,12 +25,16 @@ button.secondary{background:#263a59;color:#fff}
 .hidden{display:none}
 
 @media print {
-  body * { visibility:hidden !important; }
-  #selectedUser, #selectedUser * { visibility:visible !important; }
-  #selectedUser { position:absolute; left:0; top:0; width:100%; background:white!important; color:black!important; }
-  #selectedUser h2,#selectedUser h3,#selectedUser p,#selectedUser .entry,#selectedUser .muted { color:black!important; }
-  #selectedUser button,#selectedUser input,#amount,#action,#reason,#applyBtn { display:none!important; }
-  .entry { background:#f4f4f4!important; break-inside:avoid; }
+  body { background:#fff!important; color:#111!important; padding:0!important; }
+  #accessGate, #app > h1, #app > .muted, #app > label, #app > input,
+  #app > button, #searchResults, #status, #selectedUser > label,
+  #selectedUser > input, #selectedUser > select, #selectedUser > textarea,
+  #selectedUser > button { display:none!important; }
+  #app, #selectedUser { display:block!important; visibility:visible!important; }
+  #selectedUser { position:static!important; width:100%!important; margin:0!important; padding:0!important; border:0!important; background:#fff!important; color:#111!important; }
+  #selectedUser * { visibility:visible!important; color:#111!important; }
+  .entry { background:#f4f4f4!important; border-bottom:1px solid #ddd!important; break-inside:avoid; }
+  h2,h3 { color:#111!important; }
 }
 </style>
 </head>
@@ -225,7 +229,30 @@ button.secondary{background:#263a59;color:#fff}
        <hr style="border-color:#354779;margin:16px 0"><h3>Casino Game History</h3>${gameHtml}`;
   }
   $("filterBtn").onclick = () => loadLedger();
-  $("pdfBtn").onclick = () => window.print();
+  $("pdfBtn").onclick = () => {
+    if (!selected) {
+      $("status").textContent = "Select a user before downloading the statement.";
+      return;
+    }
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      $("status").textContent = "PDF window blocked. Allow pop-ups for this site and try again.";
+      return;
+    }
+    const from = $("fromDate").value || "All dates";
+    const to = $("toDate").value || "Today / latest";
+    const heading = esc($("userHeading").textContent);
+    const statement = $("userLedger").innerHTML;
+    printWindow.document.open();
+    printWindow.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DS FOREVER - User Statement</title><style>
+      *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#111;background:#fff;margin:24px;font-size:12pt}
+      h1{font-size:20pt;margin:0 0 8px}h2{font-size:16pt;margin:18px 0 8px}h3{font-size:13pt;margin:14px 0 8px}
+      .meta{color:#444;margin:4px 0 14px}.entry{padding:10px;margin:8px 0;background:#f3f3f3;border:1px solid #ddd;border-radius:6px;break-inside:avoid}
+      .muted{color:#555;font-size:10pt}hr{border:0;border-top:1px solid #aaa;margin:16px 0}
+      @page{size:auto;margin:14mm}
+    </style></head><body><h1>DS FOREVER — User Account Statement</h1><div><strong>${heading}</strong></div><div class="meta">From: ${esc(from)} &nbsp; | &nbsp; To: ${esc(to)}</div>${statement}<script>window.onload=function(){window.focus();window.print();};<\/script></body></html>`);
+    printWindow.document.close();
+  };
 
   $("applyBtn").onclick = async () => {
     $("applyBtn").disabled = true;
