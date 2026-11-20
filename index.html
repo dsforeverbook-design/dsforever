@@ -1421,7 +1421,25 @@
     function setMode(value) { registering = value; $("nameField").classList.toggle("hidden", !registering); $("submitBtn").textContent = registering ? "CREATE ACCOUNT" : "LOGIN"; $("switchText").textContent = registering ? "Already registered?" : "New user?"; $("switchMode").textContent = registering ? "Login" : "Create Account"; $("password").autocomplete = registering ? "new-password" : "current-password"; showStatus("") }
     $("switchMode").addEventListener("click", () => setMode(!registering));
     function validId(id) { return /^[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]$/.test(id) }
+async function loadMyPoints(userId) {
+  const el = $("pointsBalance");
+  try {
+    const { data, error } = await client
+      .from("ds_coin_ledger")
+      .select("action, amount")
+      .eq("user_id", userId);
 
+    if (error) throw error;
+
+    const balance = (data || []).reduce((sum, row) =>
+      sum + (row.action === "add" ? Number(row.amount) : -Number(row.amount)), 0);
+
+    el.textContent = Math.max(0, balance).toLocaleString("en-IN");
+  } catch (error) {
+    console.error("Points loading error:", error);
+    el.textContent = "—";
+  }
+}
     async function enterDashboard(user, id) {
       const { data: adminRecord } = await client
         .from("admin_users")
@@ -1443,6 +1461,7 @@
       $("userLabel").textContent = label;
       $("profileName").textContent = user?.user_metadata?.full_name || label;
       $("profileId").textContent = "User ID: " + label;
+      await loadMyPoints(user.id);
 
       renderMatches();
       startDsOddsAutoRefresh();
