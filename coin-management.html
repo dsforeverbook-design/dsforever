@@ -95,14 +95,39 @@ $("applyBtn").onclick=async()=>{
 };
 $("backBtn").onclick=()=>location.href="admin.html";
 $("logoutBtn").onclick=async()=>{await db.auth.signOut();location.href="admin.html";};
-(async()=>{
+ (async()=>{
+ const gate=$("gateStatus");
+
+ gate.textContent="1/3: Supabase client loaded. Checking session…";
+
  try{
-  const {data,error}=await db.auth.getSession();
+  gate.textContent="2/3: Waiting for Admin session…";
+
+  const result=await Promise.race([
+   db.auth.getSession(),
+   new Promise((_,reject)=>{
+    setTimeout(()=>{
+     reject(new Error(
+      "SESSION_CHECK_TIMEOUT: Supabase session check 8 seconds mein complete nahi hua."
+     ));
+    },8000);
+   })
+  ]);
+
+  const {data,error}=result;
+
   if(error) throw error;
-  if(data.session?.user) await showApp(data.session.user);
-  else $("gateStatus").textContent="Admin session nahi mila. Pehle Admin Dashboard mein login karein, phir Points Management kholein.";
+
+  if(data.session?.user){
+   gate.textContent="3/3: Session found. Verifying Admin…";
+   await showApp(data.session.user);
+  }else{
+   gate.textContent="Admin session nahi mila. Admin Dashboard mein login karke dobara kholein.";
+  }
+
  }catch(e){
-  $("gateStatus").textContent="Admin verification failed: "+(e.message||String(e));
+  gate.textContent="DIAGNOSTIC: "+(e.message||String(e));
+  console.error("Points Management diagnostic:",e);
  }
 })();
 </script>
