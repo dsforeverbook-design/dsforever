@@ -43,7 +43,7 @@ button.secondary{background:#263a59;color:#fff}.row{display:flex;gap:8px;flex-wr
 <script>
 const URL="https://gplftdgweysvutrfkpni.supabase.co";
 const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
-const db=window.supabase.createClient(URL,KEY,{auth:{storageKey:"ds-forever-admin-auth",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const db=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let selected=null;
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
