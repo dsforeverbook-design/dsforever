@@ -31,7 +31,7 @@
   "use strict";
   const SUPABASE_URL="https://gplftdgweysvutrfkpni.supabase.co";
   const SUPABASE_KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
-  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{storageKey:"ds-forever-admin-auth",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const $=id=>document.getElementById(id),status=$("status"),search=$("search"),table=$("usersTable"),mobile=$("usersMobile"),refresh=$("refreshBtn");
   let allUsers=[];
   function setStatus(message,isError=false){status.textContent=message;status.classList.toggle("error",isError)}
