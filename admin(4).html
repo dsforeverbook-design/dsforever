@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<title>DS FOREVER | Admin Control Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#080d18;--panel:#101a2b;--panel2:#0b1425;--line:#354779;--gold:#f5c451;--muted:#aab5c8;--ok:#78e5b8;--bad:#ff8d8d}
+*{box-sizing:border-box}body{margin:0;padding:12px;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+.wrap{max-width:1000px;margin:20px auto}.panel{background:var(--panel);padding:20px;border:1px solid var(--line);border-radius:18px}
+#loginBox{max-width:460px;margin:7vh auto}h1{color:var(--gold);margin:0 0 8px;font-size:clamp(28px,5vw,38px)}h2{margin:0 0 8px}
+p{color:var(--muted);line-height:1.5}label{display:block;margin:18px 0 7px}
+input{width:100%;padding:14px;border-radius:9px;border:1px solid var(--line);background:#0b1220;color:#fff;font-size:16px}
+button,.btn{display:inline-block;padding:11px 14px;border:0;border-radius:9px;background:var(--gold);color:#101827;font-weight:bold;text-decoration:none;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}.secondary{background:#243452;color:#fff}.logout{background:#a83232;color:#fff}
+#loginBtn{width:100%;margin-top:20px}#status{min-height:24px;margin-top:15px;overflow-wrap:anywhere;color:var(--ok)}
+#status.error,.error{color:var(--bad)}.header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.tile{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:19px;color:#fff;text-decoration:none;min-height:126px}
+.tile h3{color:var(--gold);margin:0 0 8px}.tile p{margin:0}.disabled{opacity:.68}
+.pill{display:inline-block;border:1px solid #5b6680;border-radius:20px;padding:3px 9px;font-size:11px;color:var(--muted);margin-top:12px}
+.note{border-left:3px solid var(--gold);padding:10px 14px;background:var(--panel2);border-radius:6px;margin-top:20px}
+.hidden{display:none!important}.welcome{overflow-wrap:anywhere}
+#betsPanel{margin-top:18px}#betStatus{margin:8px 0 12px;overflow-wrap:anywhere}
+.tablewrap{overflow-x:auto}table{width:100%;min-width:900px;border-collapse:collapse}
+th,td{padding:10px 8px;border-bottom:1px solid #354779;text-align:left;font-size:12px;vertical-align:top}
+th{color:var(--gold);position:sticky;top:0;background:#101a2b}.status-open{color:#9dc8ff;font-weight:bold}
+.action{display:flex;gap:5px;flex-wrap:wrap}.action button{padding:8px 10px;font-size:11px}
+.action .lost{background:#ffb5bd}.action .void{background:#c5d0df}
+@media(max-width:520px){body{padding:8px}.panel{padding:15px}.wrap{margin:12px auto}.grid{grid-template-columns:1fr}.tile{min-height:unset}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="panel" id="loginBox">
+    <h1 style="text-align:center">DS FOREVER</h1>
+    <p style="text-align:center">ADMIN CONTROL PANEL</p>
+    <form id="loginForm">
+      <label for="userId">Admin User ID</label>
+      <input id="userId" autocomplete="username" required maxlength="20" placeholder="Enter Admin User ID">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required placeholder="Enter Password">
+      <button id="loginBtn" type="submit">ADMIN LOGIN</button>
+    </form>
+    <div id="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <main id="dashboard" class="hidden">
+    <section class="panel">
+      <div class="header">
+        <div><h1>DS FOREVER</h1><h2>ADMIN DASHBOARD</h2><p id="welcome" class="welcome">Verifying administrator…</p></div>
+        <button class="logout" id="logoutBtn" type="button">LOG OUT</button>
+      </div>
+
+      <div class="grid">
+        <a class="tile" href="users.html"><h3>Users Management</h3><p>View registered users, search by name, email or user ID.</p><span class="pill">EXISTING PAGE</span></a>
+        <a class="tile" href="coin-management.html"><h3>Points Management</h3><p>Open the existing points management page.</p><span class="pill">EXISTING PAGE</span></a>
+        <a class="tile" href="odds.html"><h3>Live Match Odds</h3><p>Open the existing odds page, if deployed.</p><span class="pill">EXISTING PAGE</span></a>
+        <div class="tile disabled"><h3>Deposit Requests</h3><p>Not connected. No deposit approval action is enabled.</p><span class="pill">NOT CONNECTED</span></div>
+        <div class="tile disabled"><h3>Withdrawal Requests</h3><p>Not connected. No withdrawal approval action is enabled.</p><span class="pill">NOT CONNECTED</span></div>
+        <div class="tile disabled"><h3>Match Management</h3><p>Match editing is not enabled on this page.</p><span class="pill">NOT CONNECTED</span></div>
+        <div class="tile disabled"><h3>Live Score Management</h3><p>Live scores remain connected to the configured sports API/server.</p><span class="pill">API INTEGRATION</span></div>
+      </div>
+
+      <section class="tile" id="betsPanel">
+        <h3>All Match Bets</h3>
+        <p>View all website points bets. Only settle a bet after its actual match/market result is confirmed.</p>
+        <button id="refreshBets" type="button" class="secondary">Refresh Bet Records</button>
+        <div id="betStatus" role="status" aria-live="polite">Press Refresh Bet Records to load bets.</div>
+        <div id="betsTable" class="tablewrap"></div>
+      </section>
+
+      <p class="note">Security: admin access is checked by the database function <code>ds_is_admin()</code>. Settlement is performed only by the secure <code>ds_settle_match_bet</code> RPC. Never put a service-role key in this website.</p>
+      <div id="dashStatus" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const SUPABASE_URL = "https://gplftdgweysvutrfkpni.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+  });
+  const $ = id => document.getElementById(id);
+  const loginBox=$("loginBox"), dashboard=$("dashboard"), form=$("loginForm"), statusBox=$("status"), loginBtn=$("loginBtn");
+
+  function setLoginStatus(message,isError=false){
+    statusBox.textContent=message;
+    statusBox.classList.toggle("error",isError);
+  }
+  function showLogin(message="",isError=false){
+    dashboard.classList.add("hidden"); loginBox.classList.remove("hidden");
+    if(message) setLoginStatus(message,isError);
+  }
+  function showDashboard(user){
+    loginBox.classList.add("hidden"); dashboard.classList.remove("hidden");
+    $("welcome").textContent="Signed in as "+(user.email||"DS OWNER");
+  }
+  async function verifyAdmin(user){
+    if(!user?.id) throw new Error("Login session missing. Please sign in again.");
+    const {data,error}=await client.rpc("ds_is_admin");
+    if(error) throw new Error("Admin permission check failed: "+error.message);
+    const allowed = data === true || data === "true" || (Array.isArray(data) && data[0] === true);
+    if(!allowed){
+      await client.auth.signOut();
+      throw new Error("This account is not authorized as an admin.");
+    }
+    showDashboard(user);
+  }
+
+  form.addEventListener("submit",async event=>{
+    event.preventDefault();
+    const id=$("userId").value.trim().toLowerCase(), password=$("password").value;
+    if(!/^[a-z0-9._-]{3,20}$/.test(id)){
+      setLoginStatus("Invalid Admin User ID. Use 3–20 letters, numbers, dot, underscore or hyphen.",true); return;
+    }
+    loginBtn.disabled=true; setLoginStatus("Signing in and checking Admin permission…");
+    try{
+      const {data,error}=await client.auth.signInWithPassword({email:id+"@dsforever-login.com",password});
+      if(error) throw error;
+      await verifyAdmin(data.user);
+    }catch(error){showLogin(error.message||"Admin login failed.",true);}
+    finally{loginBtn.disabled=false;}
+  });
+
+  $("logoutBtn").addEventListener("click",async()=>{
+    const {error}=await client.auth.signOut();
+    if(error){$("dashStatus").textContent="Logout error: "+error.message;return;}
+    showLogin("You have been logged out.");
+  });
+
+  const esc = value => String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  async function loadBets(){
+    const box=$("betsTable"), status=$("betStatus");
+    box.innerHTML=""; status.textContent="Loading bet records…"; status.classList.remove("error");
+    const {data,error}=await client.from("ds_match_bets")
+      .select("id,user_id,event_id,market,selection,side,odds,stake,exposure,status,settlement_mode,settlement_result,created_at")
+      .order("created_at",{ascending:false}).limit(500);
+    if(error){
+      status.textContent="Could not load bets: "+error.message+" (Database SELECT permission/RLS may need admin access.)";
+      status.classList.add("error"); return;
+    }
+    if(!data?.length){status.textContent="No match bets found.";return;}
+    status.textContent="Loaded "+data.length+" bet record(s).";
+    box.innerHTML=`<table><thead><tr><th>Bet ID</th><th>User ID</th><th>Event</th><th>Market / Selection</th><th>Side</th><th>Odds</th><th>Stake</th><th>Exposure</th><th>Status</th><th>Settlement</th><th>Time</th></tr></thead><tbody>${
+      data.map(row=>{
+        const isOpen=String(row.status||"").toUpperCase()==="OPEN";
+        const action=isOpen
+          ? `<div class="action"><button data-result="WON" data-id="${esc(row.id)}">WON</button><button class="lost" data-result="LOST" data-id="${esc(row.id)}">LOST</button><button class="void" data-result="VOID" data-id="${esc(row.id)}">VOID</button></div>`
+          : esc(row.settlement_result||row.status);
+        return `<tr><td>${esc(row.id)}</td><td>${esc(row.user_id)}</td><td>${esc(row.event_id)}</td><td>${esc(row.market)} / ${esc(row.selection)}</td><td>${esc(row.side)}</td><td>${esc(row.odds)}</td><td>${esc(row.stake)}</td><td>${esc(row.exposure)}</td><td class="status-open">${esc(row.status)}</td><td>${action}</td><td>${esc(row.created_at?new Date(row.created_at).toLocaleString("en-IN"):"")}</td></tr>`;
+      }).join("")
+    }</tbody></table>`;
+  }
+
+  $("refreshBets").addEventListener("click",loadBets);
+  $("betsTable").addEventListener("click",async event=>{
+    const button=event.target.closest("button[data-result][data-id]");
+    if(!button)return;
+    const betId=Number(button.dataset.id), result=button.dataset.result;
+    if(!Number.isSafeInteger(betId)||!["WON","LOST","VOID"].includes(result))return;
+    if(!confirm(`Confirm Bet #${betId} settlement as ${result}? Only continue after the actual result is verified. This action updates points and cannot be undone.`))return;
+    const buttons=$("betsTable").querySelectorAll(`button[data-id="${betId}"]`);
+    buttons.forEach(item=>item.disabled=true);
+    $("betStatus").textContent=`Settling Bet #${betId}…`;
+    try{
+      const {data,error}=await client.rpc("ds_settle_match_bet",{p_bet_id:betId,p_result:result});
+      if(error)throw error;
+      alert(`Bet #${betId} settled as ${result}. Net points: ${data?.net_points??"—"}`);
+      await loadBets();
+    }catch(error){
+      $("betStatus").textContent="Settlement failed: "+(error.message||String(error));
+      $("betStatus").classList.add("error");
+      buttons.forEach(item=>item.disabled=false);
+    }
+  });
+
+  (async()=>{
+    setLoginStatus("Checking saved Admin session…");
+    try{
+      const {data,error}=await client.auth.getSession();
+      if(error)throw error;
+      if(data.session?.user) await verifyAdmin(data.session.user);
+      else showLogin();
+    }catch(error){
+      await client.auth.signOut();
+      showLogin(error.message||"Could not verify saved session.",true);
+    }
+  })();
+})();
+</script>
+</body>
+</html>
