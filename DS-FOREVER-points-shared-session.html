@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DS FOREVER | Points Management</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+if (!window.supabase) {
+  document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>');
+}
+</script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:#080d18;color:#fff;font-family:Arial,sans-serif}
+.wrap{max-width:760px;margin:20px auto;background:#101a2b;border:1px solid #354779;border-radius:16px;padding:18px}
+h1,h2{color:#f5c451}
+label{display:block;margin:14px 0 6px}
+input,select,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #354779;background:#0b1220;color:white}
+button{padding:12px 16px;margin:8px 6px 8px 0;border:0;border-radius:8px;background:#f5c451;color:#101827;font-weight:bold}
+button.secondary{background:#263a59;color:#fff}
+#status{color:#8fe6be;white-space:pre-wrap}
+.entry{padding:12px;border-bottom:1px solid #354779}
+.muted{color:#aab5c8;font-size:13px}
+.hidden{display:none}
+
+@media print {
+  body { background:#fff!important; color:#111!important; padding:0!important; }
+  #accessGate, #app > h1, #app > .muted, #app > label, #app > input,
+  #app > button, #searchResults, #status, #selectedUser > label,
+  #selectedUser > input, #selectedUser > select, #selectedUser > textarea,
+  #selectedUser > button { display:none!important; }
+  #app, #selectedUser { display:block!important; visibility:visible!important; }
+  #selectedUser { position:static!important; width:100%!important; margin:0!important; padding:0!important; border:0!important; background:#fff!important; color:#111!important; }
+  #selectedUser * { visibility:visible!important; color:#111!important; }
+  .entry { background:#f4f4f4!important; border-bottom:1px solid #ddd!important; break-inside:avoid; }
+  h2,h3 { color:#111!important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="accessGate">
+  <h1>DS FOREVER</h1>
+  <p id="gateStatus">Loading secure admin session…</p>
+  <button class="secondary" onclick="location.href='admin.html'">Back to Admin Login</button>
+</div>
+
+<div class="wrap hidden" id="app">
+  <h1>Points Management</h1>
+  <p class="muted">Non-cash, non-transferable points only. No wagering, staking, cash value, purchase or redemption.</p>
+  <label>Find user by User ID / email / name</label>
+  <input id="userSearch" placeholder="Type at least 2 characters">
+  <button id="searchBtn">Search users</button>
+  <div id="searchResults"></div>
+  <hr style="border-color:#354779;margin:20px 0">
+  <div id="selectedUser" class="hidden">
+    <h2 id="userHeading">Selected user</h2>
+    <label>Points amount</label>
+    <input id="amount" type="number" min="1" step="1" placeholder="e.g. 100">
+    <label>Action</label>
+    <select id="action"><option value="add">Add points</option><option value="remove">Remove points</option></select>
+    <label>Reason (required)</label>
+    <textarea id="reason" rows="2" maxlength="240" placeholder="Reason for adjustment"></textarea>
+    <button id="applyBtn">Save adjustment</button>
+    <h2>User Account Statement</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <label style="flex:1;min-width:130px">From date<input id="fromDate" type="date"></label>
+      <label style="flex:1;min-width:130px">To date<input id="toDate" type="date"></label>
+    </div>
+    <button class="secondary" id="filterBtn">Apply Date Filter</button>
+    <button class="secondary" id="pdfBtn">Download PDF</button>
+    <div id="userLedger"></div>
+  </div>
+  <p id="status"></p>
+  <button class="secondary" id="backBtn">Back to Admin</button>
+  <button class="secondary" id="logoutBtn">Log out</button>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const URL = "https://gplftdgweysvutrfkpni.supabase.co";
+  const KEY = "sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+  const STORAGE_KEY = "ds-forever-admin-auth";
+  const $ = id => document.getElementById(id);
+  let db;
+  let selected = null;
+
+  function showGate(message) {
+    $("gateStatus").textContent = message;
+  }
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+  function showApp() {
+    $("accessGate").classList.add("hidden");
+    $("app").classList.remove("hidden");
+  }
+  function fail(message) {
+    showGate("Points Management error: " + message);
+    console.error("DS FOREVER Points Management:", message);
+  }
+
+  async function verifyAdmin(user) {
+    if (!user?.id) throw new Error("Admin login session nahi mila. Admin Dashboard mein login karke dobara kholein.");
+    const { data: isAdmin, error } = await db.rpc("ds_is_admin");
+    if (error) throw new Error("Admin permission check failed: " + error.message);
+    if (isAdmin !== true) throw new Error("This account is not authorized as an admin.");
+    return user;
+  }
+
+  async function initialize() {
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+      throw new Error("Supabase library load nahi hui. Internet/CDN access check karein.");
+    }
+
+    showGate("Connecting to Supabase…");
+    db = window.supabase.createClient(URL, KEY, {
+      auth: {
+        storageKey: STORAGE_KEY,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    showGate("Checking saved Admin login…");
+    // Avoid a page hanging forever if the browser's auth storage/lock is stuck.
+    const result = await Promise.race([
+      db.auth.getSession(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Admin session check timed out. Please close duplicate DS FOREVER tabs and reopen Admin Dashboard.")), 10000)
+      )
+    ]);
+    if (result.error) throw result.error;
+    const user = result.data?.session?.user;
+    if (!user) {
+      throw new Error("Admin session nahi mila. Admin Dashboard mein login karke Points Management dobara kholein.");
+    }
+    showGate("Admin session found. Verifying permissions…");
+    await verifyAdmin(user);
+    showApp();
+  }
+
+  $("searchBtn").onclick = async () => {
+    $("searchResults").textContent = "Searching…";
+    $("status").textContent = "";
+    try {
+      const q = $("userSearch").value.trim();
+      if (q.length < 2) throw new Error("Kam se kam 2 characters type karein.");
+      const { data, error } = await db.from("profiles")
+        .select("id,full_name,email")
+        .or(`full_name.ilike.%${q}%,email.ilike.%${q}%`)
+        .limit(20);
+      if (error) throw error;
+      $("searchResults").innerHTML = (data || []).map(u =>
+        `<div class="entry"><strong>${esc(u.full_name || "User")}</strong>
+        <div class="muted">${esc(u.email)}<br>${esc(u.id)}</div>
+        <button data-user="${esc(u.id)}">Select user</button></div>`
+      ).join("") || "No users found.";
+      $("searchResults").querySelectorAll("button[data-user]").forEach(btn => {
+        btn.onclick = () => selectUser((data || []).find(u => u.id === btn.dataset.user));
+      });
+    } catch (err) {
+      $("searchResults").textContent = err.message || String(err);
+    }
+  };
+
+  async function selectUser(user) {
+    if (!user) return;
+    selected = user;
+    $("selectedUser").classList.remove("hidden");
+    $("userHeading").textContent = (user.full_name || user.email || "User") + " • " + user.id;
+    await loadLedger();
+  }
+
+  async function loadLedger() {
+    const from = $("fromDate").value;
+    const to = $("toDate").value;
+    if (from && to && from > to) {
+      $("userLedger").textContent = "From date cannot be after To date.";
+      return;
+    }
+    const { data: allRows, error: allError } = await db.from("ds_coin_ledger")
+      .select("id,action,amount,reason,created_at")
+      .eq("user_id", selected.id).order("created_at", { ascending: true });
+    if (allError) {
+      $("userLedger").textContent = "Ledger load error: " + allError.message;
+      return;
+    }
+    const { data: games, error: gameError } = await db.from("ds_game_history")
+      .select("game,result,points_change,created_at")
+      .eq("user_id", selected.id).order("created_at", { ascending: false }).limit(1000);
+    if (gameError) {
+      $("userLedger").textContent = "Casino history load error: " + gameError.message;
+      return;
+    }
+    const all = allRows || [];
+    const balance = all.reduce((sum, row) =>
+      sum + (row.action === "add" ? Number(row.amount) : -Number(row.amount)), 0);
+    const fromTime = from ? new Date(from + "T00:00:00").getTime() : -Infinity;
+    const toTime = to ? new Date(to + "T23:59:59.999").getTime() : Infinity;
+    const inRange = row => {
+      const t = new Date(row.created_at).getTime();
+      return t >= fromTime && t <= toTime;
+    };
+    const rows = all.filter(inRange).slice().reverse();
+    const gameRows = (games || []).filter(inRange);
+    const ledgerHtml = rows.map(row =>
+      `<div class="entry">${row.action === "add" ? "+" : "−"}${Number(row.amount).toLocaleString()} points — ${esc(row.reason)}
+       <div class="muted">${new Date(row.created_at).toLocaleString("en-IN")}</div></div>`
+    ).join("") || '<p class="muted">No Admin point transactions in this date range.</p>';
+    const gameHtml = gameRows.map(row =>
+      `<div class="entry">🎮 ${esc(row.game)} — ${Number(row.points_change) >= 0 ? "+" : ""}${Number(row.points_change)} points
+       <div>${esc(row.result)}</div><div class="muted">${new Date(row.created_at).toLocaleString("en-IN")}</div></div>`
+    ).join("") || '<p class="muted">No Casino games in this date range.</p>';
+    $("userLedger").innerHTML =
+      `<h3>Current account points: ${Math.max(0,balance).toLocaleString("en-IN")}</h3>
+       <h3>Admin Point Transactions</h3>${ledgerHtml}
+       <hr style="border-color:#354779;margin:16px 0"><h3>Casino Game History</h3>${gameHtml}`;
+  }
+  $("filterBtn").onclick = () => loadLedger();
+  $("pdfBtn").onclick = () => {
+    if (!selected) {
+      $("status").textContent = "Select a user before downloading the statement.";
+      return;
+    }
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      $("status").textContent = "PDF window blocked. Allow pop-ups for this site and try again.";
+      return;
+    }
+    const from = $("fromDate").value || "All dates";
+    const to = $("toDate").value || "Today / latest";
+    const heading = esc($("userHeading").textContent);
+    const statement = $("userLedger").innerHTML;
+    const printHtml = `<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DS FOREVER - User Account Statement</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;color:#111;background:#fff;margin:0;padding:18px;font-size:14px;line-height:1.45}
+.toolbar{position:sticky;top:0;background:#17243a;padding:12px;margin:-18px -18px 18px;display:flex;gap:10px;align-items:center}
+.toolbar button{border:0;border-radius:7px;padding:11px 16px;background:#f5c451;color:#101827;font-weight:bold;font-size:15px}
+h1{font-size:22px;margin:0 0 10px}
+h2{font-size:17px;margin:18px 0 8px}
+h3{font-size:15px;margin:14px 0 8px}
+.meta{color:#444;margin:4px 0 14px;overflow-wrap:anywhere}
+.entry{padding:10px;margin:8px 0;background:#f3f3f3;border:1px solid #ddd;border-radius:6px;break-inside:avoid}
+.muted{color:#555;font-size:12px}
+hr{border:0;border-top:1px solid #aaa;margin:16px 0}
+@media print{
+ body{padding:0;margin:0;font-size:11pt}
+ .toolbar{display:none!important}
+ .entry{break-inside:avoid}
+ @page{size:auto;margin:14mm}
+}
+</style></head><body>
+<div class="toolbar"><button type="button" onclick="window.print()">Save as PDF / Print</button><span style="color:#fff">Statement is ready. Tap the button, then choose Save as PDF.</span></div>
+<h1>DS FOREVER — User Account Statement</h1>
+<div><strong>${heading}</strong></div>
+<div class="meta">From: ${esc(from)} &nbsp; | &nbsp; To: ${esc(to)}</div>
+${statement}
+</body></html>`;
+    printWindow.document.open();
+    printWindow.document.write(printHtml);
+    printWindow.document.close();
+    $("status").textContent = "Statement opened in a new tab. Review it, then tap Save as PDF / Print.";
+  };
+
+  $("applyBtn").onclick = async () => {
+    $("applyBtn").disabled = true;
+    try {
+      if (!selected) throw new Error("Select a user first.");
+      const amount = Number($("amount").value);
+      const action = $("action").value;
+      const reason = $("reason").value.trim();
+      if (!Number.isSafeInteger(amount) || amount < 1) throw new Error("Enter a whole number greater than zero.");
+      if (reason.length < 3) throw new Error("Enter a reason (at least 3 characters).");
+      const { error } = await db.rpc("ds_admin_adjust_points", {
+        p_user_id: selected.id,
+        p_action: action,
+        p_amount: amount,
+        p_reason: reason
+      });
+      if (error) throw error;
+      $("status").textContent = "Points adjustment saved.";
+      $("amount").value = "";
+      $("reason").value = "";
+      await loadLedger();
+    } catch (err) {
+      $("status").textContent = "ERROR: " + (err.message || String(err));
+    } finally {
+      $("applyBtn").disabled = false;
+    }
+  };
+
+  $("backBtn").onclick = () => location.href = "admin.html";
+  $("logoutBtn").onclick = async () => {
+    try { if (db) await db.auth.signOut(); } finally { location.href = "admin.html"; }
+  };
+
+  initialize().catch(err => fail(err.message || String(err)));
+})();
+</script>
+</body>
+</html>
