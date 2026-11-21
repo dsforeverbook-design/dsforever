@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DS FOREVER - Match Odds</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071426;color:white;font-family:Arial;padding:16px}
+.wrap{max-width:700px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #294563;padding-bottom:15px}
+h2{color:#f5c451}
+button,select{padding:12px;border-radius:9px;border:1px solid #45617e;font-size:15px}
+button{background:#f5c451;color:#071426;font-weight:bold}
+select{background:#102743;color:white;width:100%}
+.panel,.match{background:#10243b;border:1px solid #294563;border-radius:13px;padding:15px;margin:15px 0}
+.controls{display:grid;grid-template-columns:1fr auto;gap:10px}
+.status{color:#9fe7c5;margin-top:14px;font-size:14px}
+.match h3{font-size:17px;text-align:center}
+.time{text-align:center;color:#a9bad0;font-size:12px}
+.book{border-top:1px solid #34516f;margin-top:12px;padding-top:10px}
+.bookname{color:#f5c451;font-weight:bold;margin-bottom:8px}
+.prices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.price{background:#071426;border-radius:8px;padding:10px;text-align:center}
+.price small{display:block;color:#a9bad0}
+.price b{color:#8de7b8;font-size:18px}
+@media(max-width:420px){.controls{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <h2>DS FOREVER</h2>
+ <button onclick="location.href='index.html'">Back</button>
+</header>
+
+<h2>Live Match Odds</h2>
+<div class="panel">
+ <div class="controls">
+  <select id="sport"><option value="">Loading sports...</option></select>
+  <button id="refresh">Refresh</button>
+ </div>
+ <div class="status" id="status">Connecting...</div>
+</div>
+
+<div id="matches"></div>
+</div>
+
+<script>
+const SUPABASE_URL="https://gplftdgweysvutrfkpni.supabase.co";
+const KEY="sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+let db=null;
+
+const $=id=>document.getElementById(id);
+
+function safe(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+async function getOdds(body){
+ const {data,error}=await db.functions.invoke("get-odds",{body});
+ if(error) throw error;
+ if(data?.error) throw new Error(data.error);
+ return data;
+}
+
+async function loadSports(){
+ try{
+   $("status").textContent="Starting...";
+   if(!window.supabase || !window.supabase.createClient){
+    throw new Error("Supabase library load nahi hui. Internet/CDN check karein.");
+   }
+   db=window.supabase.createClient(SUPABASE_URL,KEY);
+   const {data:{session}}=await db.auth.getSession();
+   if(!session){
+    $("status").textContent="Please login first.";
+    return;
+   }
+
+   // Static sports list: does not depend on an active LiveAPIHub plan.
+   const sports=[
+    {key:"cricket",title:"Cricket"},
+    {key:"football",title:"Football"},
+    {key:"tennis",title:"Tennis"},
+    {key:"table_tennis",title:"Table Tennis"},
+    {key:"basketball",title:"Basketball"}
+   ];
+   const select=$("sport");
+   select.innerHTML="";
+   sports.forEach(s=>{
+    const op=document.createElement("option");
+    op.value=s.key;
+    op.textContent=s.title;
+    select.appendChild(op);
+   });
+   select.value="cricket";
+   $("status").textContent="5 sports loaded. Live match odds ke liye active API connection zaroori hai.";
+   $("matches").innerHTML='<div class="match"><div class="bookname">Sports list ready</div><div class="status">Cricket, Football, Tennis, Table Tennis aur Basketball available hain. Live matches aur odds abhi API plan active na hone ke karan load nahi honge.</div></div>';
+  }catch(e){
+   $("status").textContent="Error: "+e.message;
+ }
+}
+
+async function loadMatches(){
+  const sportName=$("sport").selectedOptions[0]?.textContent||"Selected sport";
+  $("status").textContent=sportName+" selected. Live odds ke liye active sports API required hai.";
+  $("matches").innerHTML='<div class="match"><div class="bookname">'+safe(sportName)+'</div><div class="status">Sports list available hai. Live matches aur odds tabhi dikhenge jab naya API provider connect hoga.</div></div>';
+}
+
+$("refresh").addEventListener("click",loadMatches);
+$("sport").addEventListener("change",loadMatches);
+
+loadSports();
+</script>
+</body>
+</html>
