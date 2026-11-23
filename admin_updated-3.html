@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<title>DS FOREVER | Admin Control Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#080d18;--panel:#101a2b;--panel2:#0b1425;--line:#354779;--gold:#f5c451;--muted:#aab5c8;--ok:#78e5b8;--bad:#ff8d8d}
+*{box-sizing:border-box}body{margin:0;padding:12px;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+.wrap{max-width:1000px;margin:20px auto}.panel{background:var(--panel);padding:20px;border:1px solid var(--line);border-radius:18px}
+#loginBox{max-width:460px;margin:7vh auto}h1{color:var(--gold);margin:0 0 8px;font-size:clamp(28px,5vw,38px)}h2{margin:0 0 8px}
+p{color:var(--muted);line-height:1.5}label{display:block;margin:18px 0 7px}
+input{width:100%;padding:14px;border-radius:9px;border:1px solid var(--line);background:#0b1220;color:#fff;font-size:16px}
+button,.btn{display:inline-block;padding:11px 14px;border:0;border-radius:9px;background:var(--gold);color:#101827;font-weight:bold;text-decoration:none;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}.secondary{background:#243452;color:#fff}.logout{background:#a83232;color:#fff}
+#loginBtn{width:100%;margin-top:20px}#status{min-height:24px;margin-top:15px;overflow-wrap:anywhere;color:var(--ok)}
+#status.error,.error{color:var(--bad)}.header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.tile{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:19px;color:#fff;text-decoration:none;min-height:126px}
+button.tile{text-align:left;width:100%;font:inherit;cursor:pointer}button.tile h3{font-size:18px}
+.tile h3{color:var(--gold);margin:0 0 8px}.tile p{margin:0}.disabled{opacity:.68}
+.pill{display:inline-block;border:1px solid #5b6680;border-radius:20px;padding:3px 9px;font-size:11px;color:var(--muted);margin-top:12px}
+.note{border-left:3px solid var(--gold);padding:10px 14px;background:var(--panel2);border-radius:6px;margin-top:20px}
+.hidden{display:none!important}.welcome{overflow-wrap:anywhere}
+#betsPanel{margin-top:18px}#betStatus{margin:8px 0 12px;overflow-wrap:anywhere}
+.tablewrap{overflow-x:auto}table{width:100%;min-width:900px;border-collapse:collapse}
+th,td{padding:10px 8px;border-bottom:1px solid #354779;text-align:left;font-size:12px;vertical-align:top}
+th{color:var(--gold);position:sticky;top:0;background:#101a2b}.status-open{color:#9dc8ff;font-weight:bold}
+.action{display:flex;gap:5px;flex-wrap:wrap}.action button{padding:8px 10px;font-size:11px}
+.action .lost{background:#ffb5bd}.action .void{background:#c5d0df}
+.action .reject{background:#ffb5bd;color:#271015}.action .approve{background:#78e5b8;color:#09251b}
+@media(max-width:520px){body{padding:8px}.panel{padding:15px}.wrap{margin:12px auto}.grid{grid-template-columns:1fr}.tile{min-height:unset}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="panel" id="loginBox">
+    <h1 style="text-align:center">DS FOREVER</h1>
+    <p style="text-align:center">ADMIN CONTROL PANEL</p>
+    <form id="loginForm">
+      <label for="userId">Admin User ID</label>
+      <input id="userId" autocomplete="username" required maxlength="20" placeholder="Enter Admin User ID">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required placeholder="Enter Password">
+      <button id="loginBtn" type="submit">ADMIN LOGIN</button>
+    </form>
+    <div id="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <main id="dashboard" class="hidden">
+    <section class="panel">
+      <div class="header">
+        <div><h1>DS FOREVER</h1><h2>ADMIN DASHBOARD</h2><p id="welcome" class="welcome">Verifying administrator…</p></div>
+        <button class="logout" id="logoutBtn" type="button">LOG OUT</button>
+      </div>
+
+      <div class="grid">
+        <a class="tile" href="users.html"><h3>Users Management</h3><p>View registered users, search by name, email or user ID.</p><span class="pill">EXISTING PAGE</span></a>
+        <a class="tile" href="coin-management.html"><h3>Points Management</h3><p>Open the existing points management page.</p><span class="pill">EXISTING PAGE</span></a>
+        <a class="tile" href="odds.html"><h3>Live Match Odds</h3><p>Open the existing odds page, if deployed.</p><span class="pill">EXISTING PAGE</span></a>
+        <button class="tile" id="openPaymentSettings" type="button" style="text-align:left;width:100%;font:inherit;cursor:pointer"><h3>Payment Display Settings</h3><p>Set demo QR image, UPI label, sample bank details and instructions shown in User Panel.</p><span class="pill">USER PANEL DISPLAY</span></button>
+        <div class="tile disabled"><h3>Match Management</h3><p>Match editing is not enabled on this page.</p><span class="pill">NOT CONNECTED</span></div>
+        <div class="tile disabled"><h3>Live Score Management</h3><p>Live scores remain connected to the configured sports API/server.</p><span class="pill">API INTEGRATION</span></div>
+      </div>
+
+      <section class="tile hidden" id="paymentSettingsPanel" style="margin-top:18px">
+        <div class="header" style="margin-bottom:10px">
+          <div><h3>Payment Display Settings</h3><p>DEMO ONLY — these fields display sample information. Do not enter real payment credentials or accept real-money transfers.</p></div>
+          <button id="closePaymentSettings" type="button" class="secondary">Close</button>
+        </div>
+        <label for="paymentQrFile">Upload Demo QR Scanner Image (PNG/JPG/WEBP, max 1 MB)</label>
+        <input id="paymentQrFile" type="file" accept="image/png,image/jpeg,image/webp">
+        <img id="paymentQrPreview" alt="Demo QR preview" hidden style="display:none;max-width:190px;width:100%;height:auto;margin:12px 0;border-radius:8px;border:1px solid var(--line)">
+        <button id="removePaymentQr" type="button" class="secondary" style="margin:8px 0 14px">Remove QR Image</button>
+        <label for="paymentQrUrl">Existing Demo QR Image URL (optional)</label>
+        <input id="paymentQrUrl" type="url" placeholder="https://example.com/demo-qr.png">
+        <label for="paymentUpiLabel">Demo UPI ID / Label</label>
+        <input id="paymentUpiLabel" type="text" maxlength="180" placeholder="Sample UPI ID / label">
+        <label for="paymentBankDetails">Sample Bank Details</label>
+        <textarea id="paymentBankDetails" rows="4" style="width:100%;padding:14px;border-radius:9px;border:1px solid var(--line);background:#0b1220;color:#fff;font:16px Arial;resize:vertical" placeholder="Sample account name, bank, account number, IFSC"></textarea>
+        <button id="removePaymentBankDetails" type="button" class="secondary" style="margin:8px 0 14px">Remove Account Details</button>
+        <label for="paymentInstructions">Instructions shown to users</label>
+        <textarea id="paymentInstructions" rows="4" style="width:100%;padding:14px;border-radius:9px;border:1px solid var(--line);background:#0b1220;color:#fff;font:16px Arial;resize:vertical" placeholder="Demo instructions for virtual points"></textarea>
+        <div class="action" style="margin-top:14px"><button id="savePaymentSettings" type="button" class="approve">Save Settings</button><button id="reloadPaymentSettings" type="button" class="secondary">Reload</button></div>
+        <div id="paymentSettingsStatus" role="status" aria-live="polite" style="margin-top:12px;overflow-wrap:anywhere"></div>
+      </section>
+
+      <section class="tile" id="pointRequestsPanel" style="margin-top:18px">
+        <div class="header" style="margin-bottom:10px">
+          <div><h3 id="requestTitle">Point Requests</h3><p id="requestDescription">Virtual points only. No cash deposit or cash withdrawal is supported.</p></div>
+          <button id="refreshPointRequests" type="button" class="secondary">Refresh</button>
+        </div>
+        <div class="action" style="margin-bottom:12px">
+          <button type="button" class="secondary" id="showDepositRequests">Deposit</button>
+          <button type="button" class="secondary" id="showWithdrawalRequests">Withdrawal</button>
+        </div>
+        <div id="pointRequestStatus" role="status" aria-live="polite">Choose a request type.</div>
+        <div id="pointRequestsTable" class="tablewrap"></div>
+      </section>
+
+      <section class="tile" id="betsPanel">
+        <h3>All Match Bets</h3>
+        <p>View all website points bets. Only settle a bet after its actual match/market result is confirmed.</p>
+        <button id="refreshBets" type="button" class="secondary">Refresh Bet Records</button>
+        <div id="betStatus" role="status" aria-live="polite">Press Refresh Bet Records to load bets.</div>
+        <div id="betsTable" class="tablewrap"></div>
+      </section>
+
+      <p class="note">Security: admin access is checked by the database function <code>ds_is_admin()</code>. Settlement is performed only by the secure <code>ds_settle_match_bet</code> RPC. Never put a service-role key in this website.</p>
+      <div id="dashStatus" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const SUPABASE_URL = "https://gplftdgweysvutrfkpni.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU";
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+  });
+  const $ = id => document.getElementById(id);
+  const loginBox=$("loginBox"), dashboard=$("dashboard"), form=$("loginForm"), statusBox=$("status"), loginBtn=$("loginBtn");
+
+  function setLoginStatus(message,isError=false){
+    statusBox.textContent=message;
+    statusBox.classList.toggle("error",isError);
+  }
+  function showLogin(message="",isError=false){
+    dashboard.classList.add("hidden"); loginBox.classList.remove("hidden");
+    if(message) setLoginStatus(message,isError);
+  }
+  function showDashboard(user){
+    loginBox.classList.add("hidden"); dashboard.classList.remove("hidden");
+    $("welcome").textContent="Signed in as "+(user.email||"DS OWNER");
+    showPointRequests("deposit");
+  }
+  async function verifyAdmin(user){
+    if(!user?.id) throw new Error("Login session missing. Please sign in again.");
+    // Use the SECURITY DEFINER RPC so browser clients do not need direct
+    // SELECT permission on the protected admin_users table.
+    const {data,error}=await client.rpc("ds_is_admin");
+    if(error) throw new Error("Admin permission check failed: "+error.message);
+    if(data !== true){
+      await client.auth.signOut();
+      throw new Error("This account is not authorized as an admin. Verify its admin_users record.");
+    }
+    showDashboard(user);
+  }
+
+  form.addEventListener("submit",async event=>{
+    event.preventDefault();
+    const id=$("userId").value.trim().toLowerCase(), password=$("password").value;
+    if(!/^[a-z0-9._-]{3,20}$/.test(id)){
+      setLoginStatus("Invalid Admin User ID. Use 3–20 letters, numbers, dot, underscore or hyphen.",true); return;
+    }
+    loginBtn.disabled=true; setLoginStatus("Signing in and checking Admin permission…");
+    try{
+      const {data,error}=await client.auth.signInWithPassword({email:id+"@dsforever-login.com",password});
+      if(error) throw error;
+      await verifyAdmin(data.user);
+    }catch(error){showLogin(error.message||"Admin login failed.",true);}
+    finally{loginBtn.disabled=false;}
+  });
+
+  $("logoutBtn").addEventListener("click",async()=>{
+    const {error}=await client.auth.signOut();
+    if(error){$("dashStatus").textContent="Logout error: "+error.message;return;}
+    showLogin("You have been logged out.");
+  });
+
+  const esc = value => String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  async function loadBets(){
+    const box=$("betsTable"), status=$("betStatus");
+    box.innerHTML=""; status.textContent="Loading bet records…"; status.classList.remove("error");
+    const {data,error}=await client.from("ds_match_bets")
+      .select("id,user_id,event_id,market,selection,side,odds,stake,exposure,status,settlement_mode,settlement_result,created_at")
+      .order("created_at",{ascending:false}).limit(500);
+    if(error){
+      status.textContent="Could not load bets: "+error.message+" (Database SELECT permission/RLS may need admin access.)";
+      status.classList.add("error"); return;
+    }
+    if(!data?.length){status.textContent="No match bets found.";return;}
+    status.textContent="Loaded "+data.length+" bet record(s).";
+    box.innerHTML=`<table><thead><tr><th>Bet ID</th><th>User ID</th><th>Event</th><th>Market / Selection</th><th>Side</th><th>Odds</th><th>Stake</th><th>Exposure</th><th>Status</th><th>Settlement</th><th>Time</th></tr></thead><tbody>${
+      data.map(row=>{
+        const isOpen=String(row.status||"").toUpperCase()==="OPEN";
+        const action=isOpen
+          ? `<div class="action"><button data-result="WON" data-id="${esc(row.id)}">WON</button><button class="lost" data-result="LOST" data-id="${esc(row.id)}">LOST</button><button class="void" data-result="VOID" data-id="${esc(row.id)}">VOID</button></div>`
+          : esc(row.settlement_result||row.status);
+        return `<tr><td>${esc(row.id)}</td><td>${esc(row.user_id)}</td><td>${esc(row.event_id)}</td><td>${esc(row.market)} / ${esc(row.selection)}</td><td>${esc(row.side)}</td><td>${esc(row.odds)}</td><td>${esc(row.stake)}</td><td>${esc(row.exposure)}</td><td class="status-open">${esc(row.status)}</td><td>${action}</td><td>${esc(row.created_at?new Date(row.created_at).toLocaleString("en-IN"):"")}</td></tr>`;
+      }).join("")
+    }</tbody></table>`;
+  }
+
+  let activeRequestType = "deposit";
+  function showPointRequests(type) {
+    activeRequestType = type;
+    $("paymentSettingsPanel").classList.add("hidden");
+    $("openPaymentSettings").classList.remove("hidden");
+    $("pointRequestsPanel").classList.remove("hidden");
+    $("requestTitle").textContent = type === "deposit" ? "Deposit Requests" : "Withdrawal Requests";
+    $("requestDescription").textContent = "Virtual points only — no cash deposit or cash withdrawal. Approving adds/removes points in the existing ds_coin_ledger.";
+    loadPointRequests();
+  }
+  $("showDepositRequests").addEventListener("click", () => showPointRequests("deposit"));
+  $("showWithdrawalRequests").addEventListener("click", () => showPointRequests("withdrawal"));
+  $("refreshPointRequests").addEventListener("click", loadPointRequests);
+
+
+  function showPaymentQrPreview(source) {
+    const preview = $("paymentQrPreview");
+    if (source && (source.startsWith("https://") || source.startsWith("blob:") || ["data:image/png;base64,","data:image/jpeg;base64,","data:image/webp;base64,"].some(prefix => source.startsWith(prefix)))) {
+      preview.src = source; preview.hidden = false; preview.style.display = "block";
+    } else {
+      preview.removeAttribute("src"); preview.hidden = true; preview.style.display = "none";
+    }
+  }
+  $("paymentQrFile").addEventListener("change", () => {
+    const file = $("paymentQrFile").files?.[0];
+    if (!file) return;
+    if (!["image/png","image/jpeg","image/webp"].includes(file.type) || file.size > 1024 * 1024) {
+      $("paymentSettingsStatus").textContent = "Choose PNG, JPG or WEBP image up to 1 MB.";
+      $("paymentSettingsStatus").classList.add("error");
+      $("paymentQrFile").value = "";
+      return;
+    }
+    showPaymentQrPreview(URL.createObjectURL(file));
+    $("paymentSettingsStatus").textContent = "QR image selected. Press Save Settings to publish it to the User Panel.";
+    $("paymentSettingsStatus").classList.remove("error");
+  });
+
+  $("removePaymentQr").addEventListener("click", () => {
+    $("paymentQrFile").value = "";
+    $("paymentQrUrl").value = "";
+    showPaymentQrPreview("");
+    const status = $("paymentSettingsStatus");
+    status.textContent = "QR image marked for removal. Press Save Settings to remove it from the User Panel.";
+    status.classList.remove("error");
+  });
+
+  $("removePaymentBankDetails").addEventListener("click", () => {
+    $("paymentBankDetails").value = "";
+    const status = $("paymentSettingsStatus");
+    status.textContent = "Account details marked for removal. Press Save Settings to remove them from the User Panel.";
+    status.classList.remove("error");
+  });
+
+  async function loadPaymentSettings() {
+    const status = $("paymentSettingsStatus");
+    status.textContent = "Loading saved settings…"; status.classList.remove("error");
+    const {data,error} = await client.from("ds_demo_payment_settings")
+      .select("qr_image_url,upi_label,bank_details,instructions").eq("id",true).maybeSingle();
+    if(error) { status.textContent = "Could not load settings: " + error.message + ". Check table access and Admin RLS policy."; status.classList.add("error"); return; }
+    $("paymentQrUrl").value = data?.qr_image_url?.startsWith("https://") ? data.qr_image_url : "";
+    showPaymentQrPreview(data?.qr_image_url || "");
+    $("paymentQrFile").value = "";
+    $("paymentUpiLabel").value = data?.upi_label || "";
+    $("paymentBankDetails").value = data?.bank_details || "";
+    $("paymentInstructions").value = data?.instructions || "";
+    status.textContent = data ? "Saved settings loaded." : "No settings saved yet. Enter demo details and save.";
+  }
+  $("openPaymentSettings").addEventListener("click", () => {
+    // Hide the dashboard tile while its editor is open to avoid duplicate headings.
+    $("openPaymentSettings").classList.add("hidden");
+    $("pointRequestsPanel").classList.add("hidden");
+    $("paymentSettingsPanel").classList.remove("hidden");
+    loadPaymentSettings();
+  });
+  $("closePaymentSettings").addEventListener("click", () => {
+    $("paymentSettingsPanel").classList.add("hidden");
+    $("openPaymentSettings").classList.remove("hidden");
+    $("pointRequestsPanel").classList.remove("hidden");
+  });
+  $("reloadPaymentSettings").addEventListener("click", loadPaymentSettings);
+  $("savePaymentSettings").addEventListener("click", async () => {
+    const button = $("savePaymentSettings"), status = $("paymentSettingsStatus");
+    let qr = $("paymentQrUrl").value.trim();
+    const selectedFile = $("paymentQrFile").files?.[0];
+    if(qr && !qr.startsWith("https://")) { status.textContent = "QR image URL must start with https://"; status.classList.add("error"); return; }
+    if(selectedFile && (!["image/png","image/jpeg","image/webp"].includes(selectedFile.type) || selectedFile.size > 1024 * 1024)) {
+      status.textContent = "Choose PNG, JPG or WEBP image up to 1 MB."; status.classList.add("error"); return;
+    }
+    button.disabled = true; status.classList.remove("error"); status.textContent = "Saving…";
+    try {
+      if (selectedFile) {
+        qr = await new Promise((resolve,reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ""));
+          reader.onerror = () => reject(new Error("Could not read the selected QR image."));
+          reader.readAsDataURL(selectedFile);
+        });
+      }
+      const payload = {id:true,qr_image_url:qr||null,upi_label:$("paymentUpiLabel").value.trim()||null,bank_details:$("paymentBankDetails").value.trim()||null,instructions:$("paymentInstructions").value.trim()||null};
+      const {error} = await client.from("ds_demo_payment_settings").upsert(payload,{onConflict:"id"});
+      if(error) throw error;
+      $("paymentQrFile").value = "";
+      showPaymentQrPreview(qr || "");
+      $("paymentQrUrl").value = qr.startsWith("https://") ? qr : "";
+      status.textContent = "Saved. Demo UPI label and QR image are now linked to the User Panel.";
+    } catch(error) { status.textContent = "Save failed: " + (error.message||String(error)); status.classList.add("error"); }
+    finally { button.disabled = false; }
+  });
+
+  async function loadPointRequests() {
+    const status = $("pointRequestStatus"), box = $("pointRequestsTable");
+    status.textContent = "Loading " + activeRequestType + " requests…";
+    status.classList.remove("error"); box.innerHTML = "";
+    const {data,error} = await client.from("ds_point_requests")
+      .select("id,user_id,request_type,amount,note,status,created_at")
+      .eq("request_type", activeRequestType)
+      .order("created_at", {ascending:false}).limit(500);
+    if(error) {
+      status.textContent = "Could not load requests: " + error.message + ". Run the supplied SQL setup first and confirm admin permission.";
+      status.classList.add("error"); return;
+    }
+    if(!data?.length) { status.textContent = "No " + activeRequestType + " requests found."; return; }
+    status.textContent = "Loaded " + data.length + " " + activeRequestType + " request(s).";
+    box.innerHTML = `<table style="min-width:760px"><thead><tr><th>Request ID</th><th>User ID</th><th>Amount (points)</th><th>Note</th><th>Status</th><th>Requested</th><th>Action</th></tr></thead><tbody>${data.map(row => {
+      const pending = row.status === "pending";
+      const actions = pending ? `<div class="action"><button class="approve" data-review="approve" data-id="${esc(row.id)}">Approve</button><button class="reject" data-review="reject" data-id="${esc(row.id)}">Reject</button></div>` : esc(row.status);
+      return `<tr><td>${esc(row.id)}</td><td>${esc(row.user_id)}</td><td>${esc(row.amount)}</td><td>${esc(row.note||"—")}</td><td>${esc(row.status)}</td><td>${esc(row.created_at?new Date(row.created_at).toLocaleString("en-IN"):"")}</td><td>${actions}</td></tr>`;
+    }).join("")}</tbody></table>`;
+  }
+  $("pointRequestsTable").addEventListener("click", async event => {
+    const button = event.target.closest("button[data-review][data-id]");
+    if(!button) return;
+    const id = Number(button.dataset.id), decision = button.dataset.review;
+    if(!Number.isSafeInteger(id) || !["approve","reject"].includes(decision)) return;
+    const verb = decision === "approve" ? "APPROVE" : "REJECT";
+    if(!confirm(`${verb} virtual-points request #${id}? ${decision === "approve" ? "This will add/remove points in the user's shared points ledger." : "The request will be marked rejected."}`)) return;
+    button.disabled = true;
+    $("pointRequestStatus").textContent = "Processing request #" + id + "…";
+    const {data,error} = await client.rpc("ds_review_point_request", {p_request_id:id,p_decision:decision});
+    if(error) {
+      $("pointRequestStatus").textContent = "Review failed: " + error.message;
+      $("pointRequestStatus").classList.add("error"); button.disabled = false; return;
+    }
+    const result = Array.isArray(data) ? data[0] : data;
+    alert(`Request #${id} ${decision}d. Updated virtual-points balance: ${result?.new_balance ?? "—"}`);
+    await loadPointRequests();
+  });
+
+  $("refreshBets").addEventListener("click",loadBets);
+  $("betsTable").addEventListener("click",async event=>{
+    const button=event.target.closest("button[data-result][data-id]");
+    if(!button)return;
+    const betId=Number(button.dataset.id), result=button.dataset.result;
+    if(!Number.isSafeInteger(betId)||!["WON","LOST","VOID"].includes(result))return;
+    if(!confirm(`Confirm Bet #${betId} settlement as ${result}? Only continue after the actual result is verified. This action updates points and cannot be undone.`))return;
+    const buttons=$("betsTable").querySelectorAll(`button[data-id="${betId}"]`);
+    buttons.forEach(item=>item.disabled=true);
+    $("betStatus").textContent=`Settling Bet #${betId}…`;
+    try{
+      const {data,error}=await client.rpc("ds_settle_match_bet",{p_bet_id:betId,p_result:result});
+      if(error)throw error;
+      alert(`Bet #${betId} settled as ${result}. Net points: ${data?.net_points??"—"}`);
+      await loadBets();
+    }catch(error){
+      $("betStatus").textContent="Settlement failed: "+(error.message||String(error));
+      $("betStatus").classList.add("error");
+      buttons.forEach(item=>item.disabled=false);
+    }
+  });
+
+  (async()=>{
+    setLoginStatus("Checking saved Admin session…");
+    try{
+      const {data,error}=await client.auth.getSession();
+      if(error)throw error;
+      if(data.session?.user) await verifyAdmin(data.session.user);
+      else showLogin();
+    }catch(error){
+      await client.auth.signOut();
+      showLogin(error.message||"Could not verify saved session.",true);
+    }
+  })();
+})();
+</script>
+</body>
+</html>
