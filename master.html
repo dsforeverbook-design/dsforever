@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080d18">
+<title>DS FOREVER | Master Control</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#080d18;--panel:#101a2b;--panel2:#0b1425;--line:#354779;--gold:#f5c451;--muted:#aab5c8;--ok:#78e5b8;--bad:#ff8d8d}*{box-sizing:border-box}body{margin:0;padding:14px;background:var(--bg);color:#fff;font-family:Arial,sans-serif}.wrap{max-width:1050px;margin:24px auto}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}#loginBox{max-width:450px;margin:8vh auto}h1{color:var(--gold);margin:0 0 8px;font-size:clamp(27px,5vw,36px)}h2{margin:0 0 8px}p{color:var(--muted);line-height:1.5}label{display:block;margin:18px 0 7px}input{width:100%;padding:14px;border-radius:9px;border:1px solid var(--line);background:#0b1220;color:#fff;font-size:16px}button,.btn{display:inline-block;padding:12px 15px;border:0;border-radius:9px;background:var(--gold);color:#101827;font-weight:bold;text-decoration:none;cursor:pointer}button:disabled{opacity:.6;cursor:wait}#loginBtn{width:100%;margin-top:20px}#status{min-height:24px;margin-top:14px;color:var(--ok);overflow-wrap:anywhere}#status.error{color:var(--bad)}.header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}.logout{background:#a83232;color:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.tile{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:19px;min-height:130px}.tile h3{color:var(--gold);margin:0 0 8px}.tile p{margin:0}.tag{display:inline-block;border:1px solid #5b6680;border-radius:20px;padding:4px 9px;font-size:11px;color:var(--muted);margin-top:12px}.note{border-left:3px solid var(--gold);padding:12px 14px;background:var(--panel2);border-radius:6px;margin-top:20px}.hidden{display:none!important}.welcome{overflow-wrap:anywhere}@media(max-width:520px){body{padding:8px}.panel{padding:15px}.wrap{margin:10px auto}.grid{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<section class="panel" id="loginBox"><h1 style="text-align:center">DS FOREVER</h1><p style="text-align:center">MASTER CONTROL PANEL</p>
+<form id="loginForm"><label for="userId">Master User ID</label><input id="userId" autocomplete="username" maxlength="40" required placeholder="Enter Master User ID"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Enter Master Password"><button id="loginBtn" type="submit">MASTER LOGIN</button></form><div id="status" role="status" aria-live="polite">Master access is verified separately from Admin access.</div></section>
+<main id="dashboard" class="panel hidden"><div class="header"><div><h1>DS FOREVER</h1><h2>MASTER DASHBOARD</h2><p id="welcome" class="welcome">Verifying Master account…</p></div><button class="logout" id="logoutBtn" type="button">LOG OUT</button></div>
+<div class="grid">
+<div class="tile"><h3>Admin Control</h3><p>Review the separate Admin Panel.</p><a class="tag" href="admin.html">OPEN ADMIN PANEL</a></div>
+<div class="tile"><h3>User Management</h3><p>Open the existing user records page.</p><a class="tag" href="users.html">OPEN USERS</a></div>
+<div class="tile"><h3>Match & Score Oversight</h3><p>Live data requires an authorized sports API and configured server connection.</p><span class="tag">INTEGRATION PENDING</span></div>
+<div class="tile"><h3>System Status</h3><p>Master-only tools will be connected after the database Master role is configured and verified.</p><span class="tag">SETUP REQUIRED</span></div>
+</div><p class="note">This is a separate Master interface. Access is denied unless the database confirms the signed-in account through the dedicated <code>ds_is_master()</code> security function. Admin permission alone does not grant Master access. No service-role key or password is stored in this file.</p></main>
+</div><script>
+(()=>{'use strict';
+const SUPABASE_URL='https://gplftdgweysvutrfkpni.supabase.co';
+const SUPABASE_KEY='sb_publishable_YSRfi0A-OZ2PpeJFOqsRNw_ee5z30VU';
+const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id),loginBox=$('loginBox'),dashboard=$('dashboard'),form=$('loginForm'),status=$('status'),loginBtn=$('loginBtn');
+function showLogin(message='',isError=false){dashboard.classList.add('hidden');loginBox.classList.remove('hidden');status.textContent=message;status.classList.toggle('error',isError)}
+async function verifyMaster(user){if(!user?.id)throw new Error('Login session missing.');const {data,error}=await client.rpc('ds_is_master');if(error)throw new Error('Master permission check is not configured or failed: '+error.message);if(data!==true){await client.auth.signOut();throw new Error('This account is not authorized as Master. Admin access is not enough.')}loginBox.classList.add('hidden');dashboard.classList.remove('hidden');$('welcome').textContent='Signed in as '+(user.email||'DS MASTER')}
+form.addEventListener('submit',async e=>{e.preventDefault();loginBtn.disabled=true;showLogin('Checking Master credentials…');try{const id=$('userId').value.trim();if(!/^[a-zA-Z0-9._-]{3,40}$/.test(id))throw new Error('Enter a valid Master User ID.');const {data,error}=await client.auth.signInWithPassword({email:id+'@dsforever-login.com',password:$('password').value});if(error)throw error;await verifyMaster(data.user)}catch(err){showLogin(err.message||'Master login failed.',true)}finally{loginBtn.disabled=false}});
+$('logoutBtn').addEventListener('click',async()=>{const {error}=await client.auth.signOut();showLogin(error?'Logout error: '+error.message:'You have been logged out.',!!error)});
+(async()=>{try{const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session?.user)await verifyMaster(data.session.user)}catch(err){await client.auth.signOut();showLogin(err.message||'Please sign in again.',true)}})();
+})();
+</script></body></html>
